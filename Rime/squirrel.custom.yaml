@@ -1,0 +1,17 @@
+patch:
+  style:
+    alpha: 1
+    border_width: 1
+    border_height: 1
+    font_point: 15
+    horizontal: false
+    line_spacing: 3
+    font_face: Unicode Supporting, MingLiU, HanaMinA, MingLiU-ExtB, KaiXinSong, MS-Mincho, HiraginoSansGB-W3, Cambria, TW-Sung-Ext-B, Segoe UI Symbol
+    corner_radius: 10
+    color_scheme: dark_temple
+    inline_preedit: true
+  app_options:
+    com.runiter.SmartMathCalculator: &a
+      ascii_mode: true
+    com.alfredapp.Alfred: *a
+    com.yixianmac.chinacalendar: *a
