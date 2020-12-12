@@ -12,7 +12,10 @@
       "type": "group",
       "dicts": [{
         "type": "text",
-        "file": "JPVariants.txt"
+        "file": "JPCharacters.txt"
+      }, {
+        "type": "text",
+        "file": "JPPhrases.txt"
       }]
     }
   }]
