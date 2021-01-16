@@ -2,14 +2,14 @@ customization:
   distribution_code_name: Weasel
   distribution_version: 0.14.3
   generator: "Weasel::UIStyleSettings"
-  modified_time: "Fri Jan 15 18:05:33 2021"
+  modified_time: "Fri Jan 15 23:37:06 2021"
   rime_version: 1.5.3
 patch:
   "app_options/calc.exe":
     ascii_mode: true
-  "style/color_scheme": starcraft
+  "style/color_scheme": lost_temple
   "style/display_tray_icon": true
-  "style/font_face": "UniSup"
+  "style/font_face": "Unicode Supporting"
   "style/font_point": 12
   "style/horizontal": false
   "style/inline_preedit": true
