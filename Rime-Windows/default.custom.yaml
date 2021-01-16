@@ -9,3 +9,4 @@ patch:
     - {schema: bopomofo}
     - {schema: cangjie5}
     - {schema: terra_pinyin}
+  "menu/page_size": 10
