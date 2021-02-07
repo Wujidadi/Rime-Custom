@@ -54,7 +54,7 @@ menu:
   page_size: 10
 
 speller:
-  alphabet: 'zyxwvutsrqponmlkjihgfedcba-;/<,>\'
+  alphabet: 'zyxwvutsrqponmlkjihgfedcba-;/<,>.\'
   initials: zyxwvutsrqponmlkjihgfedcba
   delimiter: " '"
   algebra:
@@ -73,8 +73,8 @@ speller:
     - derive/^([a-z]+)[0-5]$/$1/
     - derive/([dtngkhrzcs])o(u|ng)$/$1o/
     - derive/ong$/on/
-    - 'erase/^.*5$/'
-    - 'xlit 1234 -/<\'
+    # - 'erase/^.*5$/'
+    - 'xlit 12345 -/<\.'
     - 'derive/^(.*)-$/$1;/'
     - 'derive/^(.*)<$/$1,/'
     - 'derive/^(.*)\\$/$1>/'
@@ -436,7 +436,8 @@ punctuator:
 key_binder:
   import_preset: default
   bindings:
-    - { when: has_menu, accept: minus, send: minus }  # tone 1
+    - { when: has_menu, accept: minus, send: minus }    # tone 1
+    - { when: has_menu, accept: period, send: period }  # tone 5
     - { when: paging, accept: minus, send: Page_Up }
 
 recognizer:

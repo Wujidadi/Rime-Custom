@@ -1,18 +1,6 @@
 # Rime schema
 # encoding: utf-8
 
-__build_info:
-  rime_version: 1.5.2
-  timestamps:
-    bopomofo.custom: 0
-    bopomofo.schema: 1560787244
-    default: 1560787244
-    default.custom: 1534058011
-    key_bindings: 1560787244
-    key_bindings.custom: 0
-    punctuation: 1560787244
-    punctuation.custom: 0
-
 schema:
   author:
     - "佛振 <chen.sst@gmail.com>"
@@ -20,22 +8,22 @@ schema:
     - cangjie5.edited
   description: |
     注音符號輸入，採用「大千式」鍵盤排列。
-    
+
     本方案採用「無模式」設計，以大寫字母鍵或上下方向鍵、回車鍵選詞；
     空格鍵輸入第一聲，標記爲「ˉ」。
-    
-    請配合 librime>=0.9.8 使用。
-    
+
+    請配合 librime>=1.3 使用。
+
   name: "注音"
   schema_id: bopomofo
-  version: 2.2
+  version: '2.4'
 
 switches:
   - name: ascii_mode
     reset: 1
-    states: ["中文", "西文"]
+    states: [ 中文, 西文 ]
   - name: full_shape
-    states: ["半角", "全角"]
+    states: [ 半角, 全角 ]
   # - name: simplification
   #   states: ["漢字", "汉字"]
   - options:
@@ -65,7 +53,7 @@ engine:
     - fallback_segmentor
   translators:
     - punct_translator
-    - "table_translator@custom_phrase"
+    - table_translator@custom_phrase
     - reverse_lookup_translator
     - script_translator
   filters:
@@ -83,46 +71,17 @@ menu:
   page_size: 16
 
 speller:
-  alphabet: "1qaz2wsxedcrfv5tgbyhnujm8ik,9ol.0p;/- 6347"
-  initials: "1qaz2wsxedcrfv5tgbyhnujm8ik,9ol.0p;/-"
+  alphabet: '1qaz2wsxedcrfv5tgbyhnujm8ik,9ol.0p;/- 6347'
+  initials: '1qaz2wsxedcrfv5tgbyhnujm8ik,9ol.0p;/-'
   finals: " 6347"
   delimiter: "'"
   use_space: true
   algebra:
-    - "erase/^xx$/"
-    - "xform/^m(\\d)$/mu$1/"
-    - "xform/^r5$/er5/"
-    - "xform/iu/iou/"
-    - "xform/ui/uei/"
-    - "xform/ong/ung/"
-    - "xform/^yi?/i/"
-    - "xform/^wu?/u/"
-    - "xform/iu/v/"
-    - "xform/^([jqx])u/$1v/"
-    - "xform/([iuv])n/$1en/"
-    - "xform/^zhi?/Z/"
-    - "xform/^chi?/C/"
-    - "xform/^shi?/S/"
-    - "xform/^([zcsr])i/$1/"
-    - "xform/ai/A/"
-    - "xform/ei/I/"
-    - "xform/ao/O/"
-    - "xform/ou/U/"
-    - "xform/ang/K/"
-    - "xform/eng/G/"
-    - "xform/an/M/"
-    - "xform/en/N/"
-    - "xform/er/R/"
-    - "xform/eh/E/"
-    - "xform/([iv])e/$1E/"
-    #- "derive/([bpmfdtnlgkhjqxZCSrzcs])([iuv])/$2$1/"
-    #- "derive/([iuv])([aoeEAIOUMNKGR])/$2$1/"
-    #- "derive/([bpmfdtnlgkhjqxZCSrzcs])([aoeEAIOUMNKGR])/$2$1/"
-    #- "derive/([bpmfdtnlgkhjqxZCSrzcs])([iuv])/$2$1/"
-    - "abbrev/^([bpmfdtnlgkhjqxZCSrzcs]).+$/$1/"
-    - "abbrev/^([A-Za-z]+)\\d$/$1/"
-    - "abbrev/^([bpmfdtnlgkhjqxZCSrzcs]).+(\\d)$/$1$2/"
-    - "xlit|bpmfdtnlgkhjqxZCSrzcsiuvaoeEAIOUMNKGR12345|1qaz2wsxedcrfv5tgbyhnujm8ik,9ol.0p;/- 6347|"
+    __patch:
+      - zhuyin:/pinyin_to_zhuyin
+      - zhuyin:/free_order
+      - zhuyin:/abbreviation
+      - zhuyin:/keymap_bopomofo
 
 translator:
   dictionary: terra_pinyin
@@ -143,34 +102,34 @@ reverse_lookup:
   enable_completion: true
   prefix: "`"
   suffix: "'"
-  tips: "〔倉頡〕"
+  tips: 〔倉頡〕
   preedit_format:
-    - "xlit|abcdefghijklmnopqrstuvwxyz|日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符|"
+    - xlit/abcdefghijklmnopqrstuvwxyz/日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜符/
   comment_format:
-    - "xform/e?r5$/er5/"
-    - "xform/iu/iou/"
-    - "xform/ui/uei/"
-    - "xform/ong/ung/"
-    - "xform/^yi?/i/"
-    - "xform/^wu?/u/"
-    - "xform/iu/v/"
-    - "xform/^([jqx])u/$1v/"
-    - "xform/([iuv])n/$1en/"
-    - "xform/zh/Z/"
-    - "xform/ch/C/"
-    - "xform/sh/S/"
-    - "xform/ai/A/"
-    - "xform/ei/I/"
-    - "xform/ao/O/"
-    - "xform/ou/U/"
-    - "xform/ang/K/"
-    - "xform/eng/G/"
-    - "xform/an/M/"
-    - "xform/en/N/"
-    - "xform/er/R/"
-    - "xform/eh/E/"
-    - "xform/([iv])e/$1E/"
-    - "xform/1//"
+    - xform/e?r5$/er5/
+    - xform/iu/iou/
+    - xform/ui/uei/
+    - xform/ong/ung/
+    - xform/^yi?/i/
+    - xform/^wu?/u/
+    - xform/iu/v/
+    - xform/^([jqx])u/$1v/
+    - xform/([iuv])n/$1en/
+    - xform/zh/Z/
+    - xform/ch/C/
+    - xform/sh/S/
+    - xform/ai/A/
+    - xform/ei/I/
+    - xform/ao/O/
+    - xform/ou/U/
+    - xform/ang/K/
+    - xform/eng/G/
+    - xform/an/M/
+    - xform/en/N/
+    - xform/er/R/
+    - xform/eh/E/
+    - xform/([iv])e/$1E/
+    - xform/1//
     - "xlit|bpmfdtnlgkhjqxZCSrzcsiuvaoeEAIOUMNKGR2345|ㄅㄆㄇㄈㄉㄊㄋㄌㄍㄎㄏㄐㄑㄒㄓㄔㄕㄖㄗㄘㄙㄧㄨㄩㄚㄛㄜㄝㄞㄟㄠㄡㄢㄣㄤㄥㄦˊˇˋ˙|"
 
 punctuator:
@@ -420,50 +379,11 @@ ascii_composer:
 key_binder:
   import_preset: default
   bindings:
-    - {accept: "Control+p", send: Up, when: composing}
-    - {accept: "Control+n", send: Down, when: composing}
-    - {accept: "Control+b", send: Left, when: composing}
-    - {accept: "Control+f", send: Right, when: composing}
-    - {accept: "Control+a", send: Home, when: composing}
-    - {accept: "Control+e", send: End, when: composing}
-    - {accept: "Control+d", send: Delete, when: composing}
-    - {accept: "Control+k", send: "Shift+Delete", when: composing}
-    - {accept: "Control+h", send: BackSpace, when: composing}
-    - {accept: "Control+g", send: Escape, when: composing}
-    - {accept: "Control+bracketleft", send: Escape, when: composing}
-    - {accept: "Alt+v", send: Page_Up, when: composing}
-    - {accept: "Control+v", send: Page_Down, when: composing}
-    - {accept: ISO_Left_Tab, send: "Shift+Left", when: composing}
-    - {accept: "Shift+Tab", send: "Shift+Left", when: composing}
-    - {accept: Tab, send: "Shift+Right", when: composing}
-    - {accept: minus, send: Page_Up, when: has_menu}
-    - {accept: equal, send: Page_Down, when: has_menu}
-    - {accept: comma, send: Page_Up, when: paging}
-    - {accept: period, send: Page_Down, when: has_menu}
-    - {accept: "Control+Shift+1", select: .next, when: always}
-    - {accept: "Control+Shift+2", toggle: ascii_mode, when: always}
-    - {accept: "Control+Shift+3", toggle: full_shape, when: always}
-    # - {accept: "Control+Shift+4", toggle: simplification, when: always}
-    # - {accept: "Control+Shift+5", toggle: extended_charset, when: always}
-    # - {accept: "Control+Shift+4", toggle: zh_trad, when: always}
-    - {accept: "Control+Shift+4", toggle: zh_simp, when: always}
-    - {accept: "Control+Shift+5", toggle: kanji, when: always}
-    # - {accept: "Control+Shift+6", toggle: kanji, when: always}
-    - {accept: "Control+Shift+exclam", select: .next, when: always}
-    - {accept: "Control+Shift+at", toggle: ascii_mode, when: always}
-    - {accept: "Control+Shift+numbersign", toggle: full_shape, when: always}
-    # - {accept: "Control+Shift+dollar", toggle: simplification, when: always}
-    # - {accept: "Control+Shift+percent", toggle: extended_charset, when: always}
-    # - {accept: "Control+Shift+dollar", toggle: zh_trad, when: always}
-    - {accept: "Control+Shift+dollar", toggle: zh_simp, when: always}
-    - {accept: "Control+Shift+percent", toggle: kanji, when: always}
-    # - {accept: "Control+Shift+caret", toggle: kanji, when: always}
-    - {accept: "Shift+space", toggle: full_shape, when: always}
-    - {accept: comma, send: comma, when: has_menu}
-    - {accept: period, send: period, when: has_menu}
-    - {accept: minus, send: minus, when: has_menu}
-    - {accept: minus, send: Page_Up, when: paging}
-    - {accept: equal, send: Page_Down, when: has_menu}
+    - { when: has_menu, accept: comma, send: comma }      # ㄝ
+    - { when: has_menu, accept: period, send: period }    # ㄡ
+    - { when: has_menu, accept: minus, send: minus }      # ㄦ
+    - { when: paging, accept: minus, send: Page_Up }
+    - { when: has_menu, accept: equal, send: Page_Down }
 
 recognizer:
   patterns:
@@ -487,3 +407,9 @@ kanji:
   option_name: kanji
   opencc_config: t2jp.json
   tips: all
+
+__patch:
+  # 使用八股文語言模型
+  - grammar:/hant?
+  # 用家自選配置
+  - bopomofo.custom:/patch?
