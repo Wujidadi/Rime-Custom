@@ -50,6 +50,10 @@ engine:
     - simplifier
     - uniquifier
 
+menu:
+  alternative_select_keys: "1234567890"
+  page_size: 10
+
 speller:
   alphabet: 'zyxwvutsrqponmlkjihgfedcba-;/<,>.\'
   initials: zyxwvutsrqponmlkjihgfedcba
