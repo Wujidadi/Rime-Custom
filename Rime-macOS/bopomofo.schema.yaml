@@ -68,7 +68,7 @@ engine:
 
 menu:
   alternative_select_keys: "ABCDEFGHIJKLMNOP"
-  page_size: 16
+  page_size: 10
 
 speller:
   alphabet: '1qaz2wsxedcrfv5tgbyhnujm8ik,9ol.0p;/- 6347'
@@ -384,6 +384,15 @@ key_binder:
     - { when: has_menu, accept: minus, send: minus }      # ㄦ
     - { when: paging, accept: minus, send: Page_Up }
     - { when: has_menu, accept: equal, send: Page_Down }
+    - { when: always, accept: "Shift+space", toggle: full_shape }
+    # - { when: always, accept: "Control+Shift+4", toggle: zh_trad }
+    - { when: always, accept: "Control+Shift+4", toggle: zh_simp }
+    - { when: always, accept: "Control+Shift+5", toggle: kanji }
+    # - { when: always, accept: "Control+Shift+6", toggle: kanji }
+    # - { when: always, accept: "Control+Shift+dollar", toggle: zh_trad }
+    - { when: always, accept: "Control+Shift+dollar", toggle: zh_simp }
+    - { when: always, accept: "Control+Shift+percent", toggle: kanji }
+    # - { when: always, accept: "Control+Shift+caret", toggle: kanji }
 
 recognizer:
   patterns:

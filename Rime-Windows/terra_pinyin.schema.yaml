@@ -439,6 +439,7 @@ key_binder:
     - { when: has_menu, accept: minus, send: minus }    # tone 1
     - { when: has_menu, accept: period, send: period }  # tone 5
     - { when: paging, accept: minus, send: Page_Up }
+    - { when: always, accept: "Shift+space", toggle: full_shape }
 
 recognizer:
   import_preset: default

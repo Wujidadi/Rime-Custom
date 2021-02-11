@@ -8,23 +8,22 @@ schema:
   author:
     - 發明人 朱邦復先生
   description: |
-    已整合五代及六代（蒼頡檢字法）碼表（方案名稱保持五代未變）
-    五代碼表源自倉頡之友（www.chinesecj.com）發佈的《五倉世紀版》
-    六代碼表由雪齋、惜緣、crazy4u據蒼頡檢字法（蒼頡六代）整理
+    第五代倉頡輸入法
+    碼表源自倉頡之友發佈的《五倉世紀版》
+    www.chinesecj.com
   dependencies:
-    - terra_pinyin
+    - luna_quanpin
 
 switches:
   - name: ascii_mode
-    reset: 1
+    reset: 0
     states: [ 中文, 西文 ]
   - name: full_shape
-    states: [ 半形, 全形 ]
+    states: [ 半角, 全角 ]
   - name: simplification
     states: [ 漢字, 汉字 ]
   - name: extended_charset
     states: [ 常用, 增廣 ]
-    reset: 1
   - name: ascii_punct
     states: [ 。，, ．， ]
 
@@ -53,12 +52,9 @@ engine:
     - uniquifier
     - single_char_filter
 
-menu:
-  page_size: 10
-
 speller:
   alphabet: zyxwvutsrqponmlkjihgfedcba
-  delimiter: " ;'"
+  delimiter: " ;"
   #max_code_length: 5  # 五碼頂字上屏
 
 translator:
@@ -66,7 +62,6 @@ translator:
   enable_charset_filter: true
   enable_sentence: true
   enable_encoder: true
-  enable_user_dict: false
   encode_commit_history: true
   max_phrase_length: 5
   preedit_format:
@@ -78,9 +73,9 @@ translator:
     - "^z.*$"
     - "^yyy.*$"
 
-# abc_segmentor:
-#   extra_tags:
-#     - reverse_lookup  # 與拼音（反查碼）混打
+abc_segmentor:
+  extra_tags:
+    - reverse_lookup  # 與拼音（反查碼）混打
 
 reverse_lookup:
   dictionary: luna_pinyin
