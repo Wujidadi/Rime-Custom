@@ -6,4 +6,5 @@
 VS Code workspace 路徑：`~/Documents/Workspaces/VSCode/Rime/Rime-Custom.code-workspace`
 
 **Rime** 資料夾下的檔案，對應其在 `~/Library/Rime/` 中的位置  
-**SharedSupport** 資料夾下的檔案，對應其在 `/Library/Input Methods/Squirrel.app/Contents/SharedSupport/` 中的位置
+**SharedSupport** 資料夾下的檔案，對應其在 `/Library/Input Methods/Squirrel.app/Contents/SharedSupport/` 中的位置  
+（Windows 中一般在 `C:\Program Files (x86)\Rime\weasel-{版本號}\data\`）

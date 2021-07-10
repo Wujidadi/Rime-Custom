@@ -60,8 +60,7 @@ engine:
     # - simplifier@traditional_chinese
     - simplifier@simplified_chinese
     - simplifier@kanji
-    - uniquifier
-
+    - uniquifie
 menu:
   alternative_select_keys: "ABCDEFGHIJ"
   page_size: 10
