@@ -2,9 +2,11 @@
 
 自訂 Rime 設定、詞庫及相關檔案等。
 
-路徑：`~/Documents/Workspaces/Rime/`  
-VS Code workspace 路徑：`~/Documents/Workspaces/VSCode/Rime/Rime-Custom.code-workspace`
+## VSCode 專案路徑
+* `~/Documents/Workspaces/Rime/`
+* Workspace 路徑：`~/Documents/Workspaces/VSCode/Rime/Rime-Custom.code-workspace`
 
-**Rime** 資料夾下的檔案，對應其在 `~/Library/Rime/` 中的位置  
-**SharedSupport** 資料夾下的檔案，對應其在 `/Library/Input Methods/Squirrel.app/Contents/SharedSupport/` 中的位置  
-（Windows 中預設在 `C:/Program Files (x86)/Rime/weasel-{版本號}/data/`）
+## 檔案對應路徑
+* **Rime** 資料夾：`~/Library/Rime/`
+* **Contents 資料夾（macOS）**：`/Library/Input Methods/Squirrel.app/Contents/`
+* **data 資料夾（Windows）**：`C:/Program Files (x86)/Rime/weasel-{版本號}/data/`
