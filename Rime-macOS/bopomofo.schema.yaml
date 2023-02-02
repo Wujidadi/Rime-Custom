@@ -26,14 +26,20 @@ switches:
     states: [ 半角, 全角 ]
   # - name: simplification
   #   states: ["漢字", "汉字"]
-  - options:
-      - zh_trad
-      - zh_simp
-      - kanji
-    states:
-      - 正體中文漢字
-      - 简体中文汉字
-      - 日本語漢字
+  - name: trad_simp
+    options: [ zh_trad, zh_simp ]
+    states: [ 正體, 简体 ]
+  - name: trad_jp
+    options: [ zh_trad, kanji ]
+    states: [ 正體中文, 日文漢字 ]
+  # - options:
+  #     - zh_trad
+  #     - zh_simp
+  #     - kanji
+  #   states:
+  #     - 正體中文漢字
+  #     - 简体中文汉字
+  #     - 日本語漢字
 
 engine:
   processors:
