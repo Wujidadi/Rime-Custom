@@ -10,3 +10,13 @@
 * **Rime** 資料夾：`~/Library/Rime/`
 * **Contents 資料夾（macOS）**：`/Library/Input Methods/Squirrel.app/Contents/`
 * **data 資料夾（Windows）**：`C:/Program Files (x86)/Rime/weasel-{版本號}/data/`
+
+## 注意事項
+* **Mac:** Rime 0.16（2023-01-30）起不知為何日文漢字轉換的字典無法使用 `group`，故將 `JPCharacters.txt` 和 `JPPhrases.txt` 合併於 `JPVariants.txt`（見 `t2jp.json`）  
+  **Windows:** 待確認
+* Rime 0.16 版新增了命令行同步功能，可在 `.zshrc` 加入以下指令，即可用 `Squirrel --sync` 或 `squirrel --sync` 指令執行同步：
+  ```bash
+  ## Rime
+  alias Squirrel='/Library/Input\ Methods/Squirrel.app/Contents/MacOS/Squirrel'
+  alias squirrel='/Library/Input\ Methods/Squirrel.app/Contents/MacOS/Squirrel'
+  ```

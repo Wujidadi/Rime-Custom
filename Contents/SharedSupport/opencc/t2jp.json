@@ -9,14 +9,8 @@
   },
   "conversion_chain": [{
     "dict": {
-      "type": "group",
-      "dicts": [{
-        "type": "text",
-        "file": "JPCharacters.txt"
-      }, {
-        "type": "text",
-        "file": "JPPhrases.txt"
-      }]
+      "type": "text",
+      "file": "JPVariants.txt"
     }
   }]
 }
