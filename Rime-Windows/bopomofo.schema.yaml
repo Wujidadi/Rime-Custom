@@ -24,15 +24,18 @@ switches:
     states: [ 中文, 西文 ]
   - name: full_shape
     states: [ 半角, 全角 ]
-  # - name: simplification
-  #   states: [ 漢字, 汉字 ]
+  # 繁簡切換
   - options:
       - zh_hant
       - zh_hans
+    states:
+      - 繁體中文漢字
+      - 简体中文汉字
+  - options:
+      - zh_hant
       - kanji
     states:
-      - 正體中文漢字
-      - 简体中文汉字
+      - 中文正體漢字
       - 日本語漢字
 
 engine:
