@@ -4,7 +4,7 @@
 schema:
   schema_id: bopomofo
   name: 注音
-  version: '2.2'
+  version: '2.4'
   author:
     - 佛振 <chen.sst@gmail.com>
   description: |
@@ -13,7 +13,7 @@ schema:
     本方案採用「無模式」設計，以大寫字母鍵或上下方向鍵、回車鍵選詞；
     空格鍵輸入第一聲，標記爲「ˉ」。
 
-    請配合 librime>=0.9.8 使用。
+    請配合 librime>=1.3 使用。
 
   dependencies:
     - cangjie5
@@ -27,8 +27,8 @@ switches:
   # - name: simplification
   #   states: [ 漢字, 汉字 ]
   - options:
-      - zh_trad
-      - zh_simp
+      - zh_hant
+      - zh_hans
       - kanji
     states:
       - 正體中文漢字
@@ -57,13 +57,12 @@ engine:
     - reverse_lookup_translator
     - script_translator
   filters:
-    # - simplifier@traditional_chinese
-    - simplifier@simplified_chinese
+    # - simplifier@zh_hant_tw
+    - simplifier@zh_hans
     - simplifier@kanji
-    - uniquifie
+    - uniquifier
 menu:
   alternative_select_keys: "ABCDEFGHIJ"
-  page_size: 10
 
 speller:
   alphabet: '1qaz2wsxedcrfv5tgbyhnujm8ik,9ol.0p;/- 6347'
@@ -72,40 +71,11 @@ speller:
   delimiter: "'"
   use_space: true
   algebra:
-    - erase/^xx$/
-    - xform/^m(\d)$/mu$1/  # 呣
-    - xform/^r5$/er5/  # 〜兒
-    - xform/iu/iou/
-    - xform/ui/uei/
-    - xform/ong/ung/
-    - xform/^yi?/i/
-    - xform/^wu?/u/
-    - xform/iu/v/
-    - xform/^([jqx])u/$1v/
-    - xform/([iuv])n/$1en/
-    - xform/^zhi?/Z/
-    - xform/^chi?/C/
-    - xform/^shi?/S/
-    - xform/^([zcsr])i/$1/
-    - xform/ai/A/
-    - xform/ei/I/
-    - xform/ao/O/
-    - xform/ou/U/
-    - xform/ang/K/
-    - xform/eng/G/
-    - xform/an/M/
-    - xform/en/N/
-    - xform/er/R/
-    - xform/eh/E/
-    - xform/([iv])e/$1E/
-    - derive/([bpmfdtnlgkhjqxZCSrzcs])([iuv])/$2$1/
-    - derive/([iuv])([aoeEAIOUMNKGR])/$2$1/
-    - derive/([bpmfdtnlgkhjqxZCSrzcs])([aoeEAIOUMNKGR])/$2$1/
-    - derive/([bpmfdtnlgkhjqxZCSrzcs])([iuv])/$2$1/
-    - abbrev/^([bpmfdtnlgkhjqxZCSrzcs]).+$/$1/
-    - abbrev/^([A-Za-z]+)\d$/$1/
-    - abbrev/^([bpmfdtnlgkhjqxZCSrzcs]).+(\d)$/$1$2/
-    - 'xlit|bpmfdtnlgkhjqxZCSrzcsiuvaoeEAIOUMNKGR12345|1qaz2wsxedcrfv5tgbyhnujm8ik,9ol.0p;/- 6347|'
+    __patch:
+      - zhuyin:/pinyin_to_zhuyin
+      - zhuyin:/free_order
+      - zhuyin:/abbreviation
+      - zhuyin:/keymap_bopomofo
 
 translator:
   dictionary: terra_pinyin
@@ -408,12 +378,12 @@ key_binder:
     - { when: paging, accept: minus, send: Page_Up }
     - { when: has_menu, accept: equal, send: Page_Down }
     - { when: always, accept: "Shift+space", toggle: full_shape }
-    # - { when: always, accept: "Control+Shift+4", toggle: zh_trad }
-    - { when: always, accept: "Control+Shift+4", toggle: zh_simp }
+    # - { when: always, accept: "Control+Shift+4", toggle: zh_hant }
+    - { when: always, accept: "Control+Shift+4", toggle: zh_hans }
     - { when: always, accept: "Control+Shift+5", toggle: kanji }
     # - { when: always, accept: "Control+Shift+6", toggle: kanji }
-    # - { when: always, accept: "Control+Shift+dollar", toggle: zh_trad }
-    - { when: always, accept: "Control+Shift+dollar", toggle: zh_simp }
+    # - { when: always, accept: "Control+Shift+dollar", toggle: zh_hant }
+    - { when: always, accept: "Control+Shift+dollar", toggle: zh_hans }
     - { when: always, accept: "Control+Shift+percent", toggle: kanji }
     # - { when: always, accept: "Control+Shift+caret", toggle: kanji }
 
@@ -425,13 +395,13 @@ recognizer:
     reverse_lookup: "`[a-z]*'?$"
     punct: "^/[0-9]*[a-z]*$"
 
-traditional_chinese:
-  option_name: zh_trad
+zh_hant:
+  option_name: zh_hant
   opencc_config: s2t.json
   tips: all
 
-simplified_chinese:
-  option_name: zh_simp
+zh_hans:
+  option_name: zh_hans
   opencc_config: t2s.json
   tips: all
 
@@ -439,3 +409,9 @@ kanji:
   option_name: kanji
   opencc_config: t2jp.json
   tips: all
+
+__patch:
+  # 使用八股文語言模型
+  - grammar:/hant?
+  # 用家自選配置
+  - bopomofo.custom:/patch?

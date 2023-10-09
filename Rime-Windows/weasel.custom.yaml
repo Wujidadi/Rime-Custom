@@ -1,15 +1,20 @@
 customization:
   distribution_code_name: Weasel
-  distribution_version: 0.14.3
+  distribution_version: 0.15.0.0
   generator: "Weasel::UIStyleSettings"
-  modified_time: "Sat Jan 16 22:14:12 2021"
-  rime_version: 1.5.3
+  modified_time: "Mon Oct  9 00:15:28 2023"
+  rime_version: 1.8.5
 patch:
   "app_options/calc.exe":
     ascii_mode: true
   "style/color_scheme": lost_temple
   "style/display_tray_icon": true
-  "style/font_face": "Unicode Supporting"
+  "style/font_face": "Unicode Supporting, MingLiU"
   "style/font_point": 12
+  "style/label_font_face": "Unicode Supporting, MingLiU"
+  "style/label_font_point": 12
+  "style/comment_font_face": "Unicode Supporting, MingLiU"
+  "style/comment_font_point": 12
+  "style/layout/align_type": "center"
   "style/horizontal": false
   "style/inline_preedit": true

@@ -13,7 +13,7 @@
 
 ## 注意事項
 * **Mac:** Rime 0.16（2023-01-30）起不知為何日文漢字轉換的字典無法使用 `group`，故將 `JPCharacters.txt` 和 `JPPhrases.txt` 合併於 `JPVariants.txt`（見 `t2jp.json`）  
-  **Windows:** 待確認
+  **Windows:** 從 Weasel 0.15（2023-06-06）起也有上述問題，必須使用單一的 `JPVariants.txt` 檔案
 * Rime 0.16 版新增了命令行同步功能，可在 `.zshrc` 加入以下指令，即可用 `Squirrel --sync` 或 `squirrel --sync` 指令執行同步：
   ```bash
   ## Rime
