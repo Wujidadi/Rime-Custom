@@ -1,6 +1,6 @@
 # cangjie5.custom.yaml
 # 修改字典名爲 cangjie5.edited
 # 其對應的用戶詞典名取句點之前部分即 cangjie5
- 
+
 patch:
   translator/dictionary: cangjie5.edited

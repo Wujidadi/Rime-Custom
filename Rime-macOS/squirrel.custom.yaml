@@ -13,5 +13,4 @@ patch:
   app_options:
     com.runiter.SmartMathCalculator: &a
       ascii_mode: true
-    com.alfredapp.Alfred: *a
     com.yixianmac.chinacalendar: *a
