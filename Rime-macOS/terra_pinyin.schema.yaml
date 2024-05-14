@@ -81,6 +81,7 @@ speller:
 
 translator:
   dictionary: terra_pinyin
+  enable_completion: false
   spelling_hints: 8  # ～字以內候選標註完整帶調拼音
   preedit_format:
     - xform/([nl])v/$1ü/

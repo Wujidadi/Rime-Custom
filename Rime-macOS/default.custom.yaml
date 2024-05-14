@@ -6,4 +6,5 @@ patch:
   menu:
     page_size: 10
   switcher:
-    hotkeys: 'Alt+F4'
+    hotkeys:
+      - 'Control+Shift+grave'
