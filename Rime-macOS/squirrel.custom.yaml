@@ -4,11 +4,11 @@ patch:
     border_width: 1
     border_height: 1
     font_point: 20
-    horizontal: false
     line_spacing: 0
     font_face: Unicode Supporting, MingLiU, HanaMinA, MingLiU-ExtB, KaiXinSong, MS-Mincho, HiraginoSansGB-W3, Cambria, TW-Sung-Ext-B, Segoe UI Symbol
     corner_radius: 10
     color_scheme: dark_temple
+    color_scheme_dark: dark_temple
     inline_preedit: true
   app_options:
     com.runiter.SmartMathCalculator: &a

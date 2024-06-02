@@ -1,13 +1,7 @@
 var:
-  last_build_time: 1715218943
-  option:
-    full_shape: false
-    simplification: false
-    zh_hans: true
-    zh_hant: false
-    zh_hant_tw: false
+  last_build_time: 1717337864
   previously_selected_schema: bopomofo
   schema_access_time:
-    bopomofo: 1715139650
-    cangjie5: 1615010642
-    terra_pinyin: 1715139649
+    bopomofo: 1715696416
+    cangjie5: 1715694868
+    terra_pinyin: 1715695521
