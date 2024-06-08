@@ -20,23 +20,17 @@ schema:
 
 switches:
   - name: ascii_mode
-    reset: 0
-    states: [ 中文, 西文 ]
+    reset: 1
+    states: [ 中, 西 ]
   - name: full_shape
-    states: [ 半角, 全角 ]
+    states: [ 半, 全 ]
   # 繁簡切換
-  - options:
-      - zh_hant
-      - zh_hans
-    states:
-      - 繁體中文漢字
-      - 简体中文汉字
-  - options:
-      - zh_hant
-      - kanji
-    states:
-      - 中文正體漢字
-      - 日本語漢字
+  - name: trad_simp
+    options: [ zh_hant, zh_hans ]
+    states: [ 正體, 简体 ]
+  - name: trad_jp
+    options: [ zh_hant, kanji ]
+    states: [ 正體中文, 日文漢字 ]
 
 engine:
   processors:
@@ -85,6 +79,7 @@ translator:
   prism: bopomofo
   preedit_format:
     - "xlit|1qaz2wsxedcrfv5tgbyhnujm8ik,9ol.0p;/- 6347'|ㄅㄆㄇㄈㄉㄊㄋㄌㄍㄎㄏㄐㄑㄒㄓㄔㄕㄖㄗㄘㄙㄧㄨㄩㄚㄛㄜㄝㄞㄟㄠㄡㄢㄣㄤㄥㄦˉˊˇˋ˙ |"
+  enable_completion: false
 
 custom_phrase:
   dictionary: ""
@@ -132,24 +127,24 @@ reverse_lookup:
 punctuator:
   full_shape:
     " " : { commit: "　" }
-    "<" : { commit: "，" }
-    ">" : { commit: "。" }
+    "<" : [ ，, 《, 〈, «, ‹, ︽, ︿, ＜, ≤ ]
+    ">" : [ 。, 》, 〉, », ›, ︾, ﹀, ＞, ≥ ]
     "?" : [ ？, ／, ÷, ˊ, ↗, ↙ ]
     ":" : [ ：, ； ]
     "'" : { pair: [ "‘", "’" ] }
     "\"" : { pair: [ "“", "”" ] }
     "\\" : [ 、, ＼, "\\", ↖, ↘ ]
-    "|" : [ ・, ·, ．, ‧, •, ｜, "§", "¦", ↑, ↓ ]
+    '|' : [ ・, ·, ．, ‧, •, ｜, "§", "¦", ↑, ↓ ]
     "`" : ｀
     "~" : ～
     "!" : { commit: ！ }
     "@" : [ ＠, ☯ ]
     "#" : [ ＃, ⌘ ]
     "%" : [ ％, "°", "℃", "℉" ]
-    "$" : [ ￥, "$", "€", "£", "¥", "¢", "¤" ]
-    "^" : { commit: …… }
+    "$" : [ ＄, ￥, "€", "£", "¥", "¢", "¤" ]
+    "^" : [ ……, ^, ︙, ⋮ ]
     "&" : ＆
-    "*" : [ ＊, ·, ・, ×, ※, ❂ ]
+    "*" : [ ＊, ×, ※, ❂ ]
     "(" : [ （, ︵ ]
     ")" : [ ）, ︶ ]
     "_" : [ －, ──, ——, –, ＿, ←, →, ﹏ ]

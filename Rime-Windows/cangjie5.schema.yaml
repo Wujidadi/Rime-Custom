@@ -63,6 +63,7 @@ speller:
 
 translator:
   dictionary: cangjie5
+  enable_completion: false
   enable_charset_filter: true
   enable_sentence: true
   enable_encoder: true

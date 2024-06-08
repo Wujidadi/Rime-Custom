@@ -20,3 +20,7 @@
   alias Squirrel='/Library/Input\ Methods/Squirrel.app/Contents/MacOS/Squirrel'
   alias squirrel='/Library/Input\ Methods/Squirrel.app/Contents/MacOS/Squirrel'
   ```
+* 小狼毫 0.16.1.0 起：
+  - 用戶資料夾下的 `terra_pinyin.schema.yaml` 每次重新部署後都會被刪除（原因未查明），須直接修改應用程式資料夾下的 `terra_pinyin.schema.yaml` 檔案
+  - OpenCC `segmentation` 現在只吃 ocd2
+  - 日文漢字轉換只吃單檔（原因未查明），直接用 JPVariants.txt 就好，`JPCharacters.txt` 和 `JPPhrases.txt` 留存
