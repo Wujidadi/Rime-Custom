@@ -4,14 +4,16 @@
 schema:
   schema_id: bopomofo
   name: 注音
-  version: '2.4'
+  version: '3.0'
   author:
     - 佛振 <chen.sst@gmail.com>
   description: |
     注音符號輸入，採用「大千式」鍵盤排列。
 
-    本方案採用「無模式」設計，以大寫字母鍵或上下方向鍵、回車鍵選詞；
-    空格鍵輸入第一聲，標記為「ˉ」。
+    本方案採用「無模式」設計，以大寫字母鍵或上下方向鍵切換候選字，回車鍵上屏；
+    空格鍵輸入第一聲，標記為「ˉ」。可省略聲調、韻母。
+
+    輸入逗號「，」句號「。」須輔以 Shift 鍵。
 
     請配合 librime>=1.3 使用。
   dependencies:
