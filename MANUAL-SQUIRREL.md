@@ -4,7 +4,7 @@ max-width: 1280px
 
 # 自建鼠鬚管操作手冊
 
-> [!DATE] 時間：2026-07-25T22:12:26+08:00
+> [!DATE] 時間：2026-07-25T23:33:20+08:00
 
 本手冊記載自建版鼠鬚管（Squirrel）與個人配套環境的全部非官方操作，
 涵蓋自建版行為差異、dotfiles 指令組、同步工作流與疑難排解。
@@ -20,7 +20,7 @@ max-width: 1280px
 | dotfiles          | ~/dotfiles                               | 指令組（zshrc/A2780/zsh/rime.zsh，A2338 為 symlink） |
 
 - 分支與語言規範見 squirrel 倉庫的 `FORK-POLICY.md`；master 永不合回上游，貢獻一律從 `upstream/master` 開英文分支。
-- 版號慣例：官方版號前綴 `w`（wujidadi）加第四段流水號，如 `w1.1.2.1`；定義於 `project.pbxproj` 的 `CURRENT_PROJECT_VERSION`（兩處）。
+- 版號慣例（SemVer 2.0.0 相容）：`<官方當前正式版>-wujidadi[.流水號]`，第零版用裸後綴（如 `1.1.2-wujidadi`），同基底改版依序 `.1`、`.2`…，官方新版跟上後歸零。核心版號必須取官方「當前」版——Sparkle 比較器遇連字號截斷後綴，同版判相等（不提示降級）、官方任何新版正常提示。定義於 `project.pbxproj` 的 `CURRENT_PROJECT_VERSION`（兩處，含連字號需加引號）。
 - 已回報上游的修正：rime/squirrel#1160（add_data_files 錨點模板）、rime/squirrel#1161（appDir 路徑誤植）。
 
 ## 自建版與官方版的行為差異
