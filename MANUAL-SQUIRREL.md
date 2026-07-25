@@ -4,7 +4,7 @@ max-width: 1280px
 
 # 自建鼠鬚管操作手冊
 
-> [!DATE] 時間：2026-07-25T20:35:41+08:00
+> [!DATE] 時間：2026-07-25T22:12:26+08:00
 
 本手冊記載自建版鼠鬚管（Squirrel）與個人配套環境的全部非官方操作，
 涵蓋自建版行為差異、dotfiles 指令組、同步工作流與疑難排解。
@@ -86,7 +86,7 @@ userdb 詞條形如 `a1 ba1 hai4 <TAB>阿巴亥<TAB>c=1 d=0.588605 t=1577323`：
 - `rime-sync`：（如 `$D` 有 userdb.txt 先收進 sync 目錄）確保實例存在後發同步通知。
 - `rime-deploy`：（如 `$D` 有字典檔先收進 RIMED）有實例走 `--reload`，無實例改於 SharedSupport 執行 `--build` 再拉起。
 - `rime-purge-deleted [詞庫名]`：硬刪墓碑。偵測到自建版 `--purge` 即走官方管道（原地清除＋自動重建快照）；否則退回傳統機制（濾快照＋刪 LevelDB 重建）。預設 terra_pinyin。
-- `rime-sync-rm`：核選項——刪整個 userdb 令其自快照重建。用於權威重置；重置前記得先把本機新詞 sync 出去。
+- `rime-sync-rm`：核選項——刪整個 userdb 令其自快照重建，用於權威重置（含手動調低 c、d 值後落地）。重建以 `rime_dict_manager --restore` 在輸入法重啟前離線完成，**一次到位**，不再需要事後補跑 `rime-sync`。重置前記得先把本機新詞 sync 出去。
 - `rime-cloud` / `rime-cloud-ground` / `rime-cloud-ground-rm`：iCloud 上傳快照／下載合併／下載重建。
 - `rime-google-*`：Google Drive 對應版本。
 - `rime-sync-see-message` 等：裝置間同步留言。
@@ -127,6 +127,7 @@ userdb 詞條形如 `a1 ba1 hai4 <TAB>阿巴亥<TAB>c=1 d=0.588605 t=1577323`：
 - **「中／Ａ」獨立狀態列圖標**點擊無反應屬正常：純顯示元件，無點擊動作。
 - **macOS 26 陷阱**：終端行程呼叫 `TISDisableInputSource` 回報成功但靜默失效（enable 有效、disable 無效）；`defaults read com.apple.HIToolbox AppleEnabledInputSources` 是過時鏡像，判斷輸入法即時狀態要用 TIS API。
 - **殘留的簡體模式（Squirrel.Hans）**：終端清不掉，要移除只能走系統設定 UI；不出現在狀態列選單、不可選，放著無實害。
+- **詞頻全歸零、候選呈字典編碼序（部首靠前的罕見字排最前）**：userdb 是空的——歷史成因是舊版 `rime-sync-rm` 在實例執行中刪 LevelDB（幽靈檔案），或重啟後空庫空窗，過去須再跑一次 `rime-sync` 救回。現版 `rime-sync-rm` 已改為離線重建、一次到位；若仍遇到，跑 `rime-sync` 即可恢復。
 - **librime 全套測試**：必須在 `librime/build/test/` 目錄下執行 `rime_test`，否則字典類測試因測試資料路徑誤報失敗。
 - **搬移倉庫後建置失敗**（CMake 快取記舊路徑）：`rm -rf librime/build` 再重建。
 - **新 Xcode 首次建置 Sparkle 報 plug-in 錯誤**：跑 `xcodebuild -runFirstLaunch`。
