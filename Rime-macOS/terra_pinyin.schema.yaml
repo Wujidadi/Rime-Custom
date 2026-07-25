@@ -16,13 +16,13 @@ schema:
 switches:
   - name: ascii_mode
     reset: 1
-    states: [ 中文, 西文 ]
+    states: [ '中文', '西文' ]
   - name: full_shape
-    states: [ 半角, 全角 ]
+    states: [ '半角', '全角' ]
   - name: simplification
-    states: [ 漢字, 汉字 ]
+    states: [ '漢字', '汉字' ]
   - name: ascii_punct
-    states: [ 。，, ．， ]
+    states: [ '。，', '．，' ]
 
 engine:
   processors:
@@ -34,7 +34,7 @@ engine:
     - selector
     - navigator
     - fluency_editor
-#    - express_editor
+    # - express_editor
   segmentors:
     - ascii_segmentor
     - matcher
@@ -43,7 +43,7 @@ engine:
     - fallback_segmentor
   translators:
     - punct_translator
-    - table_translator@custom_phrase
+    - "table_translator@custom_phrase"
     - reverse_lookup_translator
     - script_translator
   filters:
@@ -51,99 +51,99 @@ engine:
     - uniquifier
 
 menu:
-  alternative_select_keys: "1234567890"
+  alternative_select_keys: 1234567890
   page_size: 10
 
 speller:
-  alphabet: 'zyxwvutsrqponmlkjihgfedcba-;/<,>.\'
+  alphabet: "zyxwvutsrqponmlkjihgfedcba-;/<,>.\\"
   initials: zyxwvutsrqponmlkjihgfedcba
   delimiter: " '"
   algebra:
-    - xform/^r5$/er5/
-    - abbrev/^([a-z]).+$/$1/
-    - abbrev/^([zcs]h).+$/$1/
-    - derive/^([nl])ve/$1ue/
-    - derive/^([jqxy])u/$1v/
-    - derive/un$/uen/
-    - derive/ui/uei/
-    - derive/iu/iou/
-    - derive/ao/oa/
-    - derive/([aeiou])ng/$1gn/
-    - derive/([iu])a(o|ng?)/a$1$2/
-    - derive/^([a-z]+)[0-5]$/$1/
-    - derive/([dtngkhrzcs])o(u|ng)$/$1o/
-    - derive/ong$/on/
-    # - 'erase/^.*5$/'
-    - 'xlit 12345 -/<\.'
-    - 'derive/^(.*)-$/$1;/'
-    - 'derive/^(.*)<$/$1,/'
-    - 'derive/^(.*)\\$/$1>/'
+    - "xform/^r5$/er5/"
+    - "abbrev/^([a-z]).+$/$1/"
+    - "abbrev/^([zcs]h).+$/$1/"
+    - "derive/^([nl])ve/$1ue/"
+    - "derive/^([jqxy])u/$1v/"
+    - "derive/un$/uen/"
+    - "derive/ui/uei/"
+    - "derive/iu/iou/"
+    - "derive/ao/oa/"
+    - "derive/([aeiou])ng/$1gn/"
+    - "derive/([iu])a(o|ng?)/a$1$2/"
+    - "derive/^([a-z]+)[0-5]$/$1/"
+    - "derive/([dtngkhrzcs])o(u|ng)$/$1o/"
+    - "derive/ong$/on/"
+    # - "erase/^.*5$/"
+    - "xlit 12345 -/<\\."
+    - "derive/^(.*)-$/$1;/"
+    - "derive/^(.*)<$/$1,/"
+    - "derive/^(.*)\\\\$/$1>/"
 
 translator:
   dictionary: terra_pinyin
   enable_completion: false
   spelling_hints: 8  # ～字以內候選標註完整帶調拼音
   preedit_format:
-    - xform/([nl])v/$1ü/
-    - xform/([nl])ue/$1üe/
-    - xform/([jqxy])v/$1u/
-    - xform/eh/ê/
-    - 'xform ([aeiou])(ng?|r)([-;/<,>\\]) $1$3$2'
-    - 'xform ([aeo])([iuo])([-;/<,>\\]) $1$3$2'
-    - 'xform a[-;] ā'
-    - 'xform a/ á'
-    - 'xform a[<,] ǎ'
-    - 'xform a[>\\] à'
-    - 'xform e[-;] ē'
-    - 'xform e/ é'
-    - 'xform e[<,] ě'
-    - 'xform e[>\\] è'
-    - 'xform o[-;] ō'
-    - 'xform o/ ó'
-    - 'xform o[<,] ǒ'
-    - 'xform o[>\\] ò'
-    - 'xform i[-;] ī'
-    - 'xform i/ í'
-    - 'xform i[<,] ǐ'
-    - 'xform i[>\\] ì'
-    - 'xform u[-;] ū'
-    - 'xform u/ ú'
-    - 'xform u[<,] ǔ'
-    - 'xform u[>\\] ù'
-    - 'xform ü[-;] ǖ'
-    - 'xform ü/ ǘ'
-    - 'xform ü[<,] ǚ'
-    - 'xform ü[>\\] ǜ'
+    - "xform/([nl])v/$1ü/"
+    - "xform/([nl])ue/$1üe/"
+    - "xform/([jqxy])v/$1u/"
+    - "xform/eh/ê/"
+    - "xform ([aeiou])(ng?|r)([-;/<,>\\\\]) $1$3$2"
+    - "xform ([aeo])([iuo])([-;/<,>\\\\]) $1$3$2"
+    - "xform a[-;] ā"
+    - "xform a/ á"
+    - "xform a[<,] ǎ"
+    - "xform a[>\\\\] à"
+    - "xform e[-;] ē"
+    - "xform e/ é"
+    - "xform e[<,] ě"
+    - "xform e[>\\\\] è"
+    - "xform o[-;] ō"
+    - "xform o/ ó"
+    - "xform o[<,] ǒ"
+    - "xform o[>\\\\] ò"
+    - "xform i[-;] ī"
+    - "xform i/ í"
+    - "xform i[<,] ǐ"
+    - "xform i[>\\\\] ì"
+    - "xform u[-;] ū"
+    - "xform u/ ú"
+    - "xform u[<,] ǔ"
+    - "xform u[>\\\\] ù"
+    - "xform ü[-;] ǖ"
+    - "xform ü/ ǘ"
+    - "xform ü[<,] ǚ"
+    - "xform ü[>\\\\] ǜ"
   comment_format:
-    - xform ([aeiou])(ng?|r)([1234]) $1$3$2
-    - xform ([aeo])([iuo])([1234]) $1$3$2
-    - xform a1 ā
-    - xform a2 á
-    - xform a3 ǎ
-    - xform a4 à
-    - xform e1 ē
-    - xform e2 é
-    - xform e3 ě
-    - xform e4 è
-    - xform o1 ō
-    - xform o2 ó
-    - xform o3 ǒ
-    - xform o4 ò
-    - xform i1 ī
-    - xform i2 í
-    - xform i3 ǐ
-    - xform i4 ì
-    - xform u1 ū
-    - xform u2 ú
-    - xform u3 ǔ
-    - xform u4 ù
-    - xform v1 ǖ
-    - xform v2 ǘ
-    - xform v3 ǚ
-    - xform v4 ǜ
-    - xform/([nljqxy])v/$1ü/
-    - xform/eh[0-5]?/ê/
-    - xform/([a-z]+)[0-5]/$1/
+    - "xform ([aeiou])(ng?|r)([1234]) $1$3$2"
+    - "xform ([aeo])([iuo])([1234]) $1$3$2"
+    - "xform a1 ā"
+    - "xform a2 á"
+    - "xform a3 ǎ"
+    - "xform a4 à"
+    - "xform e1 ē"
+    - "xform e2 é"
+    - "xform e3 ě"
+    - "xform e4 è"
+    - "xform o1 ō"
+    - "xform o2 ó"
+    - "xform o3 ǒ"
+    - "xform o4 ò"
+    - "xform i1 ī"
+    - "xform i2 í"
+    - "xform i3 ǐ"
+    - "xform i4 ì"
+    - "xform u1 ū"
+    - "xform u2 ú"
+    - "xform u3 ǔ"
+    - "xform u4 ù"
+    - "xform v1 ǖ"
+    - "xform v2 ǘ"
+    - "xform v3 ǚ"
+    - "xform v4 ǜ"
+    - "xform/([nljqxy])v/$1ü/"
+    - "xform/eh[0-5]?/ê/"
+    - "xform/([a-z]+)[0-5]/$1/"
 
 custom_phrase:
   dictionary: ""
@@ -158,98 +158,98 @@ reverse_lookup:
   enable_completion: true
   prefix: "`"
   suffix: "'"
-  tips: 〔倉頡〕
+  tips: "〔倉頡〕"
   preedit_format:
-    - xlit/abcdefghijklmnopqrstuvwxyz/日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜重/
+    - "xlit/abcdefghijklmnopqrstuvwxyz/日月金木水火土竹戈十大中一弓人心手口尸廿山女田難卜重/"
   comment_format:
-    - xform ([aeiou])(ng?|r)([1234]) $1$3$2
-    - xform ([aeo])([iuo])([1234]) $1$3$2
-    - xform a1 ā
-    - xform a2 á
-    - xform a3 ǎ
-    - xform a4 à
-    - xform e1 ē
-    - xform e2 é
-    - xform e3 ě
-    - xform e4 è
-    - xform o1 ō
-    - xform o2 ó
-    - xform o3 ǒ
-    - xform o4 ò
-    - xform i1 ī
-    - xform i2 í
-    - xform i3 ǐ
-    - xform i4 ì
-    - xform u1 ū
-    - xform u2 ú
-    - xform u3 ǔ
-    - xform u4 ù
-    - xform v1 ǖ
-    - xform v2 ǘ
-    - xform v3 ǚ
-    - xform v4 ǜ
-    - xform/([nljqxy])v/$1ü/
-    - xform/eh[0-5]?/ê/
-    - xform/([a-z]+)[0-5]/$1/
+    - "xform ([aeiou])(ng?|r)([1234]) $1$3$2"
+    - "xform ([aeo])([iuo])([1234]) $1$3$2"
+    - "xform a1 ā"
+    - "xform a2 á"
+    - "xform a3 ǎ"
+    - "xform a4 à"
+    - "xform e1 ē"
+    - "xform e2 é"
+    - "xform e3 ě"
+    - "xform e4 è"
+    - "xform o1 ō"
+    - "xform o2 ó"
+    - "xform o3 ǒ"
+    - "xform o4 ò"
+    - "xform i1 ī"
+    - "xform i2 í"
+    - "xform i3 ǐ"
+    - "xform i4 ì"
+    - "xform u1 ū"
+    - "xform u2 ú"
+    - "xform u3 ǔ"
+    - "xform u4 ù"
+    - "xform v1 ǖ"
+    - "xform v2 ǘ"
+    - "xform v3 ǚ"
+    - "xform v4 ǜ"
+    - "xform/([nljqxy])v/$1ü/"
+    - "xform/eh[0-5]?/ê/"
+    - "xform/([a-z]+)[0-5]/$1/"
 
 punctuator:
   full_shape:
-    " " : { commit: "　" }
-    "<" : [ ，, 《, 〈, «, ‹, ︽, ︿, ＜, ≤ ]
-    ">" : [ 。, 》, 〉, », ›, ︾, ﹀, ＞, ≥ ]
-    "?" : [ ？, ／, ÷, ˊ, ↗, ↙ ]
-    ":" : [ ：, ； ]
-    "'" : { pair: [ "‘", "’" ] }
-    "\"" : { pair: [ "“", "”" ] }
-    "\\" : [ 、, ＼, "\\", ↖, ↘ ]
-    '|' : [ ・, ·, ．, ‧, •, ｜, "§", "¦", ↑, ↓ ]
-    "`" : ｀
-    "~" : ～
-    "!" : [ ！ ]
-    "@" : [ ＠, ☯ ]
-    "#" : [ ＃,  ⌘ ]
-    "$" : [ ＄, ￥ ]
-    "%" : [ ％, "°", "℃", "℉" ]
+    ' ' : { commit: '　' }
+    '<' : [ ，, 《, 〈, «, ‹, ︽, ︿, ＜, ≤ ]
+    '>' : [ 。, 》, 〉, », ›, ︾, ﹀, ＞, ≥ ]
+    '?' : [ ？, ／, ÷, ˊ, ↗, ↙ ]
+    ':' : [ ：, ； ]
+    '''' : { pair: [ '‘', '’' ] }
+    '"' : { pair: [ '“', '”' ] }
+    '\' : [ 、, ＼, "\\", ↖, ↘ ]
+    '|' : [ ・, ·, ．, ‧, •, ｜, §, ¦, ↑, ↓ ]
+    '`' : ｀
+    '~' : ～
+    '!' : [ ！ ]
+    '@' : [ ＠, ☯ ]
+    '#' : [ ＃, ⌘ ]
+    '$' : [ ＄, ￥ ]
+    '%' : [ ％, °, ℃, ℉ ]
     "^" : [ ……, ^, ︙, ⋮ ]
-    "&" : [ ＆ ]
-    "*" : [ ＊, ×, ※, ❂ ]
-    "(" : [ （, ︵ ]
-    ")" : [ ）, ︶ ]
+    '&' : [ ＆ ]
+    '*' : [ ＊, ×, ※, ❂ ]
+    '(' : [ （, ︵ ]
+    ')' : [ ）, ︶ ]
     "_" : [ －, ——, ⸺, ──, –, ＿, ←, →, ﹏ ]
-    "+" : [ ＋ ]
-    "=" : [ ＝, ≒, ≡, ≠, 々, 〃 ]
-    "[" : [ 「, 【, 〔, ［, ﹁, ︻, ︹, ﹇, 〚, 〘 ]
-    "]" : [ 」, 】, 〕, ］, ﹂, ︼, ︺, ﹈, 〛,〙 ]
-    "{" : [ 『, 〖, ｛, ﹃, ︗, ︷ ]
-    "}" : [ 』, 〗, ｝, ﹄, ︘, ︸ ]
+    '+' : [ ＋ ]
+    '=' : [ ＝, ≒, ≡, ≠, 々, 〃 ]
+    '[' : [ 「, 【, 〔, ［, ﹁, ︻, ︹, ﹇, 〚, 〘 ]
+    ']' : [ 」, 】, 〕, ］, ﹂, ︼, ︺, ﹈, 〛, 〙 ]
+    '{' : [ 『, 〖, ｛, ﹃, ︗, ︷ ]
+    '}' : [ 』, 〗, ｝, ﹄, ︘, ︸ ]
   half_shape:
-    "<" : [ ，, 《, 〈, «, ‹, ︽, ︿, ＜, ≤, ˂, ˱  ]
-    ">" : [ 。, 》, 〉, », ›, ︾, ﹀, ＞, ≥, ˃, ˲  ]
-    "?" : [ ？, "?", ／, "/", ÷, ˊ, ↗, ↙ ]
-    ":" : [ ：, ；, ":", ";" ]
-    "'" : { pair: [ "‘", "’" ] }
-    "\"" : { pair: [ "“", "”" ] }
-    "\\" : [ 、, ＼, "\\", ↖, ↘ ]
-    '|' : [ ・, ·, ．, ‧, •, ｜, "§", "¦", ↑, ↓ ]
-    "`" : [ '`', ‵, ‶, ‷, ′, ″, ‴, ⁗ ]
-    "~" : [ "~", ～, ˜, ˷, ⸯ, ≈, ≋, ≃, ≅, ≇, ∽, ⋍, ≌, ﹏, ﹋, ﹌ ]
-    "!" : [ ！, "!" ]
-    "@" : [ "@", ©, ®, ℗ ]
-    "#" : [ "#", № ]
-    "%" : [ "%", ％, "°", ℃, ℉,  ‰, ‱,℅, ℆, ℀, ℁, ⅍ ]
-    "$" : [ "$", "¥", ＄, ￥, "€", "£", "¢", "¤", ₩ ]
+    '<' : [ ，, 《, 〈, «, ‹, ︽, ︿, ＜, ≤, ˂, ˱ ]
+    '>' : [ 。, 》, 〉, », ›, ︾, ﹀, ＞, ≥, ˃, ˲ ]
+    '?' : [ ？, '?', ／, '/', ÷, ˊ, ↗, ↙ ]
+    ':' : [ ：, ；, :, ; ]
+    '''' : { pair: [ '‘', '’' ] }
+    '"' : { pair: [ '“', '”' ] }
+    '\' : [ 、, ＼, "\\", ↖, ↘ ]
+    '|' : [ ・, ·, ．, ‧, •, ｜, §, ¦, ↑, ↓ ]
+    '`' : [ '`', ‵, ‶, ‷, ′, ″, ‴, ⁗ ]
+    '~' : [ '~', ～, ˜, ˷, ⸯ, ≈, ≋, ≃, ≅, ≇, ∽, ⋍, ≌, ﹏, ﹋, ﹌ ]
+    '!' : [ ！, ! ]
+    '@' : [ '@', ©, ®, ℗ ]
+    '#' : [ '#', № ]
+    '$' : [ '$', ¥, ＄, ￥, €, £, ¢, ¤, ₩ ]
+    '%' : [ '%', ％, °, ℃, ℉, ‰, ‱, ℅, ℆, ℀, ℁, ⅍ ]
     "^" : [ ……, ^, ︙, ⋮ ]
-    "&" : [ "&", ＆ ]
-    "*" : [ '*', ＊, ×, ※, ❂, ⁂, ☮, ☯, ☣ ]
-    "(" : [ （, "(", ︵ ]
-    ")" : [ ）, ")", ︶ ]
+    '&' : [ '&', ＆ ]
+    '*' : [ '*', ＊, ×, ※, ❂, ⁂, ☮, ☯, ☣ ]
+    '(' : [ （, (, ︵ ]
+    ')' : [ ）, ), ︶ ]
     "_" : [ －, ——, ⸺, ──, –, "ˉ", ←, →, ＿, ﹏ ]
-    "+" : [ "+", ＋, ± ]
-    "=" : [ "=", ＝, ≒, ≡, ≠, 々, 〃 ]
-    "[" : [ 「, 【, 〔, ［, ﹁, ︻, ︹, ﹇ ]
-    "]" : [ 」, 】, 〕, ］, ﹂, ︼, ︺, ﹈ ]
-    "{" : [ 『, 〖, ｛, ﹃, ︗, ︷ ]
-    "}" : [ 』, 〗, ｝, ﹄, ︘, ︸ ]
+    '+' : [ '+', ＋, ± ]
+    '=' : [ '=', ＝, ≒, ≡, ≠, 々, 〃 ]
+    '[' : [ 「, 【, 〔, ［, ﹁, ︻, ︹, ﹇ ]
+    ']' : [ 」, 】, 〕,  ］, ﹂, ︼, ︺, ﹈ ]
+    '{' : [ 『, 〖, ｛, ﹃, ︗, ︷ ]
+    '}' : [ 』, 〗, ｝, ﹄, ︘, ︸ ]
   symbols:
     # 符號、電腦
     '/fh': [ ©, ®, ℗, ℠, ™, ℡, ℻, ☇, ☈, ☉, ☊, ☋, ☌, ☍, ☎, ☏, ☐, ☑, ☒, ☓, ☕, ☖, ☗, ⛉, ⛊, ☘, ☙, ☚, ☛, ☜, ☝, ☞, ☟, ☠, ☡, ☢, ☣, ☤, ☥, ☦, ☧, ☨, ☩, ☪, ☫, ☬, ☭, ☮, ☯, ☸, ♨, †, ♰, ♱, ‡, ♲, ♳, ♴, ♵, ♶, ♷, ♸, ♹, ♺, ♻, ♼, ♽, ♾, ♿, ⚆, ⚇, ⚈, ⚉, ⚐, ⚑, ⚒, ⚓, ⚔, ⚕, ⚖, ⚗, ⚘, ⚙, ⚚, ⚛, ⚜, ⚝, ⚞, ⚟, ⚠, ⚡, ⚰, ⚱, ⚲, ⚳, ⚴, ⚵, ⚶, ⚷, ⚸, ⚹, ⚺, ⚻, ⚼, ⚽, ⚾, ⚿, ⛀, ⛁, ⛂, ⛃, ⛋, ⛌, ⛍, ⛎, ⛏, ⛐, ⛑, ⛒, ⛓, ⛔, ⛕, ⛖, ⛗, ⛘, ⛙, ⛚, ⛛, ⛜, ⛝, ⛞, ⛟, ⛠, ⛡, ⛢, ⛣, ⛨, ⛩, ⛪, ⛫, ⛬, ⛭, ⛮, ⛯, ⛰, ⛱, ⛲, ⛳, ⛴, ⛵, ⛶, ⛷, ⛸, ⛹, ⛺, ⛻, ⛼, ⛽, ⛾, ⛿ ]
@@ -267,13 +267,13 @@ punctuator:
     '/yy': [ 𝄞, ♩, ♪, ♫, ♬, ♭, ♮, ♯ ]
     # 兩性
     '/lx': [ ♂, ♀, ⚢, ⚣, ⚤, ⚥, ⚦, ⚧, ⚨, ⚩, ⚪, ⚫, ⚬, ⚭, ⚮, ⚯ ]
-    # 八卦、八卦名、六十四卦、六十四卦名、太玄經
+    # 太極、八卦、八卦名、六十四卦、六十四卦名、太玄經
+    '/tj': [ ☯ ]
     '/bg': [ ☰, ☱, ☲, ☳, ☴, ☵, ☶, ☷ ]
     '/bgm': [ 乾, 兌, 離, 震, 巽, 坎, 艮, 坤 ]
     '/lssg': [ ䷀, ䷁, ䷂, ䷃, ䷄, ䷅, ䷆, ䷇, ䷈, ䷉, ䷊, ䷋, ䷌, ䷍, ䷎, ䷏, ䷐, ䷑, ䷒, ䷓, ䷔, ䷕, ䷖, ䷗, ䷘, ䷙, ䷚, ䷛, ䷜, ䷝, ䷞, ䷟, ䷠, ䷡, ䷢, ䷣, ䷤, ䷥, ䷦, ䷧, ䷨, ䷩, ䷪, ䷫, ䷬, ䷭, ䷮, ䷯, ䷰, ䷱, ䷲, ䷳, ䷴, ䷵, ䷶, ䷷, ䷸, ䷹, ䷺, ䷻, ䷼, ䷽, ䷾, ䷿ ]
     '/lssgm': [ 乾, 坤, 屯, 蒙, 需, 訟, 師, 比, 小畜, 履, 泰, 否, 同人, 大有, 謙, 豫, 隨, 蠱, 臨, 觀, 噬嗑, 賁, 剝, 復, 无妄, 大畜, 頤, 大過, 坎, 離, 咸, 恆, 遯, 大壯, 晉, 明夷, 家人, 睽, 蹇, 解, 損, 益, 夬, 姤, 萃, 升, 困, 井, 革, 鼎, 震, 艮, 漸, 歸妹, 豐, 旅, 巽, 兌, 渙, 節, 中孚, 小過, 既濟, 未濟 ]
     '/txj': [ ⚊, ⚋, ⚌, ⚍, ⚎, ⚏, 𝌀, 𝌁, 𝌂, 𝌃, 𝌄, 𝌅, 𝌆, 𝌇, 𝌈, 𝌉, 𝌊, 𝌋, 𝌌, 𝌍, 𝌎, 𝌏, 𝌐, 𝌑, 𝌒, 𝌓, 𝌔, 𝌕, 𝌖, 𝌗, 𝌘, 𝌙, 𝌚, 𝌛, 𝌜, 𝌝, 𝌞, 𝌟, 𝌠, 𝌡, 𝌢, 𝌣, 𝌤, 𝌥, 𝌦, 𝌧, 𝌨, 𝌩, 𝌪, 𝌫, 𝌬, 𝌭, 𝌮, 𝌯, 𝌰, 𝌱, 𝌲, 𝌳, 𝌴, 𝌵, 𝌶, 𝌷, 𝌸, 𝌹, 𝌺, 𝌻, 𝌼, 𝌽, 𝌾, 𝌿, 𝍀, 𝍁, 𝍂, 𝍃, 𝍄, 𝍅, 𝍆, 𝍇, 𝍈, 𝍉, 𝍊, 𝍋, 𝍌, 𝍍, 𝍎, 𝍏, 𝍐, 𝍑, 𝍒, 𝍓, 𝍔, 𝍕, 𝍖 ]
-    '/tj': [ ☯ ]
     # 天體、星座、星座名、十二宮
     '/tt': [ ☄, ☼, ☽, ☾, ☿, ♀, ♁, ♂, ♃, ♄, ♅, ♆, ♇ ]
     '/xz': [ ♈, ♉, ♊, ♋, ♌, ♍, ♎, ♏, ♐, ♑, ♒, ♓ ]
@@ -422,8 +422,9 @@ punctuator:
     '/kg': [ 　, " " ]
     # 常用單字
     '/di': [ 第 ]
-    # 其他
+    # 自訂常用詞組
     '/711': [ 7-ELEVEn ]
+    '/cxk': [ C型扣 ]
     '/hgds': [ Häagen-Dazs ]
     '/ranma': [ 亂馬½ ]
     '/seven': [ 7-ELEVEn ]
@@ -439,6 +440,34 @@ ascii_composer:
 key_binder:
   import_preset: default
   bindings:
+    - { when: composing, accept: "Control+p", send: Up }
+    - { when: composing, accept: "Control+n", send: Down }
+    - { when: composing, accept: "Control+b", send: Left }
+    - { when: composing, accept: "Control+f", send: Right }
+    - { when: composing, accept: "Control+a", send: Home }
+    - { when: composing, accept: "Control+e", send: End }
+    - { when: composing, accept: "Control+d", send: Delete }
+    - { when: composing, accept: "Control+k", send: "Shift+Delete" }
+    - { when: composing, accept: "Control+h", send: BackSpace }
+    - { when: composing, accept: "Control+g", send: Escape }
+    - { when: composing, accept: "Control+bracketleft", send: Escape }
+    - { when: composing, accept: "Control+y", send: Page_Up }
+    - { when: composing, accept: "Alt+v", send: Page_Up }
+    - { when: composing, accept: "Control+v", send: Page_Down }
+    - { when: has_menu, accept: minus, send: Page_Up }
+    - { when: has_menu, accept: equal, send: Page_Down }
+    - { when: paging, accept: comma, send: Page_Up }
+    - { when: has_menu, accept: period, send: Page_Down }
+    - { when: always, accept: "Control+Shift+1", select: .next }
+    - { when: always, accept: "Control+Shift+2", toggle: ascii_mode }
+    - { when: always, accept: "Control+Shift+3", toggle: full_shape }
+    - { when: always, accept: "Control+Shift+4", toggle: simplification }
+    - { when: always, accept: "Control+Shift+5", toggle: extended_charset }
+    - { when: always, accept: "Control+Shift+exclam", select: .next }
+    - { when: always, accept: "Control+Shift+at", toggle: ascii_mode }
+    - { when: always, accept: "Control+Shift+numbersign", toggle: full_shape }
+    - { when: always, accept: "Control+Shift+dollar", toggle: simplification }
+    - { when: always, accept: "Control+Shift+percent", toggle: extended_charset }
     - { when: has_menu, accept: minus, send: minus }    # tone 1
     - { when: has_menu, accept: period, send: period }  # tone 5
     - { when: paging, accept: minus, send: Page_Up }
@@ -448,9 +477,18 @@ recognizer:
   import_preset: default
   patterns:
     reverse_lookup: "`[a-z]*'?$"
+    email: "^[A-Za-z][-_.0-9A-Za-z]*@.*$"
+    uppercase: "[A-Z][-_+.'0-9A-Za-z]*$"
+    url: "^(www[.]|https?:|ftp[.:]|mailto:|file:).*$|^[a-z]+[.].+$"
+
+selector:
+  bindings:
+    ISO_Left_Tab: previous_candidate
+    "Shift+Tab": previous_candidate
+    Tab: next_candidate
 
 __patch:
   # 使用八股文語言模型
   # - grammar:/hant?
   # 用家自選配置
-  - terra_pinyin.custom:/patch?
+  # - terra_pinyin.custom:/patch?
