@@ -2,6 +2,10 @@
 
 自訂 Rime 設定、詞庫及相關檔案等。
 
+## 操作手冊
+* 自建鼠鬚管的完整操作說明見 [`MANUAL-SQUIRREL.md`](MANUAL-SQUIRREL.md)（未來實作到小狼毫時另立 `MANUAL-WEASEL.md`）
+* 確認本機已有 tarmdas 與 md2html 時，可用它們產生 HTML 易讀版文件：`md2html MANUAL-SQUIRREL.md`（只用 `tarmdas MANUAL-SQUIRREL.md` 也可以，但預設樣式不同）
+
 ## VSCode 專案路徑
 * `~/Documents/Workspaces/Rime/`
 * Workspace 路徑：`~/Documents/Workspaces/VSCode/Rime/Rime-Custom.code-workspace`
@@ -23,4 +27,4 @@
 * 小狼毫 0.16.1.0 起：
   - 用戶資料夾下的 `terra_pinyin.schema.yaml` 每次重新部署後都會被刪除（原因未查明），須直接修改應用程式資料夾下的 `terra_pinyin.schema.yaml` 檔案
   - OpenCC `segmentation` 現在只吃 ocd2
-  - 日文漢字轉換只吃單檔（原因未查明），直接用 JPVariants.txt 就好，`JPCharacters.txt` 和 `JPPhrases.txt` 留存
+  - 日文漢字轉換只吃單檔（原因未查明），直接用 JPVariants.txt 就好
