@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>自建鼠鬚管操作手冊</title>
+  <style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0 auto;
+  max-width: var(--page-max-width, 1600px);
+  padding: 2.5rem 1.25rem 6rem;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", Helvetica, Arial, sans-serif;
+  font-size: var(--base-font-size, 14px);
+  line-height: 1.7;
+  color: var(--fg);
+  background: var(--bg);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  line-height: 1.3;
+  margin: 1.8em 0 0.6em;
+  font-weight: 600;
+  position: relative;
+}
+h1 .header-anchor, h2 .header-anchor, h3 .header-anchor, h4 .header-anchor, h5 .header-anchor, h6 .header-anchor {
+  position: absolute;
+  left: -0.85em;
+  padding-right: 0.25em;
+  color: var(--quote-fg);
+  font-weight: 400;
+  text-decoration: none;
+  opacity: 0;
+}
+h1:hover .header-anchor,
+h1 .header-anchor:focus, h2:hover .header-anchor,
+h2 .header-anchor:focus, h3:hover .header-anchor,
+h3 .header-anchor:focus, h4:hover .header-anchor,
+h4 .header-anchor:focus, h5:hover .header-anchor,
+h5 .header-anchor:focus, h6:hover .header-anchor,
+h6 .header-anchor:focus {
+  opacity: 1;
+}
+
+h1 {
+  font-size: 2em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--border);
+}
+
+h2 {
+  font-size: 1.5em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--border);
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 2em 0;
+}
+
+blockquote {
+  margin: 1em 0;
+  padding: 0 1em;
+  color: var(--quote-fg);
+  border-left: 0.25em solid var(--quote-border);
+}
+
+.markdown-alert {
+  margin: 1em 0;
+  padding: 0.5em 1em;
+  border-left: 0.25em solid var(--alert-accent);
+  background: color-mix(in srgb, var(--alert-accent) 8%, transparent);
+}
+.markdown-alert > :first-child {
+  margin-top: 0;
+}
+.markdown-alert > :last-child {
+  margin-bottom: 0;
+}
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  font-weight: 600;
+  color: var(--alert-accent);
+}
+.markdown-alert .markdown-alert-title .octicon {
+  fill: currentColor;
+  flex-shrink: 0;
+}
+.markdown-alert.markdown-alert-note {
+  --alert-accent: light-dark(#0969da, #4493f8);
+}
+.markdown-alert.markdown-alert-tip {
+  --alert-accent: light-dark(#1a7f37, #3fb950);
+}
+.markdown-alert.markdown-alert-important {
+  --alert-accent: light-dark(#8250df, #ab7df8);
+}
+.markdown-alert.markdown-alert-warning {
+  --alert-accent: light-dark(#9a6700, #d29922);
+}
+.markdown-alert.markdown-alert-caution {
+  --alert-accent: light-dark(#cf222e, #f85149);
+}
+.markdown-alert.markdown-alert-date {
+  --alert-accent: light-dark(#6e7781, rgba(255, 255, 255, 0.6));
+}
+
+.task-list-item {
+  list-style-type: none;
+}
+
+.task-list-item-checkbox {
+  margin: 0 0.4em 0.25em -1.4em;
+  vertical-align: middle;
+}
+
+table {
+  border-collapse: collapse;
+  margin: 1em 0;
+  display: block;
+  overflow-x: auto;
+}
+table th,
+table td {
+  border: 1px solid var(--border);
+  padding: 6px 13px;
+}
+table tr:nth-child(2n) {
+  background: var(--table-stripe);
+}
+
+code {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.9em;
+}
+
+:not(pre) > code {
+  padding: 0.2em 0.4em;
+  background: var(--inline-code-bg);
+  border-radius: 6px;
+}
+
+pre {
+  padding: 1em;
+  overflow-x: auto;
+  border-radius: 8px;
+}
+pre code {
+  background: none;
+  padding: 0;
+}
+
+pre.mermaid {
+  background: none;
+  padding: 0;
+  text-align: center;
+}
+
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.5em 0;
+}
+
+.footnotes {
+  font-size: 0.875em;
+  color: var(--quote-fg);
+}
+
+.footnotes-sep {
+  margin-top: 2.5em;
+}
+
+.footnote-backref {
+  text-decoration: none;
+}
+
+mark {
+  padding: 0.05em 0.2em;
+  border-radius: 3px;
+  color: inherit;
+  background: light-dark(#fff3a3, #5e560f);
+}
+
+dt {
+  margin-top: 0.8em;
+  font-weight: 600;
+}
+
+dd {
+  margin: 0.2em 0 0 1.5em;
+}
+
+abbr[title] {
+  cursor: help;
+  text-decoration: underline dotted;
+}
+
+.custom-block {
+  margin: 1em 0;
+  padding: 0.5em 1em;
+  border-left: 0.25em solid var(--border);
+  border-radius: 0 6px 6px 0;
+}
+.custom-block > :first-child {
+  margin-top: 0;
+}
+.custom-block > :last-child {
+  margin-bottom: 0;
+}
+
+.table-of-contents {
+  margin: 1.5em 0;
+  padding: 0.5em 1.2em;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.95em;
+}
+.table-of-contents ul {
+  margin: 0.3em 0;
+  padding-left: 1.4em;
+}
+.table-of-contents li {
+  margin: 0.2em 0;
+}
+
+:root {
+  color-scheme: light;
+  --fg: #0a0a0a;
+  --bg: #ffffff;
+  --accent: #fc6309;
+  --border: #d5d9e2;
+  --quote-fg: #7d8187;
+  --quote-border: #e6e3de;
+  --table-stripe: rgba(10, 10, 10, 0.03);
+  --inline-code-bg: rgba(10, 10, 10, 0.06);
+  --code-bg: #f9f8f6;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --fg: #d5d9e2;
+    --bg: #0a0a0a;
+    --accent: #fc6309;
+    --border: #1f242b;
+    --quote-fg: #7d8187;
+    --quote-border: #1f242b;
+    --table-stripe: rgba(255, 255, 255, 0.04);
+    --inline-code-bg: rgba(255, 255, 255, 0.08);
+    --code-bg: #121212;
+  }
+}
+code {
+  font-family: "Geist Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+}
+
+pre.hljs {
+  background: var(--code-bg);
+}
+:root {
+  --page-max-width: 1280px;
+}
+pre code.hljs{display:block;overflow-x:auto;padding:1em}code.hljs{padding:3px 5px}/*!
+  Theme: Tokyo-night-light
+  origin: https://github.com/enkia/tokyo-night-vscode-theme
+  Description: Original highlight.js style
+  Author: (c) Henri Vandersleyen <hvandersleyen@gmail.com>
+  License: see project LICENSE
+  Touched: 2022
+*/.hljs-comment,.hljs-meta{color:#9699a3}.hljs-deletion,.hljs-doctag,.hljs-regexp,.hljs-selector-attr,.hljs-selector-class,.hljs-selector-id,.hljs-selector-pseudo,.hljs-tag,.hljs-template-tag,.hljs-variable.language_{color:#8c4351}.hljs-link,.hljs-literal,.hljs-number,.hljs-params,.hljs-template-variable,.hljs-type,.hljs-variable{color:#965027}.hljs-attribute,.hljs-built_in{color:#8f5e15}.hljs-keyword,.hljs-property,.hljs-subst,.hljs-title,.hljs-title.class_,.hljs-title.class_.inherited__,.hljs-title.function_{color:#0f4b6e}.hljs-selector-tag{color:#33635c}.hljs-addition,.hljs-bullet,.hljs-quote,.hljs-string,.hljs-symbol{color:#485e30}.hljs-code,.hljs-formula,.hljs-section{color:#34548a}.hljs-attr,.hljs-char.escape_,.hljs-keyword,.hljs-name,.hljs-operator{color:#5a4a78}.hljs-punctuation{color:#343b58}.hljs{background:#d5d6db;color:#565a6e}.hljs-emphasis{font-style:italic}.hljs-strong{font-weight:700}
+@media (prefers-color-scheme: dark) {
+pre code.hljs{display:block;overflow-x:auto;padding:1em}code.hljs{padding:3px 5px}/*!
+  Theme: Tokyo-night-Dark
+  origin: https://github.com/enkia/tokyo-night-vscode-theme
+  Description: Original highlight.js style
+  Author: (c) Henri Vandersleyen <hvandersleyen@gmail.com>
+  License: see project LICENSE
+  Touched: 2022
+*/.hljs-comment,.hljs-meta{color:#565f89}.hljs-deletion,.hljs-doctag,.hljs-regexp,.hljs-selector-attr,.hljs-selector-class,.hljs-selector-id,.hljs-selector-pseudo,.hljs-tag,.hljs-template-tag,.hljs-variable.language_{color:#f7768e}.hljs-link,.hljs-literal,.hljs-number,.hljs-params,.hljs-template-variable,.hljs-type,.hljs-variable{color:#ff9e64}.hljs-attribute,.hljs-built_in{color:#e0af68}.hljs-keyword,.hljs-property,.hljs-subst,.hljs-title,.hljs-title.class_,.hljs-title.class_.inherited__,.hljs-title.function_{color:#7dcfff}.hljs-selector-tag{color:#73daca}.hljs-addition,.hljs-bullet,.hljs-quote,.hljs-string,.hljs-symbol{color:#9ece6a}.hljs-code,.hljs-formula,.hljs-section{color:#7aa2f7}.hljs-attr,.hljs-char.escape_,.hljs-keyword,.hljs-name,.hljs-operator{color:#bb9af7}.hljs-punctuation{color:#c0caf5}.hljs{background:#1a1b26;color:#9aa5ce}.hljs-emphasis{font-style:italic}.hljs-strong{font-weight:700}
+}
+</style>
+</head>
+<body>
+<h1 id="自建鼠鬚管操作手冊"><a class="header-anchor" href="#自建鼠鬚管操作手冊" aria-label="Permalink to this heading">#</a>自建鼠鬚管操作手冊</h1>
+<div class="markdown-alert markdown-alert-date">
+<p class="markdown-alert-title"><svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Zm7-3.25v2.992l2.028.812a.75.75 0 0 1-.557 1.392l-2.5-1A.751.751 0 0 1 7 8.25v-3.5a.75.75 0 0 1 1.5 0Z"></path></svg>時間：2026-07-25T20:35:41+08:00</p>
+</div>
+<p>本手冊記載自建版鼠鬚管（Squirrel）與個人配套環境的全部非官方操作，<br>
+涵蓋自建版行為差異、dotfiles 指令組、同步工作流與疑難排解。<br>
+官方文件不會提到這裡的任何內容。</p>
+<h2 id="生態總覽"><a class="header-anchor" href="#生態總覽" aria-label="Permalink to this heading">#</a>生態總覽</h2>
+<table>
+<thead>
+<tr>
+<th>倉庫</th>
+<th>位置（A2780）</th>
+<th>角色</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Wujidadi/squirrel</td>
+<td>~/Documents/Workspaces/IME/rime/squirrel</td>
+<td>鼠鬚管 fork，master 為個人客製線</td>
+</tr>
+<tr>
+<td>Wujidadi/librime</td>
+<td>~/Documents/Workspaces/IME/rime/librime</td>
+<td>librime fork，squirrel 子模組指向此</td>
+</tr>
+<tr>
+<td>Rime-Custom</td>
+<td>~/Documents/Workspaces/Rime/Rime-Custom</td>
+<td>自訂檔單一事實來源＋本手冊</td>
+</tr>
+<tr>
+<td>dotfiles</td>
+<td>~/dotfiles</td>
+<td>指令組（zshrc/A2780/zsh/rime.zsh，A2338 為 symlink）</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>分支與語言規範見 squirrel 倉庫的 <code>FORK-POLICY.md</code>；master 永不合回上游，貢獻一律從 <code>upstream/master</code> 開英文分支。</li>
+<li>版號慣例：官方版號前綴 <code>w</code>（wujidadi）加第四段流水號，如 <code>w1.1.2.1</code>；定義於 <code>project.pbxproj</code> 的 <code>CURRENT_PROJECT_VERSION</code>（兩處）。</li>
+<li>已回報上游的修正：rime/squirrel#1160（add_data_files 錨點模板）、rime/squirrel#1161（appDir 路徑誤植）。</li>
+</ul>
+<h2 id="自建版與官方版的行為差異"><a class="header-anchor" href="#自建版與官方版的行為差異" aria-label="Permalink to this heading">#</a>自建版與官方版的行為差異</h2>
+<h3 id="librimewujidadilibrime"><a class="header-anchor" href="#librimewujidadilibrime" aria-label="Permalink to this heading">#</a>librime（Wujidadi/librime）</h3>
+<ul>
+<li><strong><code>rime_dict_manager -p|--purge &lt;詞庫名&gt;</code></strong>：硬刪除 userdb 中 c 為負值的墓碑詞條，並自動重建 sync 快照。官方無此功能，官方語義下墓碑永遠無法清除。</li>
+<li><strong>同步合併新語義</strong>（刪詞傳播）：
+<ul>
+<li>合併保留逐詞條事件 tick（官方會整批蓋成全庫最大值）；</li>
+<li>c 的正負號由事件較新的一方決定——較新的刪除會跨裝置傳播、較新的使用會復活；tick 平手時刪除勝；</li>
+<li>絕對值取兩者較大，保留使用量歷史供復活延續；</li>
+<li>dee（d 值）記帳為資訊保持變換，詞頻排序與官方無異。</li>
+<li>官方語義為「絕對值大者勝、平手本地勝」，刪除永不跨裝置傳播；與官方版機器混用時自動退化為近似官方行為。</li>
+</ul>
+</li>
+</ul>
+<h3 id="squirrelwujidadisquirrel"><a class="header-anchor" href="#squirrelwujidadisquirrel" aria-label="Permalink to this heading">#</a>squirrel（Wujidadi/squirrel）</h3>
+<ul>
+<li><code>--register-input-source</code> 改為無條件重新註冊（官方在已啟用時直接跳過），bundle 更換後可強制 TIS 重新整理來源紀錄。</li>
+<li>修正 <code>SquirrelApp.appDir</code> 路徑誤植（官方自 Swift 移轉起壞掉，顯式註冊靜默失效）。</li>
+<li><code>package/add_data_files</code> 錨點模板修正並依副檔名分派檔案型別（官方版會靜默漏打包新資料檔）。</li>
+<li>OpenCC 打包清單同步至新版 librime 的字典檔名。</li>
+<li>librime 子模組指向自家 fork。</li>
+</ul>
+<h2 id="詞庫語義備忘"><a class="header-anchor" href="#詞庫語義備忘" aria-label="Permalink to this heading">#</a>詞庫語義備忘</h2>
+<p>userdb 詞條形如 <code>a1 ba1 hai4 &lt;TAB&gt;阿巴亥&lt;TAB&gt;c=1 d=0.588605 t=1577323</code>：</p>
+<ul>
+<li><code>c</code>：選字次數；Shift+Backspace 軟刪除使其變負（-4）；再次選字復活並續增。</li>
+<li><code>d</code>：按 tick 衰減的近期使用權重，合併時取大——<strong>想調小 d 只能改快照後重建</strong>（purge 或 <code>-rm</code> 路徑），這是新語義刻意不動的範圍。</li>
+<li><code>t</code>：該 userdb 的交易流水號（非時間戳）；跨裝置經同步合流後可比，是刪詞傳播的排序依據。</li>
+</ul>
+<p>刪詞生命週期：刪詞 → 墓碑在本機 → 同步 → 墓碑在兩機（詞在兩邊消失）→ 再選字即復活，或 purge 徹底移除。<br>
+<strong>墓碑常駐無害</strong>（不影響候選與排序），purge 屬大掃除性質。</p>
+<h2 id="指令一覽dotfiles-rimezsh"><a class="header-anchor" href="#指令一覽dotfiles-rimezsh" aria-label="Permalink to this heading">#</a>指令一覽（dotfiles rime.zsh）</h2>
+<h3 id="環境變數"><a class="header-anchor" href="#環境變數" aria-label="Permalink to this heading">#</a>環境變數</h3>
+<table>
+<thead>
+<tr>
+<th>變數</th>
+<th>預設值</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SQUIRREL_APP</td>
+<td>/Library/Input Methods/Squirrel.app</td>
+<td>app 路徑</td>
+</tr>
+<tr>
+<td>SQUIRREL</td>
+<td>$SQUIRREL_APP/Contents/MacOS/Squirrel</td>
+<td>主程式</td>
+</tr>
+<tr>
+<td>RIMED</td>
+<td>~/Library/Rime</td>
+<td>使用者資料目錄</td>
+</tr>
+<tr>
+<td>SQUIRREL_REPO</td>
+<td>~/Documents/Workspaces/IME/rime/squirrel</td>
+<td>建置倉庫</td>
+</tr>
+<tr>
+<td>SQUIRREL_OVERLAY</td>
+<td>Rime-Custom/Contents/SharedSupport</td>
+<td>自訂檔 overlay 來源</td>
+</tr>
+<tr>
+<td>RIME_DICT_MANAGER</td>
+<td>app 內建 rime_dict_manager</td>
+<td>purge 工具路徑</td>
+</tr>
+<tr>
+<td>RIME_PURGE_LEGACY</td>
+<td>（未設）</td>
+<td>設 1 強制 purge 走傳統重建機制</td>
+</tr>
+</tbody>
+</table>
+<p>（<code>$CLOUD</code>、<code>$DRIVE</code>、<code>$D</code> 分別定義於 icloud.zsh、drive.zsh、favorite.zsh。）</p>
+<h3 id="建置與安裝編譯機-a2780"><a class="header-anchor" href="#建置與安裝編譯機-a2780" aria-label="Permalink to this heading">#</a>建置與安裝（編譯機 A2780）</h3>
+<ul>
+<li><code>squirrel-dev-install</code>：一鍵重編譯＋就地安裝——建置 → <code>--quit</code> → rsync 就地更新（保住 bundle inode）→ overlay 還原自訂檔 → 重新註冊 → <code>--build</code> 部署 → 拉起 → nudge。免登出、免動系統設定。</li>
+<li><code>squirrel-drift-check</code>：偵測 SharedSupport 中「內容既不同於建置產出、也不同於 overlay」的未納管現場修改，自動備份到帶時戳 drift 目錄並警告；dev-install 每次自動執行，也可單獨跑。上游資料檔改版可能誤報，人工判讀。</li>
+<li><code>squirrel-pack [目的資料夾]</code>：把建置產出打成 <code>Squirrel-&lt;版號&gt;.tar.gz</code>＋sha256 放上雲端（預設 <code>$CLOUD/Rime</code>）。必須走 tar：<code>.app</code> 裸奔上雲端同步會毀掉符號連結與執行權限。</li>
+</ul>
+<h3 id="安裝無建置環境機-a2338"><a class="header-anchor" href="#安裝無建置環境機-a2338" aria-label="Permalink to this heading">#</a>安裝（無建置環境機 A2338）</h3>
+<ul>
+<li><code>squirrel-cloud-install [來源資料夾]</code>：取最新雲端 tar 包 → sha256 校驗 → 解包 → 去除隔離屬性 → 就地 rsync → overlay 還原 → 部署拉起。</li>
+<li>首次安裝前置：<code>sudo chown -R $USER &quot;/Library/Input Methods&quot;</code>；首次取代官方版若選單失靈，見疑難排解。</li>
+</ul>
+<h3 id="同步與詞庫維護"><a class="header-anchor" href="#同步與詞庫維護" aria-label="Permalink to this heading">#</a>同步與詞庫維護</h3>
+<ul>
+<li><code>rime-sync</code>：（如 <code>$D</code> 有 userdb.txt 先收進 sync 目錄）確保實例存在後發同步通知。</li>
+<li><code>rime-deploy</code>：（如 <code>$D</code> 有字典檔先收進 RIMED）有實例走 <code>--reload</code>，無實例改於 SharedSupport 執行 <code>--build</code> 再拉起。</li>
+<li><code>rime-purge-deleted [詞庫名]</code>：硬刪墓碑。偵測到自建版 <code>--purge</code> 即走官方管道（原地清除＋自動重建快照）；否則退回傳統機制（濾快照＋刪 LevelDB 重建）。預設 terra_pinyin。</li>
+<li><code>rime-sync-rm</code>：核選項——刪整個 userdb 令其自快照重建。用於權威重置；重置前記得先把本機新詞 sync 出去。</li>
+<li><code>rime-cloud</code> / <code>rime-cloud-ground</code> / <code>rime-cloud-ground-rm</code>：iCloud 上傳快照／下載合併／下載重建。</li>
+<li><code>rime-google-*</code>：Google Drive 對應版本。</li>
+<li><code>rime-sync-see-message</code> 等：裝置間同步留言。</li>
+<li>內部輔助：<code>rime-ensure-running</code>（拉起實例）、<code>rime-wait-quit</code>（等待結束）、<code>rime-nudge-input-sources</code>（觸發 TIS 重新整理）。</li>
+</ul>
+<h2 id="標準工作流"><a class="header-anchor" href="#標準工作流" aria-label="Permalink to this heading">#</a>標準工作流</h2>
+<h3 id="日常雙向同步兩台皆自建版"><a class="header-anchor" href="#日常雙向同步兩台皆自建版" aria-label="Permalink to this heading">#</a>日常雙向同步（兩台皆自建版）</h3>
+<pre class="hljs"><code>早：A2780 rime-cloud → A2338 rime-cloud-ground
+晚：A2338 rime-cloud → A2780 rime-cloud-ground
+</code></pre>
+<p>刪詞（Shift+Backspace）經一輪雙向同步自動傳播，無需其他操作。<br>
+注意 <code>rime-cloud</code> 上傳的是快照檔：傍晚上傳前先 <code>rime-sync</code> 才含當日新詞。</p>
+<h3 id="墓碑大掃除六步時間線已驗證"><a class="header-anchor" href="#墓碑大掃除六步時間線已驗證" aria-label="Permalink to this heading">#</a>墓碑大掃除（六步時間線，已驗證）</h3>
+<ol>
+<li>早：A2780 <code>rime-cloud</code> → A2338 <code>rime-cloud-ground</code></li>
+<li>晚：A2338 <code>rime-cloud</code> → A2780 <code>rime-cloud-ground</code>（至此墓碑跑完一圈）</li>
+<li>夜：A2780 <code>rime-purge-deleted</code>（purge 自帶 Backup，順便匯出當日新詞）</li>
+<li>翌早：A2780 <code>rime-cloud</code></li>
+<li>翌早：A2338 先 <code>rime-purge-deleted</code> 再 <code>rime-cloud-ground</code></li>
+<li>兩機詞庫同步且墓碑全消</li>
+</ol>
+<p>不變式：<strong>墓碑跑完一圈之後，從上傳端開始 purge；接收端在收到乾淨快照的前後 purge 皆可</strong>。<br>
+刪詞後未滿一輪同步就 purge，會令對方的活詞條回流復活。</p>
+<h3 id="更新自建版"><a class="header-anchor" href="#更新自建版" aria-label="Permalink to this heading">#</a>更新自建版</h3>
+<ul>
+<li>A2780：<code>squirrel-dev-install</code>；要發布給其他機器再 <code>squirrel-pack</code>。</li>
+<li>A2338：等 iCloud 同步完成後 <code>squirrel-cloud-install</code>。</li>
+</ul>
+<h2 id="疑難排解"><a class="header-anchor" href="#疑難排解" aria-label="Permalink to this heading">#</a>疑難排解</h2>
+<ul>
+<li><strong>狀態列圖標／選單失靈</strong>（bundle 整包替換後）：於系統設定 → 鍵盤加減任一輸入法即救活（觸發 TIS 重新枚舉）。<strong>切勿 <code>killall TextInputMenuAgent</code></strong>——實測會造成圖標空白、選單失聯的半殘狀態。就地 rsync 更新（dev-install／cloud-install 內建）可從根本避免。</li>
+<li><strong>「中／Ａ」獨立狀態列圖標</strong>點擊無反應屬正常：純顯示元件，無點擊動作。</li>
+<li><strong>macOS 26 陷阱</strong>：終端行程呼叫 <code>TISDisableInputSource</code> 回報成功但靜默失效（enable 有效、disable 無效）；<code>defaults read com.apple.HIToolbox AppleEnabledInputSources</code> 是過時鏡像，判斷輸入法即時狀態要用 TIS API。</li>
+<li><strong>殘留的簡體模式（Squirrel.Hans）</strong>：終端清不掉，要移除只能走系統設定 UI；不出現在狀態列選單、不可選，放著無實害。</li>
+<li><strong>librime 全套測試</strong>：必須在 <code>librime/build/test/</code> 目錄下執行 <code>rime_test</code>，否則字典類測試因測試資料路徑誤報失敗。</li>
+<li><strong>搬移倉庫後建置失敗</strong>（CMake 快取記舊路徑）：<code>rm -rf librime/build</code> 再重建。</li>
+<li><strong>新 Xcode 首次建置 Sparkle 報 plug-in 錯誤</strong>：跑 <code>xcodebuild -runFirstLaunch</code>。</li>
+</ul>
+<h2 id="自訂檔案體系"><a class="header-anchor" href="#自訂檔案體系" aria-label="Permalink to this heading">#</a>自訂檔案體系</h2>
+<ul>
+<li>單一事實來源：本倉庫 <code>Contents/SharedSupport/</code>（8 個 yaml＋opencc 自訂檔），dev-install／cloud-install 自動 overlay 進 app。</li>
+<li><code>essay.txt</code> 僅留底參考，部署時排除、一律沿用官方版。</li>
+<li>opencc 自訂 txt 只有 <code>JPVariants.txt</code> 有效（JPCharacters.txt／JPPhrases.txt 已於 2023-02-02 失效並移除）。</li>
+<li><code>t2jp.json</code> 分詞字典用 <code>JPShinjitaiCharacters.ocd2</code>（新版 OpenCC 檔名，原 JPVariants.ocd2 已更名）。</li>
+<li>直接在 app 內改自訂檔不會遺失（drift 偵測會備份並警告），但正規流程是改本倉庫後重跑 dev-install（或手動同步進 app）。</li>
+</ul>
+
+
+</body>
+</html>
