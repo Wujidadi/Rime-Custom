@@ -305,7 +305,7 @@ pre code.hljs{display:block;overflow-x:auto;padding:1em}code.hljs{padding:3px 5p
 <body>
 <h1 id="自建鼠鬚管操作手冊"><a class="header-anchor" href="#自建鼠鬚管操作手冊" aria-label="Permalink to this heading">#</a>自建鼠鬚管操作手冊</h1>
 <div class="markdown-alert markdown-alert-date">
-<p class="markdown-alert-title"><svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Zm7-3.25v2.992l2.028.812a.75.75 0 0 1-.557 1.392l-2.5-1A.751.751 0 0 1 7 8.25v-3.5a.75.75 0 0 1 1.5 0Z"></path></svg>時間：2026-07-25T23:33:20+08:00</p>
+<p class="markdown-alert-title"><svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Zm7-3.25v2.992l2.028.812a.75.75 0 0 1-.557 1.392l-2.5-1A.751.751 0 0 1 7 8.25v-3.5a.75.75 0 0 1 1.5 0Z"></path></svg>時間：2026-07-26T11:47:29+08:00</p>
 </div>
 <p>本手冊記載自建版鼠鬚管（Squirrel）與個人配套環境的全部非官方操作，<br>
 涵蓋自建版行為差異、dotfiles 指令組、同步工作流與疑難排解。<br>
@@ -378,6 +378,46 @@ pre code.hljs{display:block;overflow-x:auto;padding:1em}code.hljs{padding:3px 5p
 </ul>
 <p>刪詞生命週期：刪詞 → 墓碑在本機 → 同步 → 墓碑在兩機（詞在兩邊消失）→ 再選字即復活，或 purge 徹底移除。<br>
 <strong>墓碑常駐無害</strong>（不影響候選與排序），purge 屬大掃除性質。</p>
+<h2 id="方案功能備忘"><a class="header-anchor" href="#方案功能備忘" aria-label="Permalink to this heading">#</a>方案功能備忘</h2>
+<h3 id="日期時間快速輸入2026-07-26-起"><a class="header-anchor" href="#日期時間快速輸入2026-07-26-起" aria-label="Permalink to this heading">#</a>日期時間快速輸入（2026-07-26 起）</h3>
+<p>由 <code>~/Library/Rime/lua/</code> 下兩個模組提供（librime-lua），<br>
+三個方案（terra_pinyin、bopomofo、cangjie5）均掛載：<br>
+<code>engine/translators</code> 掛 <code>lua_translator@*date_translator</code>（產生候選）、<br>
+<code>engine/processors</code> 於 key_binder 後掛 <code>lua_processor@*date_commit</code>（讓 Enter 也能上屏高亮候選，僅攔截本功能觸發碼）。<br>
+觸發碼一律以 <code>/</code> 開頭，依賴各方案 <code>recognizer/patterns/punct</code>（bopomofo、cangjie5 原本就有；<br>
+terra_pinyin 原缺此模式，致 <code>/</code> 觸發碼與 <code>/fh</code> 等符號選單均失效，2026-07-26 補上；注音的 ㄥ 因不居音節首而不衝突）：</p>
+<table>
+<thead>
+<tr>
+<th>觸發碼</th>
+<th>候選內容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/date</code></td>
+<td>2026-07-26、2026年7月26日、7月26日、20260726</td>
+</tr>
+<tr>
+<td><code>/time</code></td>
+<td>11:09、11:09:52</td>
+</tr>
+<tr>
+<td><code>/week</code></td>
+<td>星期日、週日、禮拜日（週日再加星期天、禮拜天）</td>
+</tr>
+<tr>
+<td><code>/dt</code></td>
+<td>2026-07-26 11:09:52、ISO 8601（含 +08:00 時區）</td>
+</tr>
+<tr>
+<td><code>/ts</code></td>
+<td>Unix 時間戳（秒）</td>
+</tr>
+</tbody>
+</table>
+<p>Lua 模組與方案檔以 <code>~/Library/Rime</code> 為現場、<code>Rime-macOS/</code> 為鏡像；<br>
+修改後重啟 Squirrel（或部署）生效；跨機器佈建與回收用 <code>rime-user-deploy</code>／<code>rime-user-collect</code>。</p>
 <h2 id="指令一覽dotfiles-rimezsh"><a class="header-anchor" href="#指令一覽dotfiles-rimezsh" aria-label="Permalink to this heading">#</a>指令一覽（dotfiles rime.zsh）</h2>
 <h3 id="環境變數"><a class="header-anchor" href="#環境變數" aria-label="Permalink to this heading">#</a>環境變數</h3>
 <table>
@@ -424,6 +464,11 @@ pre code.hljs{display:block;overflow-x:auto;padding:1em}code.hljs{padding:3px 5p
 <td>（未設）</td>
 <td>設 1 強制 purge 走傳統重建機制</td>
 </tr>
+<tr>
+<td>RIME_USER_SRC</td>
+<td>Rime-Custom/Rime-macOS</td>
+<td>使用者層自訂檔的倉庫鏡像</td>
+</tr>
 </tbody>
 </table>
 <p>（<code>$CLOUD</code>、<code>$DRIVE</code>、<code>$D</code> 分別定義於 icloud.zsh、drive.zsh、favorite.zsh。）</p>
@@ -447,6 +492,8 @@ pre code.hljs{display:block;overflow-x:auto;padding:1em}code.hljs{padding:3px 5p
 <li><code>rime-cloud</code> / <code>rime-cloud-ground</code> / <code>rime-cloud-ground-rm</code>：iCloud 上傳快照／下載合併／下載重建。</li>
 <li><code>rime-google-*</code>：Google Drive 對應版本。</li>
 <li><code>rime-sync-see-message</code> 等：裝置間同步留言。</li>
+<li><code>rime-user-deploy</code>：把倉庫 <code>Rime-macOS/</code>（方案、詞典、symbols、lua 模組）rsync 到 <code>~/Library/Rime</code> 後重啟 Squirrel 由啟動維護自動部署；A2338 等機器 git pull 後一鍵套用。<code>installation.yaml</code>／<code>user.yaml</code> 為機器私有，不在範圍。</li>
+<li><code>rime-user-collect</code>：反向回收——把 <code>~/Library/Rime</code> 的現場修改收進倉庫鏡像（只收倉庫已納管的檔案），收完列 git 狀態供檢視提交。新檔案需先手動 cp 進倉庫納管。</li>
 <li>內部輔助：<code>rime-ensure-running</code>（拉起實例）、<code>rime-wait-quit</code>（等待結束）、<code>rime-nudge-input-sources</code>（觸發 TIS 重新整理）。</li>
 </ul>
 <h2 id="標準工作流"><a class="header-anchor" href="#標準工作流" aria-label="Permalink to this heading">#</a>標準工作流</h2>

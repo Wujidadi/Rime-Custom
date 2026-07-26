@@ -4,7 +4,7 @@ max-width: 1280px
 
 # 自建鼠鬚管操作手冊
 
-> [!DATE] 時間：2026-07-25T23:33:20+08:00
+> [!DATE] 時間：2026-07-26T11:47:29+08:00
 
 本手冊記載自建版鼠鬚管（Squirrel）與個人配套環境的全部非官方操作，
 涵蓋自建版行為差異、dotfiles 指令組、同步工作流與疑難排解。
@@ -54,6 +54,28 @@ userdb 詞條形如 `a1 ba1 hai4 <TAB>阿巴亥<TAB>c=1 d=0.588605 t=1577323`：
 刪詞生命週期：刪詞 → 墓碑在本機 → 同步 → 墓碑在兩機（詞在兩邊消失）→ 再選字即復活，或 purge 徹底移除。
 **墓碑常駐無害**（不影響候選與排序），purge 屬大掃除性質。
 
+## 方案功能備忘
+
+### 日期時間快速輸入（2026-07-26 起）
+
+由 `~/Library/Rime/lua/` 下兩個模組提供（librime-lua），
+三個方案（terra_pinyin、bopomofo、cangjie5）均掛載：
+`engine/translators` 掛 `lua_translator@*date_translator`（產生候選）、
+`engine/processors` 於 key_binder 後掛 `lua_processor@*date_commit`（讓 Enter 也能上屏高亮候選，僅攔截本功能觸發碼）。
+觸發碼一律以 `/` 開頭，依賴各方案 `recognizer/patterns/punct`（bopomofo、cangjie5 原本就有；
+terra_pinyin 原缺此模式，致 `/` 觸發碼與 `/fh` 等符號選單均失效，2026-07-26 補上；注音的 ㄥ 因不居音節首而不衝突）：
+
+| 觸發碼  | 候選內容                                        |
+| ------- | ----------------------------------------------- |
+| `/date` | 2026-07-26、2026年7月26日、7月26日、20260726    |
+| `/time` | 11:09、11:09:52                                 |
+| `/week` | 星期日、週日、禮拜日（週日再加星期天、禮拜天）  |
+| `/dt`   | 2026-07-26 11:09:52、ISO 8601（含 +08:00 時區） |
+| `/ts`   | Unix 時間戳（秒）                               |
+
+Lua 模組與方案檔以 `~/Library/Rime` 為現場、`Rime-macOS/` 為鏡像；
+修改後重啟 Squirrel（或部署）生效；跨機器佈建與回收用 `rime-user-deploy`／`rime-user-collect`。
+
 ## 指令一覽（dotfiles rime.zsh）
 
 ### 環境變數
@@ -67,6 +89,7 @@ userdb 詞條形如 `a1 ba1 hai4 <TAB>阿巴亥<TAB>c=1 d=0.588605 t=1577323`：
 | SQUIRREL_OVERLAY  | Rime-Custom/Contents/SharedSupport       | 自訂檔 overlay 來源            |
 | RIME_DICT_MANAGER | app 內建 rime_dict_manager               | purge 工具路徑                 |
 | RIME_PURGE_LEGACY | （未設）                                 | 設 1 強制 purge 走傳統重建機制 |
+| RIME_USER_SRC     | Rime-Custom/Rime-macOS                   | 使用者層自訂檔的倉庫鏡像       |
 
 （`$CLOUD`、`$DRIVE`、`$D` 分別定義於 icloud.zsh、drive.zsh、favorite.zsh。）
 
@@ -90,6 +113,8 @@ userdb 詞條形如 `a1 ba1 hai4 <TAB>阿巴亥<TAB>c=1 d=0.588605 t=1577323`：
 - `rime-cloud` / `rime-cloud-ground` / `rime-cloud-ground-rm`：iCloud 上傳快照／下載合併／下載重建。
 - `rime-google-*`：Google Drive 對應版本。
 - `rime-sync-see-message` 等：裝置間同步留言。
+- `rime-user-deploy`：把倉庫 `Rime-macOS/`（方案、詞典、symbols、lua 模組）rsync 到 `~/Library/Rime` 後重啟 Squirrel 由啟動維護自動部署；A2338 等機器 git pull 後一鍵套用。`installation.yaml`／`user.yaml` 為機器私有，不在範圍。
+- `rime-user-collect`：反向回收——把 `~/Library/Rime` 的現場修改收進倉庫鏡像（只收倉庫已納管的檔案），收完列 git 狀態供檢視提交。新檔案需先手動 cp 進倉庫納管。
 - 內部輔助：`rime-ensure-running`（拉起實例）、`rime-wait-quit`（等待結束）、`rime-nudge-input-sources`（觸發 TIS 重新整理）。
 
 ## 標準工作流
