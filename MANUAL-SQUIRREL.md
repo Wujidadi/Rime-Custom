@@ -4,7 +4,7 @@ max-width: 1280px
 
 # 自建鼠鬚管操作手冊
 
-> [!DATE] 時間：2026-07-26T11:47:29+08:00
+> [!DATE] 時間：2026-07-27T07:58:51+08:00
 
 本手冊記載自建版鼠鬚管（Squirrel）與個人配套環境的全部非官方操作，
 涵蓋自建版行為差異、dotfiles 指令組、同步工作流與疑難排解。
@@ -38,6 +38,7 @@ max-width: 1280px
 ### squirrel（Wujidadi/squirrel）
 
 - `--register-input-source` 改為無條件重新註冊（官方在已啟用時直接跳過），bundle 更換後可強制 TIS 重新整理來源紀錄。
+- CLI 散布通知改為 `deliverImmediately` 強制投遞（1.1.2-wujidadi.2 起）：官方版的 `--reload`／`--sync`／`--ascii` 等指令因 AppKit 對背景 App 暫停通知投遞而靜默無效（選單同名功能不受影響），自建版已修正，`rime-sync`／`rime-deploy` 自此必然生效。
 - 修正 `SquirrelApp.appDir` 路徑誤植（官方自 Swift 移轉起壞掉，顯式註冊靜默失效）。
 - `package/add_data_files` 錨點模板修正並依副檔名分派檔案型別（官方版會靜默漏打包新資料檔）。
 - OpenCC 打包清單同步至新版 librime 的字典檔名。
@@ -106,8 +107,8 @@ Lua 模組與方案檔以 `~/Library/Rime` 為現場、`Rime-macOS/` 為鏡像�
 
 ### 同步與詞庫維護
 
-- `rime-sync`：（如 `$D` 有 userdb.txt 先收進 sync 目錄）確保實例存在後發同步通知。
-- `rime-deploy`：（如 `$D` 有字典檔先收進 RIMED）有實例走 `--reload`，無實例改於 SharedSupport 執行 `--build` 再拉起。
+- `rime-sync`：（如 `$D` 有 userdb.txt 先收進 sync 目錄）確保實例存在後發同步通知。通知走散布機制，自建版 1.1.2-wujidadi.2 起強制投遞必然生效；官方版會被 macOS 佇列或丟棄而時靈時不靈。
+- `rime-deploy`：（如 `$D` 有字典檔先收進 RIMED）有實例走 `--reload`，無實例改於 SharedSupport 執行 `--build` 再拉起。`--reload` 的投遞可靠性同上。
 - `rime-purge-deleted [詞庫名]`：硬刪墓碑。偵測到自建版 `--purge` 即走官方管道（原地清除＋自動重建快照）；否則退回傳統機制（濾快照＋刪 LevelDB 重建）。預設 terra_pinyin。
 - `rime-sync-rm`：核選項——刪整個 userdb 令其自快照重建，用於權威重置（含手動調低 c、d 值後落地）。重建以 `rime_dict_manager --restore` 在輸入法重啟前離線完成，**一次到位**，不再需要事後補跑 `rime-sync`。重置前記得先把本機新詞 sync 出去。
 - `rime-cloud` / `rime-cloud-ground` / `rime-cloud-ground-rm`：iCloud 上傳快照／下載合併／下載重建。

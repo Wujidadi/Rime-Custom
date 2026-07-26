@@ -305,7 +305,7 @@ pre code.hljs{display:block;overflow-x:auto;padding:1em}code.hljs{padding:3px 5p
 <body>
 <h1 id="自建鼠鬚管操作手冊"><a class="header-anchor" href="#自建鼠鬚管操作手冊" aria-label="Permalink to this heading">#</a>自建鼠鬚管操作手冊</h1>
 <div class="markdown-alert markdown-alert-date">
-<p class="markdown-alert-title"><svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Zm7-3.25v2.992l2.028.812a.75.75 0 0 1-.557 1.392l-2.5-1A.751.751 0 0 1 7 8.25v-3.5a.75.75 0 0 1 1.5 0Z"></path></svg>時間：2026-07-26T11:47:29+08:00</p>
+<p class="markdown-alert-title"><svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Zm7-3.25v2.992l2.028.812a.75.75 0 0 1-.557 1.392l-2.5-1A.751.751 0 0 1 7 8.25v-3.5a.75.75 0 0 1 1.5 0Z"></path></svg>時間：2026-07-27T07:58:51+08:00</p>
 </div>
 <p>本手冊記載自建版鼠鬚管（Squirrel）與個人配套環境的全部非官方操作，<br>
 涵蓋自建版行為差異、dotfiles 指令組、同步工作流與疑難排解。<br>
@@ -364,6 +364,7 @@ pre code.hljs{display:block;overflow-x:auto;padding:1em}code.hljs{padding:3px 5p
 <h3 id="squirrelwujidadisquirrel"><a class="header-anchor" href="#squirrelwujidadisquirrel" aria-label="Permalink to this heading">#</a>squirrel（Wujidadi/squirrel）</h3>
 <ul>
 <li><code>--register-input-source</code> 改為無條件重新註冊（官方在已啟用時直接跳過），bundle 更換後可強制 TIS 重新整理來源紀錄。</li>
+<li>CLI 散布通知改為 <code>deliverImmediately</code> 強制投遞（1.1.2-wujidadi.2 起）：官方版的 <code>--reload</code>／<code>--sync</code>／<code>--ascii</code> 等指令因 AppKit 對背景 App 暫停通知投遞而靜默無效（選單同名功能不受影響），自建版已修正，<code>rime-sync</code>／<code>rime-deploy</code> 自此必然生效。</li>
 <li>修正 <code>SquirrelApp.appDir</code> 路徑誤植（官方自 Swift 移轉起壞掉，顯式註冊靜默失效）。</li>
 <li><code>package/add_data_files</code> 錨點模板修正並依副檔名分派檔案型別（官方版會靜默漏打包新資料檔）。</li>
 <li>OpenCC 打包清單同步至新版 librime 的字典檔名。</li>
@@ -485,8 +486,8 @@ terra_pinyin 原缺此模式，致 <code>/</code> 觸發碼與 <code>/fh</code> 
 </ul>
 <h3 id="同步與詞庫維護"><a class="header-anchor" href="#同步與詞庫維護" aria-label="Permalink to this heading">#</a>同步與詞庫維護</h3>
 <ul>
-<li><code>rime-sync</code>：（如 <code>$D</code> 有 userdb.txt 先收進 sync 目錄）確保實例存在後發同步通知。</li>
-<li><code>rime-deploy</code>：（如 <code>$D</code> 有字典檔先收進 RIMED）有實例走 <code>--reload</code>，無實例改於 SharedSupport 執行 <code>--build</code> 再拉起。</li>
+<li><code>rime-sync</code>：（如 <code>$D</code> 有 userdb.txt 先收進 sync 目錄）確保實例存在後發同步通知。通知走散布機制，自建版 1.1.2-wujidadi.2 起強制投遞必然生效；官方版會被 macOS 佇列或丟棄而時靈時不靈。</li>
+<li><code>rime-deploy</code>：（如 <code>$D</code> 有字典檔先收進 RIMED）有實例走 <code>--reload</code>，無實例改於 SharedSupport 執行 <code>--build</code> 再拉起。<code>--reload</code> 的投遞可靠性同上。</li>
 <li><code>rime-purge-deleted [詞庫名]</code>：硬刪墓碑。偵測到自建版 <code>--purge</code> 即走官方管道（原地清除＋自動重建快照）；否則退回傳統機制（濾快照＋刪 LevelDB 重建）。預設 terra_pinyin。</li>
 <li><code>rime-sync-rm</code>：核選項——刪整個 userdb 令其自快照重建，用於權威重置（含手動調低 c、d 值後落地）。重建以 <code>rime_dict_manager --restore</code> 在輸入法重啟前離線完成，<strong>一次到位</strong>，不再需要事後補跑 <code>rime-sync</code>。重置前記得先把本機新詞 sync 出去。</li>
 <li><code>rime-cloud</code> / <code>rime-cloud-ground</code> / <code>rime-cloud-ground-rm</code>：iCloud 上傳快照／下載合併／下載重建。</li>
