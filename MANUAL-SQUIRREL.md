@@ -4,7 +4,7 @@ max-width: 1280px
 
 # 自建鼠鬚管操作手冊
 
-> [!DATE] 時間：2026-07-27T10:26:58+08:00
+> [!DATE] 時間：2026-07-27T11:00:08+08:00
 
 本手冊記載自建版鼠鬚管（Squirrel）與個人配套環境的全部非官方操作，
 涵蓋自建版行為差異、dotfiles 指令組、同步工作流與疑難排解。
@@ -79,6 +79,8 @@ Lua 模組與方案檔以 `~/Library/Rime` 為現場、`Rime-macOS/` 為鏡像�
 
 ## 指令一覽（dotfiles rime.zsh）
 
+實作模組化於 `zshrc/A2780/zsh/rime/` 子目錄——core（環境變數與行程輔助）、build（建置安裝）、install（雲端安裝與版本驗證）、userdb（詞庫維護）、user-files（使用者層佈建）、cloud（雲端同步與留言）六個模組，`rime.zsh` 為依序載入的薄載入器；A2338 端為逐檔 symlink，兩機 git pull 即生效，`scripts/setup` 的整目錄連結機制自動涵蓋。
+
 ### 環境變數
 
 | 變數              | 預設值                                   | 用途                           |
@@ -117,7 +119,7 @@ Lua 模組與方案檔以 `~/Library/Rime` 為現場、`Rime-macOS/` 為鏡像�
 - `rime-sync-see-message` 等：裝置間同步留言。
 - `rime-user-deploy`：把倉庫 `Rime-macOS/`（方案、詞典、symbols、lua 模組）逐檔 cmp 比對、僅複製內容異動者到 `~/Library/Rime`，再重啟 Squirrel 由啟動維護自動部署（無異動時不重啟）；A2338 等機器 git pull 後一鍵套用。`installation.yaml`／`user.yaml` 為機器私有，不在範圍。
 - `rime-user-collect`：反向回收——把 `~/Library/Rime` 的現場修改收進倉庫鏡像（只收倉庫已納管的檔案），收完列 git 狀態供檢視提交。新檔案需先手動 cp 進倉庫納管。
-- 內部輔助：`rime-ensure-running`（拉起實例）、`rime-wait-quit`（等待結束）、`rime-nudge-input-sources`（觸發 TIS 重新整理）。
+- 內部輔助：`rime-ensure-running`（拉起實例）、`rime-wait-quit`（等待結束）、`rime-nudge-input-sources`（觸發 TIS 重新整理）、`rime-ingest`（`$D` 收件：dos2unix 後收進指定位置）、`rime-restore-offline`（離線自快照重建 userdb，restore＋sync 一次到位）。
 
 ## 標準工作流
 

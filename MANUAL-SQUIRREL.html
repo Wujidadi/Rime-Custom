@@ -305,7 +305,7 @@ pre code.hljs{display:block;overflow-x:auto;padding:1em}code.hljs{padding:3px 5p
 <body>
 <h1 id="自建鼠鬚管操作手冊"><a class="header-anchor" href="#自建鼠鬚管操作手冊" aria-label="Permalink to this heading">#</a>自建鼠鬚管操作手冊</h1>
 <div class="markdown-alert markdown-alert-date">
-<p class="markdown-alert-title"><svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Zm7-3.25v2.992l2.028.812a.75.75 0 0 1-.557 1.392l-2.5-1A.751.751 0 0 1 7 8.25v-3.5a.75.75 0 0 1 1.5 0Z"></path></svg>時間：2026-07-27T10:26:58+08:00</p>
+<p class="markdown-alert-title"><svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Zm7-3.25v2.992l2.028.812a.75.75 0 0 1-.557 1.392l-2.5-1A.751.751 0 0 1 7 8.25v-3.5a.75.75 0 0 1 1.5 0Z"></path></svg>時間：2026-07-27T11:00:08+08:00</p>
 </div>
 <p>本手冊記載自建版鼠鬚管（Squirrel）與個人配套環境的全部非官方操作，<br>
 涵蓋自建版行為差異、dotfiles 指令組、同步工作流與疑難排解。<br>
@@ -420,6 +420,7 @@ terra_pinyin 原缺此模式，致 <code>/</code> 觸發碼與 <code>/fh</code> 
 <p>Lua 模組與方案檔以 <code>~/Library/Rime</code> 為現場、<code>Rime-macOS/</code> 為鏡像；<br>
 修改後重啟 Squirrel（或部署）生效；跨機器佈建與回收用 <code>rime-user-deploy</code>／<code>rime-user-collect</code>。</p>
 <h2 id="指令一覽dotfiles-rimezsh"><a class="header-anchor" href="#指令一覽dotfiles-rimezsh" aria-label="Permalink to this heading">#</a>指令一覽（dotfiles rime.zsh）</h2>
+<p>實作模組化於 <code>zshrc/A2780/zsh/rime/</code> 子目錄——core（環境變數與行程輔助）、build（建置安裝）、install（雲端安裝與版本驗證）、userdb（詞庫維護）、user-files（使用者層佈建）、cloud（雲端同步與留言）六個模組，<code>rime.zsh</code> 為依序載入的薄載入器；A2338 端為逐檔 symlink，兩機 git pull 即生效，<code>scripts/setup</code> 的整目錄連結機制自動涵蓋。</p>
 <h3 id="環境變數"><a class="header-anchor" href="#環境變數" aria-label="Permalink to this heading">#</a>環境變數</h3>
 <table>
 <thead>
@@ -496,7 +497,7 @@ terra_pinyin 原缺此模式，致 <code>/</code> 觸發碼與 <code>/fh</code> 
 <li><code>rime-sync-see-message</code> 等：裝置間同步留言。</li>
 <li><code>rime-user-deploy</code>：把倉庫 <code>Rime-macOS/</code>（方案、詞典、symbols、lua 模組）逐檔 cmp 比對、僅複製內容異動者到 <code>~/Library/Rime</code>，再重啟 Squirrel 由啟動維護自動部署（無異動時不重啟）；A2338 等機器 git pull 後一鍵套用。<code>installation.yaml</code>／<code>user.yaml</code> 為機器私有，不在範圍。</li>
 <li><code>rime-user-collect</code>：反向回收——把 <code>~/Library/Rime</code> 的現場修改收進倉庫鏡像（只收倉庫已納管的檔案），收完列 git 狀態供檢視提交。新檔案需先手動 cp 進倉庫納管。</li>
-<li>內部輔助：<code>rime-ensure-running</code>（拉起實例）、<code>rime-wait-quit</code>（等待結束）、<code>rime-nudge-input-sources</code>（觸發 TIS 重新整理）。</li>
+<li>內部輔助：<code>rime-ensure-running</code>（拉起實例）、<code>rime-wait-quit</code>（等待結束）、<code>rime-nudge-input-sources</code>（觸發 TIS 重新整理）、<code>rime-ingest</code>（<code>$D</code> 收件：dos2unix 後收進指定位置）、<code>rime-restore-offline</code>（離線自快照重建 userdb，restore＋sync 一次到位）。</li>
 </ul>
 <h2 id="標準工作流"><a class="header-anchor" href="#標準工作流" aria-label="Permalink to this heading">#</a>標準工作流</h2>
 <h3 id="日常雙向同步兩台皆自建版"><a class="header-anchor" href="#日常雙向同步兩台皆自建版" aria-label="Permalink to this heading">#</a>日常雙向同步（兩台皆自建版）</h3>
