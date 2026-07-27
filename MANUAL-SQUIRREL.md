@@ -4,7 +4,7 @@ max-width: 1280px
 
 # 自建鼠鬚管操作手冊
 
-> [!DATE] 時間：2026-07-27T09:57:04+08:00
+> [!DATE] 時間：2026-07-27T10:26:58+08:00
 
 本手冊記載自建版鼠鬚管（Squirrel）與個人配套環境的全部非官方操作，
 涵蓋自建版行為差異、dotfiles 指令組、同步工作流與疑難排解。
@@ -103,6 +103,7 @@ Lua 模組與方案檔以 `~/Library/Rime` 為現場、`Rime-macOS/` 為鏡像�
 ### 安裝（無建置環境機 A2338）
 
 - `squirrel-cloud-install [來源資料夾]`：取最新雲端 tar 包 → sha256 校驗 → 解包 → 去除隔離屬性 → 就地 rsync → overlay 還原 → 部署拉起。
+- `squirrel-version`（兩機通用）：交叉驗證版本是否確實生效——比對 Info.plist 安裝版本、installation.yaml 部署記錄（含 librime 版本）、lsappinfo 執行中實例版本，並以行程啟動時間 vs 主程式 ctime（安裝落地時間）佐證執行中的不是舊 binary；任一訊號不一致即警告並以非零碼結束。
 - 首次安裝前置：`sudo chown -R $USER "/Library/Input Methods"`；首次取代官方版若選單失靈，見疑難排解。
 
 ### 同步與詞庫維護

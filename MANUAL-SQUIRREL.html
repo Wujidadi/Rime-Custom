@@ -305,7 +305,7 @@ pre code.hljs{display:block;overflow-x:auto;padding:1em}code.hljs{padding:3px 5p
 <body>
 <h1 id="自建鼠鬚管操作手冊"><a class="header-anchor" href="#自建鼠鬚管操作手冊" aria-label="Permalink to this heading">#</a>自建鼠鬚管操作手冊</h1>
 <div class="markdown-alert markdown-alert-date">
-<p class="markdown-alert-title"><svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Zm7-3.25v2.992l2.028.812a.75.75 0 0 1-.557 1.392l-2.5-1A.751.751 0 0 1 7 8.25v-3.5a.75.75 0 0 1 1.5 0Z"></path></svg>時間：2026-07-27T09:57:04+08:00</p>
+<p class="markdown-alert-title"><svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Zm7-3.25v2.992l2.028.812a.75.75 0 0 1-.557 1.392l-2.5-1A.751.751 0 0 1 7 8.25v-3.5a.75.75 0 0 1 1.5 0Z"></path></svg>時間：2026-07-27T10:26:58+08:00</p>
 </div>
 <p>本手冊記載自建版鼠鬚管（Squirrel）與個人配套環境的全部非官方操作，<br>
 涵蓋自建版行為差異、dotfiles 指令組、同步工作流與疑難排解。<br>
@@ -482,6 +482,7 @@ terra_pinyin 原缺此模式，致 <code>/</code> 觸發碼與 <code>/fh</code> 
 <h3 id="安裝無建置環境機-a2338"><a class="header-anchor" href="#安裝無建置環境機-a2338" aria-label="Permalink to this heading">#</a>安裝（無建置環境機 A2338）</h3>
 <ul>
 <li><code>squirrel-cloud-install [來源資料夾]</code>：取最新雲端 tar 包 → sha256 校驗 → 解包 → 去除隔離屬性 → 就地 rsync → overlay 還原 → 部署拉起。</li>
+<li><code>squirrel-version</code>（兩機通用）：交叉驗證版本是否確實生效——比對 Info.plist 安裝版本、installation.yaml 部署記錄（含 librime 版本）、lsappinfo 執行中實例版本，並以行程啟動時間 vs 主程式 ctime（安裝落地時間）佐證執行中的不是舊 binary；任一訊號不一致即警告並以非零碼結束。</li>
 <li>首次安裝前置：<code>sudo chown -R $USER &quot;/Library/Input Methods&quot;</code>；首次取代官方版若選單失靈，見疑難排解。</li>
 </ul>
 <h3 id="同步與詞庫維護"><a class="header-anchor" href="#同步與詞庫維護" aria-label="Permalink to this heading">#</a>同步與詞庫維護</h3>
