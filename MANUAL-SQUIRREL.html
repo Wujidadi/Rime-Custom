@@ -305,7 +305,7 @@ pre code.hljs{display:block;overflow-x:auto;padding:1em}code.hljs{padding:3px 5p
 <body>
 <h1 id="自建鼠鬚管操作手冊"><a class="header-anchor" href="#自建鼠鬚管操作手冊" aria-label="Permalink to this heading">#</a>自建鼠鬚管操作手冊</h1>
 <div class="markdown-alert markdown-alert-date">
-<p class="markdown-alert-title"><svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Zm7-3.25v2.992l2.028.812a.75.75 0 0 1-.557 1.392l-2.5-1A.751.751 0 0 1 7 8.25v-3.5a.75.75 0 0 1 1.5 0Z"></path></svg>時間：2026-07-27T12:21:34+08:00</p>
+<p class="markdown-alert-title"><svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Zm7-3.25v2.992l2.028.812a.75.75 0 0 1-.557 1.392l-2.5-1A.751.751 0 0 1 7 8.25v-3.5a.75.75 0 0 1 1.5 0Z"></path></svg>時間：2026-07-27T16:02:38+08:00</p>
 </div>
 <p>本手冊記載自建版鼠鬚管（Squirrel）與個人配套環境的全部非官方操作，<br>
 涵蓋自建版行為差異、dotfiles 指令組、同步工作流與疑難排解。<br>
@@ -419,6 +419,18 @@ terra_pinyin 原缺此模式，致 <code>/</code> 觸發碼與 <code>/fh</code> 
 </table>
 <p>Lua 模組與方案檔以 <code>~/Library/Rime</code> 為現場、<code>Rime-macOS/</code> 為鏡像；<br>
 修改後重啟 Squirrel（或部署）生效；跨機器佈建與回收用 <code>rime-user-deploy</code>／<code>rime-user-collect</code>。</p>
+<h3 id="注音簡拼擴充2026-07-27-起"><a class="header-anchor" href="#注音簡拼擴充2026-07-27-起" aria-label="Permalink to this heading">#</a>注音簡拼擴充（2026-07-27 起）</h3>
+<p>上游 <code>zhuyin.yaml</code> 的 <code>abbreviation:</code> 節點只允許聲母簡拼（如 ㄏ→號），<br>
+ㄧㄨㄩ（內部表示 <code>iuv</code>）起首的音節無法縮寫，致「ㄧㄧㄏ」出不了「陰陽海」。<br>
+自訂版在該節點加入兩條規則，讓 ㄧㄨㄩ 起首音節也能簡拼（含帶調形式）：</p>
+<pre class="hljs"><code class="language-yaml"><span class="hljs-bullet">-</span> <span class="hljs-string">abbrev/^([iuv]).+$/$1/</span>
+<span class="hljs-bullet">-</span> <span class="hljs-string">abbrev/^([iuv]).+(\d)$/$1$2/</span>
+</code></pre>
+<p>取捨：省聲調規則維持上游的 <code>abbrev</code> 不動，<br>
+故純「ㄧㄧ」的候選也走簡拼（啞啞、押衙等），「一一」「意義」排序被稀釋屬預期行為；<br>
+若想改為拼音式行為（全碼路徑壓過簡拼），把 <code>abbrev/^([A-Za-z]+)\d$/$1/</code> 改成 <code>derive</code> 即可（已驗證）。<br>
+<code>bopomofo.schema.yaml</code> 的 <code>algebra/__patch</code> 已引用 <code>zhuyin:/abbreviation</code>，毋須改動；<br>
+<code>zhuyin.yaml</code> 自此納入鏡像控管（現場 <code>~/Library/Rime</code> ↔ 鏡像 <code>Rime-macOS/</code>）。</p>
 <h2 id="指令一覽dotfiles-rimezsh"><a class="header-anchor" href="#指令一覽dotfiles-rimezsh" aria-label="Permalink to this heading">#</a>指令一覽（dotfiles rime.zsh）</h2>
 <p>實作模組化於 <code>zshrc/A2780/zsh/rime/</code> 子目錄——core（環境變數與行程輔助）、build（建置安裝）、install（雲端安裝與版本驗證）、userdb（詞庫維護）、user-files（使用者層佈建）、cloud（雲端同步與留言）六個模組，<code>rime.zsh</code> 為依序載入的薄載入器；A2338 端為逐檔 symlink，兩機 git pull 即生效，<code>scripts/setup</code> 的整目錄連結機制自動涵蓋。</p>
 <h3 id="環境變數"><a class="header-anchor" href="#環境變數" aria-label="Permalink to this heading">#</a>環境變數</h3>
@@ -538,6 +550,7 @@ terra_pinyin 原缺此模式，致 <code>/</code> 觸發碼與 <code>/fh</code> 
 <ul>
 <li>單一事實來源：本倉庫 <code>Contents/SharedSupport/</code>（8 個 yaml＋opencc 自訂檔），dev-install／cloud-install 自動 overlay 進 app。</li>
 <li>地球拼音字典的使用者層鏡像不變式：<code>Rime-macOS/terra_pinyin.dict.yaml</code> 與現役 <code>~/Library/Rime</code> 版、iCloud 同步版三者內容一致；<code>Rime-Windows/terra_pinyin.dict.yaml</code> 亦與前者完全一致，僅換行字元為 CRLF（第 28 行反引號自映射詞條中的 TAB 原樣保留）。</li>
+<li><code>zhuyin.yaml</code>（注音簡拼擴充，2026-07-27 起）屬使用者層而非 SharedSupport overlay：現場 <code>~/Library/Rime</code> ↔ 鏡像 <code>Rime-macOS/</code>。</li>
 <li><code>essay.txt</code> 僅留底參考，部署時排除、一律沿用官方版。</li>
 <li>opencc 自訂 txt 只有 <code>JPVariants.txt</code> 有效（JPCharacters.txt／JPPhrases.txt 已於 2023-02-02 失效並移除）。</li>
 <li><code>t2jp.json</code> 分詞字典用 <code>JPShinjitaiCharacters.ocd2</code>（新版 OpenCC 檔名，原 JPVariants.ocd2 已更名）。</li>

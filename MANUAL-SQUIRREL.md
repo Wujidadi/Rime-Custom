@@ -4,7 +4,7 @@ max-width: 900px
 
 # 自建鼠鬚管操作手冊
 
-> [!DATE] 時間：2026-07-27T12:21:34+08:00
+> [!DATE] 時間：2026-07-27T16:02:38+08:00
 
 本手冊記載自建版鼠鬚管（Squirrel）與個人配套環境的全部非官方操作，
 涵蓋自建版行為差異、dotfiles 指令組、同步工作流與疑難排解。
@@ -76,6 +76,23 @@ terra_pinyin 原缺此模式，致 `/` 觸發碼與 `/fh` 等符號選單均失�
 
 Lua 模組與方案檔以 `~/Library/Rime` 為現場、`Rime-macOS/` 為鏡像；
 修改後重啟 Squirrel（或部署）生效；跨機器佈建與回收用 `rime-user-deploy`／`rime-user-collect`。
+
+### 注音簡拼擴充（2026-07-27 起）
+
+上游 `zhuyin.yaml` 的 `abbreviation:` 節點只允許聲母簡拼（如 ㄏ→號），
+ㄧㄨㄩ（內部表示 `iuv`）起首的音節無法縮寫，致「ㄧㄧㄏ」出不了「陰陽海」。
+自訂版在該節點加入兩條規則，讓 ㄧㄨㄩ 起首音節也能簡拼（含帶調形式）：
+
+```yaml
+- abbrev/^([iuv]).+$/$1/
+- abbrev/^([iuv]).+(\d)$/$1$2/
+```
+
+取捨：省聲調規則維持上游的 `abbrev` 不動，
+故純「ㄧㄧ」的候選也走簡拼（啞啞、押衙等），「一一」「意義」排序被稀釋屬預期行為；
+若想改為拼音式行為（全碼路徑壓過簡拼），把 `abbrev/^([A-Za-z]+)\d$/$1/` 改成 `derive` 即可（已驗證）。
+`bopomofo.schema.yaml` 的 `algebra/__patch` 已引用 `zhuyin:/abbreviation`，毋須改動；
+`zhuyin.yaml` 自此納入鏡像控管（現場 `~/Library/Rime` ↔ 鏡像 `Rime-macOS/`）。
 
 ## 指令一覽（dotfiles rime.zsh）
 
@@ -166,6 +183,7 @@ Lua 模組與方案檔以 `~/Library/Rime` 為現場、`Rime-macOS/` 為鏡像�
 
 - 單一事實來源：本倉庫 `Contents/SharedSupport/`（8 個 yaml＋opencc 自訂檔），dev-install／cloud-install 自動 overlay 進 app。
 - 地球拼音字典的使用者層鏡像不變式：`Rime-macOS/terra_pinyin.dict.yaml` 與現役 `~/Library/Rime` 版、iCloud 同步版三者內容一致；`Rime-Windows/terra_pinyin.dict.yaml` 亦與前者完全一致，僅換行字元為 CRLF（第 28 行反引號自映射詞條中的 TAB 原樣保留）。
+- `zhuyin.yaml`（注音簡拼擴充，2026-07-27 起）屬使用者層而非 SharedSupport overlay：現場 `~/Library/Rime` ↔ 鏡像 `Rime-macOS/`。
 - `essay.txt` 僅留底參考，部署時排除、一律沿用官方版。
 - opencc 自訂 txt 只有 `JPVariants.txt` 有效（JPCharacters.txt／JPPhrases.txt 已於 2023-02-02 失效並移除）。
 - `t2jp.json` 分詞字典用 `JPShinjitaiCharacters.ocd2`（新版 OpenCC 檔名，原 JPVariants.ocd2 已更名）。
