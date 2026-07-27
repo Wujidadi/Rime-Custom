@@ -305,7 +305,7 @@ pre code.hljs{display:block;overflow-x:auto;padding:1em}code.hljs{padding:3px 5p
 <body>
 <h1 id="自建鼠鬚管操作手冊"><a class="header-anchor" href="#自建鼠鬚管操作手冊" aria-label="Permalink to this heading">#</a>自建鼠鬚管操作手冊</h1>
 <div class="markdown-alert markdown-alert-date">
-<p class="markdown-alert-title"><svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Zm7-3.25v2.992l2.028.812a.75.75 0 0 1-.557 1.392l-2.5-1A.751.751 0 0 1 7 8.25v-3.5a.75.75 0 0 1 1.5 0Z"></path></svg>時間：2026-07-27T11:00:08+08:00</p>
+<p class="markdown-alert-title"><svg class="octicon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Zm7-3.25v2.992l2.028.812a.75.75 0 0 1-.557 1.392l-2.5-1A.751.751 0 0 1 7 8.25v-3.5a.75.75 0 0 1 1.5 0Z"></path></svg>時間：2026-07-27T12:21:34+08:00</p>
 </div>
 <p>本手冊記載自建版鼠鬚管（Squirrel）與個人配套環境的全部非官方操作，<br>
 涵蓋自建版行為差異、dotfiles 指令組、同步工作流與疑難排解。<br>
@@ -343,7 +343,7 @@ pre code.hljs{display:block;overflow-x:auto;padding:1em}code.hljs{padding:3px 5p
 </tbody>
 </table>
 <ul>
-<li>分支與語言規範見 squirrel 倉庫的 <code>FORK-POLICY.md</code>；master 永不合回上游，貢獻一律從 <code>upstream/master</code> 開英文分支。</li>
+<li>分支與語言規範見 squirrel 倉庫的 <code>FORK-POLICY.md</code>；master 永不合回上游，貢獻一律從 <code>upstream/master</code> 開分支，2026-07-27 起 PR／Issue／commit message 得以繁體中文（台灣）撰寫（Rime 社群未強制英文）。</li>
 <li>版號慣例（SemVer 2.0.0 相容）：<code>&lt;官方當前正式版&gt;-wujidadi[.流水號]</code>，第零版用裸後綴（如 <code>1.1.2-wujidadi</code>），同基底改版依序 <code>.1</code>、<code>.2</code>…，官方新版跟上後歸零。核心版號必須取官方「當前」版——Sparkle 比較器遇連字號截斷後綴，同版判相等（不提示降級）、官方任何新版正常提示。定義於 <code>project.pbxproj</code> 的 <code>CURRENT_PROJECT_VERSION</code>（兩處，含連字號需加引號）。</li>
 <li>已回報上游的修正：rime/squirrel#1160（add_data_files 錨點模板）、rime/squirrel#1161（appDir 路徑誤植）。</li>
 </ul>
