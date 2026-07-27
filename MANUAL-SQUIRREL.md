@@ -1,5 +1,5 @@
 ---
-max-width: 1280px
+max-width: 900px
 ---
 
 # 自建鼠鬚管操作手冊
