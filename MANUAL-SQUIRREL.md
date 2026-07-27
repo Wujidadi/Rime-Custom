@@ -4,7 +4,7 @@ max-width: 1280px
 
 # 自建鼠鬚管操作手冊
 
-> [!DATE] 時間：2026-07-27T07:58:51+08:00
+> [!DATE] 時間：2026-07-27T09:57:04+08:00
 
 本手冊記載自建版鼠鬚管（Squirrel）與個人配套環境的全部非官方操作，
 涵蓋自建版行為差異、dotfiles 指令組、同步工作流與疑難排解。
@@ -114,7 +114,7 @@ Lua 模組與方案檔以 `~/Library/Rime` 為現場、`Rime-macOS/` 為鏡像�
 - `rime-cloud` / `rime-cloud-ground` / `rime-cloud-ground-rm`：iCloud 上傳快照／下載合併／下載重建。
 - `rime-google-*`：Google Drive 對應版本。
 - `rime-sync-see-message` 等：裝置間同步留言。
-- `rime-user-deploy`：把倉庫 `Rime-macOS/`（方案、詞典、symbols、lua 模組）rsync 到 `~/Library/Rime` 後重啟 Squirrel 由啟動維護自動部署；A2338 等機器 git pull 後一鍵套用。`installation.yaml`／`user.yaml` 為機器私有，不在範圍。
+- `rime-user-deploy`：把倉庫 `Rime-macOS/`（方案、詞典、symbols、lua 模組）逐檔 cmp 比對、僅複製內容異動者到 `~/Library/Rime`，再重啟 Squirrel 由啟動維護自動部署（無異動時不重啟）；A2338 等機器 git pull 後一鍵套用。`installation.yaml`／`user.yaml` 為機器私有，不在範圍。
 - `rime-user-collect`：反向回收——把 `~/Library/Rime` 的現場修改收進倉庫鏡像（只收倉庫已納管的檔案），收完列 git 狀態供檢視提交。新檔案需先手動 cp 進倉庫納管。
 - 內部輔助：`rime-ensure-running`（拉起實例）、`rime-wait-quit`（等待結束）、`rime-nudge-input-sources`（觸發 TIS 重新整理）。
 
@@ -154,6 +154,7 @@ Lua 模組與方案檔以 `~/Library/Rime` 為現場、`Rime-macOS/` 為鏡像�
 - **macOS 26 陷阱**：終端行程呼叫 `TISDisableInputSource` 回報成功但靜默失效（enable 有效、disable 無效）；`defaults read com.apple.HIToolbox AppleEnabledInputSources` 是過時鏡像，判斷輸入法即時狀態要用 TIS API。
 - **殘留的簡體模式（Squirrel.Hans）**：終端清不掉，要移除只能走系統設定 UI；不出現在狀態列選單、不可選，放著無實害。
 - **詞頻全歸零、候選呈字典編碼序（部首靠前的罕見字排最前）**：userdb 是空的——歷史成因是舊版 `rime-sync-rm` 在實例執行中刪 LevelDB（幽靈檔案），或重啟後空庫空窗，過去須再跑一次 `rime-sync` 救回。現版 `rime-sync-rm` 已改為離線重建、一次到位；若仍遇到，跑 `rime-sync` 即可恢復。
+- **佈建後方案未生效（未重新編譯）**：把 mtime 較舊的檔案放進 `~/Library/Rime` 或 SharedSupport（如 `rsync -a`、`cp -p` 會保留來源 mtime），且該 mtime 早於 `build/` 的上次建置時間時，Rime 異動偵測會漏判、部署靜默跳過（日誌無 error，只是不編譯）。`rime-user-deploy` 已改為逐檔 cmp＋cp（落地即當下 mtime）避開此坑；手動搬檔遇到時 touch 檔案再重啟或 `--reload` 即可。`rime-deploy` 不受影響——其字典必經 dos2unix 整檔重寫，mtime 恆為當下。
 - **librime 全套測試**：必須在 `librime/build/test/` 目錄下執行 `rime_test`，否則字典類測試因測試資料路徑誤報失敗。
 - **搬移倉庫後建置失敗**（CMake 快取記舊路徑）：`rm -rf librime/build` 再重建。
 - **新 Xcode 首次建置 Sparkle 報 plug-in 錯誤**：跑 `xcodebuild -runFirstLaunch`。
@@ -161,6 +162,7 @@ Lua 模組與方案檔以 `~/Library/Rime` 為現場、`Rime-macOS/` 為鏡像�
 ## 自訂檔案體系
 
 - 單一事實來源：本倉庫 `Contents/SharedSupport/`（8 個 yaml＋opencc 自訂檔），dev-install／cloud-install 自動 overlay 進 app。
+- 地球拼音字典的使用者層鏡像不變式：`Rime-macOS/terra_pinyin.dict.yaml` 與現役 `~/Library/Rime` 版、iCloud 同步版三者內容一致；`Rime-Windows/terra_pinyin.dict.yaml` 亦與前者完全一致，僅換行字元為 CRLF（第 28 行反引號自映射詞條中的 TAB 原樣保留）。
 - `essay.txt` 僅留底參考，部署時排除、一律沿用官方版。
 - opencc 自訂 txt 只有 `JPVariants.txt` 有效（JPCharacters.txt／JPPhrases.txt 已於 2023-02-02 失效並移除）。
 - `t2jp.json` 分詞字典用 `JPShinjitaiCharacters.ocd2`（新版 OpenCC 檔名，原 JPVariants.ocd2 已更名）。
