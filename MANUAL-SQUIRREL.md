@@ -4,7 +4,7 @@ max-width: 900px
 
 # 自建鼠鬚管操作手冊
 
-> [!DATE] 時間：2026-07-27T16:02:38+08:00
+> [!DATE] 時間：2026-08-05T20:01:19+08:00
 
 本手冊記載自建版鼠鬚管（Squirrel）與個人配套環境的全部非官方操作，
 涵蓋自建版行為差異、dotfiles 指令組、同步工作流與疑難排解。
@@ -12,13 +12,14 @@ max-width: 900px
 
 ## 生態總覽
 
-| 倉庫              | 位置（A2780）                            | 角色                                                 |
-| ----------------- | ---------------------------------------- | ---------------------------------------------------- |
-| Wujidadi/squirrel | ~/Documents/Workspaces/IME/rime/squirrel | 鼠鬚管 fork，master 為個人客製線                     |
-| Wujidadi/librime  | ~/Documents/Workspaces/IME/rime/librime  | librime fork，squirrel 子模組指向此                  |
-| Rime-Custom       | ~/Documents/Workspaces/Rime/Rime-Custom  | 自訂檔單一事實來源＋本手冊                           |
-| dotfiles          | ~/dotfiles                               | 指令組（zshrc/A2780/zsh/rime.zsh，A2338 為 symlink） |
+| 倉庫              | 位置（A2780／A3434 相同）                | 角色                                                        |
+| ----------------- | ---------------------------------------- | ----------------------------------------------------------- |
+| Wujidadi/squirrel | ~/Documents/Workspaces/IME/rime/squirrel | 鼠鬚管 fork，master 為個人客製線                            |
+| Wujidadi/librime  | ~/Documents/Workspaces/IME/rime/librime  | librime fork，squirrel 子模組指向此                         |
+| Rime-Custom       | ~/Documents/Workspaces/Rime/Rime-Custom  | 自訂檔單一事實來源＋本手冊                                  |
+| dotfiles          | ~/dotfiles                               | 指令組（zshrc/A2780/zsh/rime.zsh，A2338／A3434 為 symlink） |
 
+- 機器角色：A2780（M2）與 A3434（M5，2026-08-05 佈建）為編譯機，A2338 為雲端安裝機；三機倉庫路徑一致。
 - 分支與語言規範見 squirrel 倉庫的 `FORK-POLICY.md`；master 永不合回上游，貢獻一律從 `upstream/master` 開分支，2026-07-27 起 PR／Issue／commit message 得以繁體中文（台灣）撰寫（Rime 社群未強制英文）。
 - 版號慣例（SemVer 2.0.0 相容）：`<官方當前正式版>-wujidadi[.流水號]`，第零版用裸後綴（如 `1.1.2-wujidadi`），同基底改版依序 `.1`、`.2`…，官方新版跟上後歸零。核心版號必須取官方「當前」版——Sparkle 比較器遇連字號截斷後綴，同版判相等（不提示降級）、官方任何新版正常提示。定義於 `project.pbxproj` 的 `CURRENT_PROJECT_VERSION`（兩處，含連字號需加引號）。
 - 已回報上游的修正：rime/squirrel#1160（add_data_files 錨點模板）、rime/squirrel#1161（appDir 路徑誤植）。
@@ -96,7 +97,7 @@ Lua 模組與方案檔以 `~/Library/Rime` 為現場、`Rime-macOS/` 為鏡像�
 
 ## 指令一覽（dotfiles rime.zsh）
 
-實作模組化於 `zshrc/A2780/zsh/rime/` 子目錄——core（環境變數與行程輔助）、build（建置安裝）、install（雲端安裝與版本驗證）、userdb（詞庫維護）、user-files（使用者層佈建）、cloud（雲端同步與留言）六個模組，`rime.zsh` 為依序載入的薄載入器；A2338 端為逐檔 symlink，兩機 git pull 即生效，`scripts/setup` 的整目錄連結機制自動涵蓋。
+實作模組化於 `zshrc/A2780/zsh/rime/` 子目錄——core（環境變數與行程輔助）、build（建置安裝）、install（雲端安裝與版本驗證）、userdb（詞庫維護）、user-files（使用者層佈建）、cloud（雲端同步與留言）六個模組，`rime.zsh` 為依序載入的薄載入器；A2338／A3434 端為逐檔 symlink，各機 git pull 即生效，`scripts/setup` 的整目錄連結機制自動涵蓋。
 
 ### 環境變數
 
@@ -113,7 +114,7 @@ Lua 模組與方案檔以 `~/Library/Rime` 為現場、`Rime-macOS/` 為鏡像�
 
 （`$CLOUD`、`$DRIVE`、`$D` 分別定義於 icloud.zsh、drive.zsh、favorite.zsh。）
 
-### 建置與安裝（編譯機 A2780）
+### 建置與安裝（編譯機 A2780／A3434）
 
 - `squirrel-dev-install`：一鍵重編譯＋就地安裝——建置 → `--quit` → rsync 就地更新（保住 bundle inode）→ overlay 還原自訂檔 → 重新註冊 → `--build` 部署 → 拉起 → nudge。免登出、免動系統設定。
 - `squirrel-drift-check`：偵測 SharedSupport 中「內容既不同於建置產出、也不同於 overlay」的未納管現場修改，自動備份到帶時戳 drift 目錄並警告；dev-install 每次自動執行，也可單獨跑。上游資料檔改版可能誤報，人工判讀。
@@ -149,6 +150,7 @@ Lua 模組與方案檔以 `~/Library/Rime` 為現場、`Rime-macOS/` 為鏡像�
 
 刪詞（Shift+Backspace）經一輪雙向同步自動傳播，無需其他操作。
 注意 `rime-cloud` 上傳的是快照檔：傍晚上傳前先 `rime-sync` 才含當日新詞。
+A3434 加入後為三機，雲端仍是單一快照交換點，原則不變：上傳前先把最新快照 ground 進本機，避免蓋掉他機新詞。
 
 ### 墓碑大掃除（六步時間線，已驗證）
 
@@ -164,8 +166,24 @@ Lua 模組與方案檔以 `~/Library/Rime` 為現場、`Rime-macOS/` 為鏡像�
 
 ### 更新自建版
 
-- A2780：`squirrel-dev-install`；要發布給其他機器再 `squirrel-pack`。
+- 編譯機（A2780／A3434）：`squirrel-dev-install`；要發布給其他機器再 `squirrel-pack`。
 - A2338：等 iCloud 同步完成後 `squirrel-cloud-install`。
+
+### 新機佈建（2026-08-05 於 A3434 全程驗證）
+
+1. clone 四倉庫至上表相同路徑；dotfiles 為新機建 `zshrc/<機型>` profile，rime 模組逐檔 symlink A2780 版。
+2. squirrel 倉庫 `git submodule update --init --recursive`；
+   librime 外掛照打包清單裝三個：`bash librime/install-plugins.sh hchunhui/librime-lua lotem/librime-octagram rime/librime-predict`，
+   其中 librime-lua 需再於 `librime/plugins/lua` 跑 `bash action-install.sh` 抓 thirdparty Lua。
+3. octagram 語言模型檔為 pbxproj 靜態引用，缺了 `make release` 會失敗：
+   `rime_dir=plum/output bash plum/rime-install lotem/rime-octagram-data lotem/rime-octagram-data@hant && make copy-plum-data`
+   （即上游 `SQUIRREL_BUNDLED_RECIPES` 機制）。
+4. 裝完整 Xcode（CLT 不夠）＋`xcodebuild -runFirstLaunch`；boost 用 brew 版即可。
+5. `sudo /usr/sbin/chown -R $USER "/Library/Input Methods"`——裝了 GNU coreutils 的機器務必用完整路徑，PATH 上的 GNU chown 在 sudo 下會靜默失敗。
+6. 官方版若是 brew cask（squirrel-app）裝的：刪 `$(brew --prefix)/Caskroom/squirrel-app` 令 brew 忘掉它（app 檔案保留、由 dev-install 就地覆蓋），防日後 `brew upgrade` 蓋掉自建版。
+7. `squirrel-dev-install` → `rime-user-deploy`。
+8. 機器私有檔：installation.yaml 的 `installation_id` 改為共用的 `"rime-wujidadi"`；建 `~/Library/Rime/Rime_sync → sync/rime-wujidadi` 符號連結。
+9. 詞庫：新機沒有本機 userdb，`rime-cloud-ground` 的 `--sync` 無庫可合、不會建庫——首次必須走 `rime-cloud-ground-rm`（離線 `--restore` 重建，一次到位）。
 
 ## 疑難排解
 
