@@ -4,7 +4,8 @@
 
 ## 操作手冊
 
-- 自建鼠鬚管的完整操作說明見 [`MANUAL-SQUIRREL.md`](MANUAL-SQUIRREL.md)（未來實作到小狼毫時另立 `MANUAL-WEASEL.md`）
+- 自建鼠鬚管的完整操作說明見 [`MANUAL-SQUIRREL.md`](MANUAL-SQUIRREL.md)
+- 自建小狼毫（i9-10900）的完整操作說明見 [`MANUAL-WEASEL.md`](MANUAL-WEASEL.md)
 - 確認本機已有 tarmdas + md2html 時，可用它們產生 HTML 易讀版文件：`md2html MANUAL-SQUIRREL.md`（優先用 `md2html`；只用 `tarmdas MANUAL-SQUIRREL.md` 也可以，但預設樣式不同）
 
 ## VSCode 專案路徑
@@ -16,7 +17,7 @@
 
 - **Rime** 資料夾：`~/Library/Rime/`
 - **Contents 資料夾（macOS）**：`/Library/Input Methods/Squirrel.app/Contents/`
-- **data 資料夾（Windows）**：`C:/Program Files (x86)/Rime/weasel-{版本號}/data/`
+- **data 資料夾（Windows）**：`C:/Program Files/Rime/weasel-{版本號}/data/`（x64／Win11 自建版；0.16 時代官方版在 `C:/Program Files (x86)/Rime/…`）
 
 ## 注意事項
 
