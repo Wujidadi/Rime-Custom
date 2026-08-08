@@ -196,6 +196,7 @@ A3434 加入後為三機，雲端仍是單一快照交換點，原則不變：�
 - **librime 全套測試**：必須在 `librime/build/test/` 目錄下執行 `rime_test`，否則字典類測試因測試資料路徑誤報失敗。
 - **搬移倉庫後建置失敗**（CMake 快取記舊路徑）：`rm -rf librime/build` 再重建。
 - **新 Xcode 首次建置 Sparkle 報 plug-in 錯誤**：跑 `xcodebuild -runFirstLaunch`。
+- **Google Drive 會給無副檔名的純文字檔補 `.txt`**：本地同步（macOS 與 Windows 客戶端皆然）會把 `$DRIVE/Rime/留言` 這類無副檔名文字檔自動改成 `留言.txt`，留言別名因此指空（兩平台都踩過，2026-08-09 於 i9-10900 再現）。發現留言指令讀不到檔案時，先檢查雲端是否又多了 `.txt`，改回無副檔名即可（改名會同步回雲端）。
 
 ## 自訂檔案體系
 

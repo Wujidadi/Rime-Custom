@@ -98,3 +98,4 @@ fork 相對上游的變動見各倉 `FORK-CHANGELOG.md`；開發規範見各倉 
 - **`missing input schema: quick5`**：plum preset 的共用 `default.yaml` 列了未打包的 quick5，屬上游資料包不一致，與自訂方案無關，無害。
 - **GUI 會改寫 custom 檔**：在小狼毫的「輸入法設定」／「界面風格」按確認後，`default.custom.yaml`／`weasel.custom.yaml` 會被以 `customization:` 區塊格式重寫；現場檔如此屬正常，鏡像維持乾淨版即可。
 - **rime_api_console 在無終端機環境掛住**：管線 stdin 的 EOF 送不到，會永久等待輸入；引擎驗證以 `build.bat test` 為準。
+- **Google Drive 會給無副檔名的純文字檔補 `.txt`**：本地同步（macOS 與 Windows 客戶端皆然）會把 `留言` 這類無副檔名文字檔自動改成 `留言.txt`，兩平台的留言別名因此指空。發現留言指令讀不到檔案時，先檢查雲端是否又多了 `.txt`，改回無副檔名即可（改名會同步回雲端）。
