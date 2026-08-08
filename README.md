@@ -30,6 +30,6 @@
   alias squirrel='/Library/Input\ Methods/Squirrel.app/Contents/MacOS/Squirrel'
   ```
 - 小狼毫 0.16.1.0 起：
-  - 用戶資料夾下的 `terra_pinyin.schema.yaml` 每次重新部署後都會被刪除（原因未查明），須直接修改應用程式資料夾下的 `terra_pinyin.schema.yaml` 檔案
+  - 用戶資料夾下版本號低於應用程式層的方案檔，每次重新部署會被 librime 移入 `trash/`（2026-08-09 查明機制，適用所有與共用層同名的方案檔）；自訂方案須覆蓋應用程式資料夾的同名檔，兩層版本相等後用戶層副本即可保留，詳見 `MANUAL-WEASEL.md`
   - OpenCC `segmentation` 現在只吃 ocd2
   - 日文漢字轉換只吃單檔（原因未查明），直接用 JPVariants.txt 就好

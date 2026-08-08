@@ -30,7 +30,8 @@ fork 相對上游的變動見各倉 `FORK-CHANGELOG.md`；開發規範見各倉 
 - 使用者層鏡像：本倉 `Rime-Windows/`；應用程式層（data）鏡像：本倉 `data/`
 - 2026-08-09 起 `Rime-Windows/` 與 `data/` 一律 LF 入庫（`.gitattributes` 鎖定）；部署腳本化後不再需要 CRLF 手動搬運慣例
 - `installation.yaml`、`user.yaml` 為機器私有，不入鏡像；`installation_id` 統一為 `"rime-wujidadi"`
-- `terra_pinyin.schema.yaml` 只能改應用程式層（`data/`）：小狼毫 0.16.1 起使用者層同名檔每次重新部署會被刪除
+- **自訂方案檔必須同時放應用程式層**（`data/`）：librime 的 SchemaUpdate 會把「版本號低於共用層」的使用者層方案副本移進 `%APPDATA%\Rime\trash\`（README 舊記載「terra_pinyin.schema.yaml 會被刪、原因未查明」的真正機制，適用所有與共用層同名的方案檔——bopomofo、cangjie5、terra_pinyin 皆然）。
+  自訂版覆蓋 app 層後兩層版本相等，使用者層副本即可存活，雙層架構與 macOS 的 SharedSupport overlay 對齊
 
 ## 建置環境
 
@@ -66,7 +67,7 @@ fork 相對上游的變動見各倉 `FORK-CHANGELOG.md`；開發規範見各倉 
 ## 部署使用者自訂檔
 
 1. 使用者層：`Rime-Windows/` 的 11 個 yaml＋`lua/` 複製到 `%APPDATA%\Rime`（排除 `installation.yaml`、`user.yaml`）
-2. 應用程式層：`data/terra_pinyin.schema.yaml` 與 `data/opencc/` 五檔（JPVariants.txt、TSCharacters.txt、TSPhrases.txt、t2jp.json、t2s.json）複製到安裝目錄 `data\`；`essay.txt` 沿用官方版
+2. 應用程式層：`data/` 的三個方案檔（bopomofo、cangjie5、terra_pinyin 的 schema.yaml）與 `data/opencc/` 五檔（JPVariants.txt、TSCharacters.txt、TSPhrases.txt、t2jp.json、t2s.json）複製到安裝目錄 `data\`（覆蓋 plum 原版）；`essay.txt` 沿用官方版
 3. 複製一律**不保留來源 mtime**（`cp` 不加 `-p`）：mtime 早於 build 時間會使部署靜默跳過
 4. 首次安裝後將 `installation.yaml` 的 `installation_id` 改為 `"rime-wujidadi"`
 5. 重新部署：`WeaselDeployer.exe /deploy`；以日誌驗證（`%TEMP%\rime.weasel\rime.weasel.*.INFO.*`，找「finished updating schemas: N success, 0 failure」），勿以猜測空等
