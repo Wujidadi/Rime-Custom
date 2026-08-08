@@ -1,6 +1,6 @@
 # 自建小狼毫（Weasel）操作手冊 — i9-10900
 
-> [!DATE] 時間：2026-08-09T02:50:14+08:00
+> [!DATE] 時間：2026-08-09T05:08:26+08:00
 
 本手冊記錄 i9-10900（Windows 11 Pro）上自建版小狼毫的組成、建置與部署方式。
 macOS 端鼠鬚管的對應手冊見 `MANUAL-SQUIRREL.md`；兩者共用的慣例（fork 版號、FORK-CHANGELOG、上游 merge 規範）不重複詳述。
@@ -71,6 +71,7 @@ fork 相對上游的變動見各倉 `FORK-CHANGELOG.md`；開發規範見各倉 
 - `weasel-version`：交叉驗證安裝、部署記錄與行程三訊號（fork 後綴資源字串需用 pwsh 端）
 - `weasel-pack`／`weasel-cloud-install`：安裝檔上雲與自雲端安裝（無建置環境機器用）
 - `rime-deploy`／`rime-sync`／`rime-sync-rm`／`rime-purge-deleted` 與 `rime-cloud*`／`rime-google-*` 雲端搬運：語義同 macOS 端，詳見 MANUAL-SQUIRREL.md
+- `rime-sync-rm`／`rime-purge-deleted` 的離線窗口由 `rime-hold-quit`／`rime-release-quit` 守住：WeaselServer 結束後，任何應用程式的 TSF 用戶端連線失敗或 WER 自動重啟都會重新拉起伺服器（在終端機按任何鍵即可能觸發），與離線重建競逐同一 LevelDB。主防線是維護旗標 `%APPDATA%\Rime\.maintenance-hold`——fork 的 WeaselServer.cpp 見旗標即退場（逾 10 分鐘自動失效，`/q` 等指令動詞不受約束）；背景看門狗（輪詢、一出現即強制結束，約兩分鐘保險絲）作為未更新建置時的備援
 
 ## 部署使用者自訂檔
 

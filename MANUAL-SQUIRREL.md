@@ -4,7 +4,7 @@ max-width: 900px
 
 # 自建鼠鬚管操作手冊
 
-> [!DATE] 時間：2026-08-05T20:01:19+08:00
+> [!DATE] 時間：2026-08-09T04:55:57+08:00
 
 本手冊記載自建版鼠鬚管（Squirrel）與個人配套環境的全部非官方操作，
 涵蓋自建版行為差異、dotfiles 指令組、同步工作流與疑難排解。
@@ -131,13 +131,13 @@ Lua 模組與方案檔以 `~/Library/Rime` 為現場、`Rime-macOS/` 為鏡像�
 - `rime-sync`：（如 `$D` 有 userdb.txt 先收進 sync 目錄）確保實例存在後發同步通知。通知走散布機制，自建版 1.1.2-wujidadi.2 起強制投遞必然生效；官方版會被 macOS 佇列或丟棄而時靈時不靈。
 - `rime-deploy`：（如 `$D` 有字典檔先收進 RIMED）有實例走 `--reload`，無實例改於 SharedSupport 執行 `--build` 再拉起。`--reload` 的投遞可靠性同上。
 - `rime-purge-deleted [詞庫名]`：硬刪墓碑。偵測到自建版 `--purge` 即走官方管道（原地清除＋自動重建快照）；否則退回傳統機制（濾快照＋刪 LevelDB 重建）。預設 terra_pinyin。
-- `rime-sync-rm`：核選項——刪整個 userdb 令其自快照重建，用於權威重置（含手動調低 c、d 值後落地）。重建以 `rime_dict_manager --restore` 在輸入法重啟前離線完成，**一次到位**，不再需要事後補跑 `rime-sync`。重置前記得先把本機新詞 sync 出去。
+- `rime-sync-rm`：核選項——刪整個 userdb 令其自快照重建，用於權威重置（含手動調低 c、d 值後落地）。重建以 `rime_dict_manager --restore` 在輸入法重啟前離線完成，**一次到位**，不再需要事後補跑 `rime-sync`。全程以 `rime-hold-quit` 守住離線窗口（見內部輔助）。重置前記得先把本機新詞 sync 出去。
 - `rime-cloud` / `rime-cloud-ground` / `rime-cloud-ground-rm`：iCloud 上傳快照／下載合併／下載重建。
 - `rime-google-*`：Google Drive 對應版本。
 - `rime-sync-see-message` 等：裝置間同步留言。
 - `rime-user-deploy`：把倉庫 `Rime-macOS/`（方案、詞典、symbols、lua 模組）逐檔 cmp 比對、僅複製內容異動者到 `~/Library/Rime`，再重啟 Squirrel 由啟動維護自動部署（無異動時不重啟）；A2338 等機器 git pull 後一鍵套用。`installation.yaml`／`user.yaml` 為機器私有，不在範圍。
 - `rime-user-collect`：反向回收——把 `~/Library/Rime` 的現場修改收進倉庫鏡像（只收倉庫已納管的檔案），收完列 git 狀態供檢視提交。新檔案需先手動 cp 進倉庫納管。
-- 內部輔助：`rime-ensure-running`（拉起實例）、`rime-wait-quit`（等待結束）、`rime-nudge-input-sources`（觸發 TIS 重新整理）、`rime-ingest`（`$D` 收件：dos2unix 後收進指定位置）、`rime-restore-offline`（離線自快照重建 userdb，restore＋sync 一次到位）。
+- 內部輔助：`rime-ensure-running`（拉起實例，並先清掉殘留的維護旗標）、`rime-wait-quit`（等待結束）、`rime-hold-quit`／`rime-release-quit`（結束實例並於離線維護期間以維護旗標 `$RIMED/.maintenance-hold` 阻止 TIS 重新拉起／移除旗標並重啟；旗標自建版 1.1.2-wujidadi.3 起支援，逾 10 分鐘自動失效，官方版或未更新的自建版見旗標無感）、`rime-nudge-input-sources`（觸發 TIS 重新整理）、`rime-ingest`（`$D` 收件：dos2unix 後收進指定位置）、`rime-restore-offline`（離線自快照重建 userdb，restore＋sync 一次到位）。
 
 ## 標準工作流
 
@@ -192,6 +192,7 @@ A3434 加入後為三機，雲端仍是單一快照交換點，原則不變：�
 - **macOS 26 陷阱**：終端行程呼叫 `TISDisableInputSource` 回報成功但靜默失效（enable 有效、disable 無效）；`defaults read com.apple.HIToolbox AppleEnabledInputSources` 是過時鏡像，判斷輸入法即時狀態要用 TIS API。
 - **殘留的簡體模式（Squirrel.Hans）**：終端清不掉，要移除只能走系統設定 UI；不出現在狀態列選單、不可選，放著無實害。
 - **詞頻全歸零、候選呈字典編碼序（部首靠前的罕見字排最前）**：userdb 是空的——歷史成因是舊版 `rime-sync-rm` 在實例執行中刪 LevelDB（幽靈檔案），或重啟後空庫空窗，過去須再跑一次 `rime-sync` 救回。現版 `rime-sync-rm` 已改為離線重建、一次到位；若仍遇到，跑 `rime-sync` 即可恢復。
+- **`rime-sync-rm` 報「離線重建失敗」、隨後 `rime-sync` 報 LevelDB Corruption（`CURRENT points to a non-existent file`）**：`--quit` 後 Squirrel 仍是已啟用的輸入來源，TIS 即刻重啟實例、與 `rime_dict_manager` 競逐同一 LevelDB 所致（2026-08-08 於 A2780 實際發生）。librime 偵測到損壞會自動 RepairDB（`terra_pinyin.userdb/lost/` 是修復歸檔而非遺失資料，確認無誤可刪），再跑一次 `rime-sync` 即可收斂、快照修改不會遺失。現版 `rime-hold-quit` 以維護旗標從根本阻止重啟，自建版 1.1.2-wujidadi.3 起支援。
 - **佈建後方案未生效（未重新編譯）**：把 mtime 較舊的檔案放進 `~/Library/Rime` 或 SharedSupport（如 `rsync -a`、`cp -p` 會保留來源 mtime），且該 mtime 早於 `build/` 的上次建置時間時，Rime 異動偵測會漏判、部署靜默跳過（日誌無 error，只是不編譯）。`rime-user-deploy` 已改為逐檔 cmp＋cp（落地即當下 mtime）避開此坑；手動搬檔遇到時 touch 檔案再重啟或 `--reload` 即可。`rime-deploy` 不受影響——其字典必經 dos2unix 整檔重寫，mtime 恆為當下。
 - **librime 全套測試**：必須在 `librime/build/test/` 目錄下執行 `rime_test`，否則字典類測試因測試資料路徑誤報失敗。
 - **搬移倉庫後建置失敗**（CMake 快取記舊路徑）：`rm -rf librime/build` 再重建。
