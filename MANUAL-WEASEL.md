@@ -64,6 +64,14 @@ fork 相對上游的變動見各倉 `FORK-CHANGELOG.md`；開發規範見各倉 
 
 `weasel-0.17.4-wujidadi-installer.exe /S /T`：靜默＋註冊中文（台灣）鍵盤配置＋自動關閉更新檢查（`HKCU\Software\Rime\Weasel\Updates\CheckForUpdates=0`）。
 
+## 日常指令（dotfiles 的 weasel 模組，pwsh 與 Git Bash 皆有）
+
+- `weasel-dev-install`：建置（`scripts/weasel-build.bat`）→ 漂移偵測 → 靜默安裝 → app 層 overlay → 重新部署 → 版本驗證，一鍵到位
+- `rime-user-deploy`：Rime-Windows/ 佈建使用者層＋data/ overlay app 層（雙層鐵律一次處理）；`rime-user-collect` 反向回收
+- `weasel-version`：交叉驗證安裝、部署記錄與行程三訊號（fork 後綴資源字串需用 pwsh 端）
+- `weasel-pack`／`weasel-cloud-install`：安裝檔上雲與自雲端安裝（無建置環境機器用）
+- `rime-deploy`／`rime-sync`／`rime-sync-rm`／`rime-purge-deleted` 與 `rime-cloud*`／`rime-google-*` 雲端搬運：語義同 macOS 端，詳見 MANUAL-SQUIRREL.md
+
 ## 部署使用者自訂檔
 
 1. 使用者層：`Rime-Windows/` 的 11 個 yaml＋`lua/` 複製到 `%APPDATA%\Rime`（排除 `installation.yaml`、`user.yaml`）
