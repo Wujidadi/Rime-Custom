@@ -1,6 +1,6 @@
 # 自建小狼毫（Weasel）操作手冊 — i9-10900
 
-> [!DATE] 時間：2026-08-09T05:08:26+08:00
+> [!DATE] 時間：2026-08-09T23:31:23+08:00
 
 本手冊記錄 i9-10900（Windows 11 Pro）上自建版小狼毫的組成、建置與部署方式。
 macOS 端鼠鬚管的對應手冊見 `MANUAL-SQUIRREL.md`；兩者共用的慣例（fork 版號、FORK-CHANGELOG、上游 merge 規範）不重複詳述。
@@ -96,6 +96,7 @@ fork 相對上游的變動見各倉 `FORK-CHANGELOG.md`；開發規範見各倉 
 - **`NoDefaultCurrentDirectoryInExePath=1`**：Claude Code 等自動化環境會設此變數，cmd 因此不搜尋目前目錄的執行檔，`call build.bat` 等裸名呼叫全數失敗且訊息誤導（「不是內部或外部命令」）；批次腳本開頭 `set NoDefaultCurrentDirectoryInExePath=` 清掉即可。
 - **Git Bash 的 MSYS 參數轉換**：`/deploy`、`/q` 等斜線開關會被改寫成路徑（`WeaselDeployer /deploy` 變成開設定視窗、`WeaselServer /q` 變成再開一個伺服器）；改用 `//deploy` 雙斜線或改由 cmd 批次檔呼叫。傳給 cmd 的字串含雙引號時會被轉義成 `\"` 而失效，一律改走批次檔。
 - **b2（Boost.Build）找不到 vcvarsall**：Build Tools 版型下 b2 自動偵測失敗（推導出錯誤路徑）；於 `project-config.jam` 明確指定 `using msvc : 14.3 : : <setup>"C:/Program Files (x86)/.../VC/Auxiliary/Build/vcvarsall.bat" ;`——**jam 引號字串內反斜線是跳脫字元，路徑必須用正斜線**。組態探測結果會被快取，修正後要清 `bin.v2` 重跑。
+- **勿從 `output\` 直接執行 `WeaselSetup.exe /t`**：它會把登錄 `HKLM\SOFTWARE\Rime\Weasel\WeaselRoot` 註冊為其所在目錄；之後執行 NSIS 安裝檔時，`install.nsi` 的舊版清除段會把 `WeaselRoot` 所指目錄的頂層檔案與 `data\` 全部刪除（不遞迴，`Win32\`、`archives\` 倖存），repo 的 `output\` 即被當舊安裝目錄清空。驗證修補一律改用安裝檔靜默安裝（`/S /T`）；若懷疑登錄已被污染，安裝前先確認 `WeaselRoot` 指向 `C:\Program Files\Rime\weasel-<版本>`。誤中後的復原：`git checkout -- output` 還原版控檔、以 7-Zip 自安裝檔解出 payload 補回 `data\` 等未版控內容（注意解壓會攤平 x64／Win32 同名檔，`rime.dll`、`WinSparkle.dll` 需按架構自 librime dist 與版控重新接入）、重跑 `weasel-build weasel` 補回 PDB。
 - **`missing input schema: quick5`**：plum preset 的共用 `default.yaml` 列了未打包的 quick5，屬上游資料包不一致，與自訂方案無關，無害。
 - **GUI 會改寫 custom 檔**：在小狼毫的「輸入法設定」／「界面風格」按確認後，`default.custom.yaml`／`weasel.custom.yaml` 會被以 `customization:` 區塊格式重寫；現場檔如此屬正常，鏡像維持乾淨版即可。
 - **rime_api_console 在無終端機環境掛住**：管線 stdin 的 EOF 送不到，會永久等待輸入；引擎驗證以 `build.bat test` 為準。
