@@ -4,7 +4,7 @@ max-width: 900px
 
 # 自建鼠鬚管操作手冊
 
-> [!DATE] 時間：2026-08-09T04:55:57+08:00
+> [!DATE] 時間：2026-08-12T12:20:18+08:00
 
 本手冊記載自建版鼠鬚管（Squirrel）與個人配套環境的全部非官方操作，
 涵蓋自建版行為差異、dotfiles 指令組、同步工作流與疑難排解。
@@ -117,6 +117,7 @@ Lua 模組與方案檔以 `~/Library/Rime` 為現場、`Rime-macOS/` 為鏡像�
 ### 建置與安裝（編譯機 A2780／A3434）
 
 - `squirrel-dev-install`：一鍵重編譯＋就地安裝——建置 → `--quit` → rsync 就地更新（保住 bundle inode）→ overlay 還原自訂檔 → 重新註冊 → `--build` 部署 → 拉起 → nudge。免登出、免動系統設定。
+- `squirrel-data-overlay`：把 `Contents/SharedSupport/` 鏡像逐檔 cmp 後覆蓋進安裝中的 app 層（僅複製內容有異動者，`essay.txt` 除外），dev-install／cloud-install／`rime-user-deploy` 共用；改了 opencc 資料檔或 SharedSupport 層方案時單獨跑它即可，毋須重新建置。與 Windows 端 `weasel-data-overlay` 對應。
 - `squirrel-drift-check`：偵測 SharedSupport 中「內容既不同於建置產出、也不同於 overlay」的未納管現場修改，自動備份到帶時戳 drift 目錄並警告；dev-install 每次自動執行，也可單獨跑。上游資料檔改版可能誤報，人工判讀。
 - `squirrel-pack [目的資料夾]`：把建置產出打成 `Squirrel-<版號>.tar.gz`＋sha256 放上雲端（預設 `$CLOUD/Rime`）。必須走 tar：`.app` 裸奔上雲端同步會毀掉符號連結與執行權限。
 
@@ -135,8 +136,8 @@ Lua 模組與方案檔以 `~/Library/Rime` 為現場、`Rime-macOS/` 為鏡像�
 - `rime-cloud` / `rime-cloud-ground` / `rime-cloud-ground-rm`：iCloud 上傳快照／下載合併／下載重建。
 - `rime-google-*`：Google Drive 對應版本。
 - `rime-sync-see-message` 等：裝置間同步留言。
-- `rime-user-deploy`：把倉庫 `Rime-macOS/`（方案、詞典、symbols、lua 模組）逐檔 cmp 比對、僅複製內容異動者到 `~/Library/Rime`，再重啟 Squirrel 由啟動維護自動部署（無異動時不重啟）；A2338 等機器 git pull 後一鍵套用。`installation.yaml`／`user.yaml` 為機器私有，不在範圍。
-- `rime-user-collect`：反向回收——把 `~/Library/Rime` 的現場修改收進倉庫鏡像（只收倉庫已納管的檔案），收完列 git 狀態供檢視提交。新檔案需先手動 cp 進倉庫納管。
+- `rime-user-deploy`：雙層一次到位——使用者層把倉庫 `Rime-macOS/`（方案、詞典、symbols、lua 模組）逐檔 cmp 比對、僅複製內容異動者到 `~/Library/Rime`，app 層接著呼叫 `squirrel-data-overlay`，再重啟 Squirrel 由啟動維護自動部署（兩層均無異動時不重啟）；A2338 等機器 git pull 後一鍵套用。`installation.yaml`／`user.yaml` 為機器私有，不在範圍。
+- `rime-user-collect`：反向回收——把 `~/Library/Rime` 與安裝中 SharedSupport 的現場修改收進倉庫鏡像（雙層皆收，只收倉庫已納管的檔案，`essay.txt` 除外），收完列 git 狀態供檢視提交。新檔案需先手動 cp 進倉庫納管。
 - 內部輔助：`rime-ensure-running`（拉起實例，並先清掉殘留的維護旗標）、`rime-wait-quit`（等待結束）、`rime-hold-quit`／`rime-release-quit`（結束實例並於離線維護期間以維護旗標 `$RIMED/.maintenance-hold` 阻止 TIS 重新拉起／移除旗標並重啟；旗標自建版 1.1.2-wujidadi.3 起支援，逾 10 分鐘自動失效，官方版或未更新的自建版見旗標無感）、`rime-nudge-input-sources`（觸發 TIS 重新整理）、`rime-ingest`（`$D` 收件：dos2unix 後收進指定位置）、`rime-restore-offline`（離線自快照重建 userdb，restore＋sync 一次到位）。
 
 ## 標準工作流
@@ -207,4 +208,4 @@ A3434 加入後為三機，雲端仍是單一快照交換點，原則不變：�
 - `essay.txt` 僅留底參考，部署時排除、一律沿用官方版。
 - opencc 自訂 txt 只有 `JPVariants.txt` 有效（JPCharacters.txt／JPPhrases.txt 已於 2023-02-02 失效並移除）。
 - `t2jp.json` 分詞字典用 `JPShinjitaiCharacters.ocd2`（新版 OpenCC 檔名，原 JPVariants.ocd2 已更名）。
-- 直接在 app 內改自訂檔不會遺失（drift 偵測會備份並警告），但正規流程是改本倉庫後重跑 dev-install（或手動同步進 app）。
+- 直接在 app 內改自訂檔不會遺失（drift 偵測會備份並警告），但正規流程是改本倉庫後跑 `rime-user-deploy`（或 `squirrel-data-overlay`）落地，重新建置安裝時 overlay 也會自動再覆蓋一次。
