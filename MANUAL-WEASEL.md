@@ -9,7 +9,7 @@ macOS 端鼠鬚管的對應手冊見 `MANUAL-SQUIRREL.md`；兩者共用的慣�
 
 | 元件    | 版本                   | 倉庫                                             |
 | ------- | ---------------------- | ------------------------------------------------ |
-| weasel  | 0.17.4-wujidadi.3      | `D:\Workspaces\IME\Rime\weasel`                  |
+| weasel  | 0.17.4-wujidadi.4      | `D:\Workspaces\IME\Rime\weasel`                  |
 | librime | 1.17.0-wujidadi        | `D:\Workspaces\IME\Rime\librime`                 |
 | 外掛    | lua、octagram、predict | 隨 librime 以 BUILD_MERGED_PLUGINS 併入 rime.dll |
 | Boost   | 1.84.0（兩倉共用）     | `weasel\deps\boost_1_84_0`（不入版控）           |
@@ -22,7 +22,7 @@ fork 相對上游的變動見各倉 `FORK-CHANGELOG.md`；開發規範見各倉 
 - 更新頻道指向 fork 自控的 `update/appcast.xml`（raw.githubusercontent.com），「檢查新版本」恆得「已是最新版本」；官方新版以 git 上游追蹤。
   fork 版**不對外發布、不建 GitHub Release**：appcast 的 enclosure URL 僅為佔位，散佈一律走 `weasel-pack` 上雲＋`weasel-cloud-install`；進版推送後無需再問是否建 Release。
   WinSparkle 對連字號版號的比較語義不可靠，故不沿用 macOS「靠 Sparkle 比較器截斷後綴」的做法。
-- `installation.yaml` 的 `distribution_version` 顯示 fork 版號（如 `0.17.4-wujidadi.3`）、`rime_version` 顯示 `1.17.0-wujidadi`，可直接分辨自建版。
+- `installation.yaml` 的 `distribution_version` 顯示 fork 版號（如 `0.17.4-wujidadi.4`）、`rime_version` 顯示 `1.17.0-wujidadi`，可直接分辨自建版。
 - WeaselIPC 客戶端 IPC 為 fail-fast 帶兩級逾時（組字／按鍵 500ms、焦點／通知 25ms），宿主程式 UI 執行緒不再無限等待 WeaselServer（rime/weasel#1909）。
   上游 #1912（已合入，`d73f629`）把托盤刷新移到伺服器訊息執行緒、斷開與 explorer 工作列執行緒的死結環，屬伺服器端根因修補；兩者互補，fork 兩邊都有。
   殘餘風險：`FocusIn` → `_UpdateUI()` 仍在管線工作執行緒上跨執行緒呼叫候選視窗的 `ShowWindow`／`SetWindowPos`，若恰逢訊息執行緒卡在 `Shell_NotifyIcon`（`SMTO_BLOCK`），環仍可能短暫成立，由客戶端逾時兜底。
