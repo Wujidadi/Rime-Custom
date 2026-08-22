@@ -17,9 +17,9 @@ max-width: 900px
 | Wujidadi/squirrel | ~/Documents/Workspaces/IME/rime/squirrel | 鼠鬚管 fork，master 為個人客製線                            |
 | Wujidadi/librime  | ~/Documents/Workspaces/IME/rime/librime  | librime fork，squirrel 子模組指向此                         |
 | Rime-Custom       | ~/Documents/Workspaces/Rime/Rime-Custom  | 自訂檔單一事實來源＋本手冊                                  |
-| dotfiles          | ~/dotfiles                               | 指令組（zshrc/A2780/zsh/rime.zsh，A2338／A3434 為 symlink） |
+| dotfiles          | ~/dotfiles                               | 指令組（zshrc/A2780/zsh/rime.zsh，A3434 為 symlink）        |
 
-- 機器角色：A2780（M2）與 A3434（M5，2026-08-05 佈建）為編譯機，A2338 為雲端安裝機；三機倉庫路徑一致。
+- 機器角色：A2780（M2）與 A3434（M5，2026-08-05 佈建）皆為編譯機，兩機倉庫路徑一致。
 - 分支與語言規範見 squirrel 倉庫的 `FORK-POLICY.md`；master 永不合回上游，貢獻一律從 `upstream/master` 開分支，2026-07-27 起 PR／Issue／commit message 得以繁體中文（台灣）撰寫（Rime 社群未強制英文）。
 - 版號慣例（SemVer 2.0.0 相容）：`<官方當前正式版>-wujidadi[.流水號]`，第零版用裸後綴（如 `1.1.2-wujidadi`），同基底改版依序 `.1`、`.2`…，官方新版跟上後歸零。核心版號必須取官方「當前」版——Sparkle 比較器遇連字號截斷後綴，同版判相等（不提示降級）、官方任何新版正常提示。定義於 `project.pbxproj` 的 `CURRENT_PROJECT_VERSION`（兩處，含連字號需加引號）。
 - 已回報上游的修正：rime/squirrel#1160（add_data_files 錨點模板）、rime/squirrel#1161（appDir 路徑誤植）。
@@ -97,7 +97,7 @@ Lua 模組與方案檔以 `~/Library/Rime` 為現場、`Rime-macOS/` 為鏡像�
 
 ## 指令一覽（dotfiles rime.zsh）
 
-實作模組化於 `zshrc/A2780/zsh/rime/` 子目錄——core（環境變數與行程輔助）、build（建置安裝）、install（雲端安裝與版本驗證）、userdb（詞庫維護）、user-files（使用者層佈建）、cloud（雲端同步與留言）六個模組，`rime.zsh` 為依序載入的薄載入器；A2338／A3434 端為逐檔 symlink，各機 git pull 即生效，`scripts/setup` 的整目錄連結機制自動涵蓋。
+實作模組化於 `zshrc/A2780/zsh/rime/` 子目錄——core（環境變數與行程輔助）、build（建置安裝）、install（雲端安裝與版本驗證）、userdb（詞庫維護）、user-files（使用者層佈建）、cloud（雲端同步與留言）六個模組，`rime.zsh` 為依序載入的薄載入器；A3434 端為逐檔 symlink，各機 git pull 即生效，`scripts/setup` 的整目錄連結機制自動涵蓋。
 
 ### 環境變數
 
@@ -121,9 +121,9 @@ Lua 模組與方案檔以 `~/Library/Rime` 為現場、`Rime-macOS/` 為鏡像�
 - `squirrel-drift-check`：偵測 SharedSupport 中「內容既不同於建置產出、也不同於 overlay」的未納管現場修改，自動備份到帶時戳 drift 目錄並警告；dev-install 每次自動執行，也可單獨跑。上游資料檔改版可能誤報，人工判讀。
 - `squirrel-pack [目的資料夾]`：把建置產出打成 `Squirrel-<版號>.tar.gz`＋sha256 放上雲端（預設 `$CLOUD/Rime`）。必須走 tar：`.app` 裸奔上雲端同步會毀掉符號連結與執行權限。
 
-### 安裝（無建置環境機 A2338）
+### 安裝（無建置環境機）
 
-- `squirrel-cloud-install [來源資料夾]`：取最新雲端 tar 包 → sha256 校驗 → 解包 → 去除隔離屬性 → 就地 rsync → overlay 還原 → 部署拉起。
+- `squirrel-cloud-install [來源資料夾]`（現兩機皆為編譯機，保留供日後無建置環境機使用）：取最新雲端 tar 包 → sha256 校驗 → 解包 → 去除隔離屬性 → 就地 rsync → overlay 還原 → 部署拉起。
 - `squirrel-version`（兩機通用）：交叉驗證版本是否確實生效——比對 Info.plist 安裝版本、installation.yaml 部署記錄（含 librime 版本）、lsappinfo 執行中實例版本，並以行程啟動時間 vs 主程式 ctime（安裝落地時間）佐證執行中的不是舊 binary；任一訊號不一致即警告並以非零碼結束。
 - 首次安裝前置：`sudo chown -R $USER "/Library/Input Methods"`；首次取代官方版若選單失靈，見疑難排解。
 
@@ -136,7 +136,7 @@ Lua 模組與方案檔以 `~/Library/Rime` 為現場、`Rime-macOS/` 為鏡像�
 - `rime-cloud` / `rime-cloud-ground` / `rime-cloud-ground-rm`：iCloud 上傳快照／下載合併／下載重建。
 - `rime-google-*`：Google Drive 對應版本。
 - `rime-sync-see-message` 等：裝置間同步留言。
-- `rime-user-deploy`：雙層一次到位——使用者層把倉庫 `Rime-macOS/`（方案、詞典、symbols、lua 模組）逐檔 cmp 比對、僅複製內容異動者到 `~/Library/Rime`，app 層接著呼叫 `squirrel-data-overlay`，再重啟 Squirrel 由啟動維護自動部署（兩層均無異動時不重啟）；A2338 等機器 git pull 後一鍵套用。`installation.yaml`／`user.yaml` 為機器私有，不在範圍。
+- `rime-user-deploy`：雙層一次到位——使用者層把倉庫 `Rime-macOS/`（方案、詞典、symbols、lua 模組）逐檔 cmp 比對、僅複製內容異動者到 `~/Library/Rime`，app 層接著呼叫 `squirrel-data-overlay`，再重啟 Squirrel 由啟動維護自動部署（兩層均無異動時不重啟）；另一台機器 git pull 後一鍵套用。`installation.yaml`／`user.yaml` 為機器私有，不在範圍。
 - `rime-user-collect`：反向回收——把 `~/Library/Rime` 與安裝中 SharedSupport 的現場修改收進倉庫鏡像（雙層皆收，只收倉庫已納管的檔案，`essay.txt` 除外），收完列 git 狀態供檢視提交。新檔案需先手動 cp 進倉庫納管。
 - 內部輔助：`rime-ensure-running`（拉起實例，並先清掉殘留的維護旗標）、`rime-wait-quit`（等待結束）、`rime-hold-quit`／`rime-release-quit`（結束實例並於離線維護期間以維護旗標 `$RIMED/.maintenance-hold` 阻止 TIS 重新拉起／移除旗標並重啟；旗標自建版 1.1.2-wujidadi.3 起支援，逾 10 分鐘自動失效，官方版或未更新的自建版見旗標無感）、`rime-nudge-input-sources`（觸發 TIS 重新整理）、`rime-ingest`（`$D` 收件：dos2unix 後收進指定位置）、`rime-restore-offline`（離線自快照重建 userdb，restore＋sync 一次到位）。
 
@@ -145,21 +145,21 @@ Lua 模組與方案檔以 `~/Library/Rime` 為現場、`Rime-macOS/` 為鏡像�
 ### 日常雙向同步（兩台皆自建版）
 
 ```
-早：A2780 rime-cloud → A2338 rime-cloud-ground
-晚：A2338 rime-cloud → A2780 rime-cloud-ground
+早：A2780 rime-cloud → A3434 rime-cloud-ground
+晚：A3434 rime-cloud → A2780 rime-cloud-ground
 ```
 
 刪詞（Shift+Backspace）經一輪雙向同步自動傳播，無需其他操作。
 注意 `rime-cloud` 上傳的是快照檔：傍晚上傳前先 `rime-sync` 才含當日新詞。
-A3434 加入後為三機，雲端仍是單一快照交換點，原則不變：上傳前先把最新快照 ground 進本機，避免蓋掉他機新詞。
+雲端是單一快照交換點：上傳前先把最新快照 ground 進本機，避免蓋掉他機新詞。
 
 ### 墓碑大掃除（六步時間線，已驗證）
 
-1. 早：A2780 `rime-cloud` → A2338 `rime-cloud-ground`
-2. 晚：A2338 `rime-cloud` → A2780 `rime-cloud-ground`（至此墓碑跑完一圈）
+1. 早：A2780 `rime-cloud` → A3434 `rime-cloud-ground`
+2. 晚：A3434 `rime-cloud` → A2780 `rime-cloud-ground`（至此墓碑跑完一圈）
 3. 夜：A2780 `rime-purge-deleted`（purge 自帶 Backup，順便匯出當日新詞）
 4. 翌早：A2780 `rime-cloud`
-5. 翌早：A2338 先 `rime-purge-deleted` 再 `rime-cloud-ground`
+5. 翌早：A3434 先 `rime-purge-deleted` 再 `rime-cloud-ground`
 6. 兩機詞庫同步且墓碑全消
 
 不變式：**墓碑跑完一圈之後，從上傳端開始 purge；接收端在收到乾淨快照的前後 purge 皆可**。
@@ -167,8 +167,8 @@ A3434 加入後為三機，雲端仍是單一快照交換點，原則不變：�
 
 ### 更新自建版
 
-- 編譯機（A2780／A3434）：`squirrel-dev-install`；要發布給其他機器再 `squirrel-pack`。
-- A2338：等 iCloud 同步完成後 `squirrel-cloud-install`。
+- 兩機（A2780／A3434）皆為編譯機：`squirrel-dev-install`；`squirrel-pack` 另將安裝包備份上雲端。
+- 無建置環境機（目前無）：等 iCloud 同步完成後 `squirrel-cloud-install`。
 
 ### 新機佈建（2026-08-05 於 A3434 全程驗證）
 
