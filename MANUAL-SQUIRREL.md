@@ -4,7 +4,7 @@ max-width: 900px
 
 # 自建鼠鬚管操作手冊
 
-> [!DATE] 時間：2026-08-25T09:58:07+08:00
+> [!DATE] 時間：2026-08-25T19:14:23+08:00
 
 本手冊記載自建版鼠鬚管（Squirrel）與個人配套環境的全部非官方操作，
 涵蓋自建版行為差異、dotfiles 指令組、同步工作流與疑難排解。
@@ -119,7 +119,7 @@ Lua 模組與方案檔以 `~/Library/Rime` 為現場、`Rime-macOS/` 為鏡像�
 - `squirrel-dev-install`：一鍵重編譯＋就地安裝——建置 → `--quit` → rsync 就地更新（保住 bundle inode）→ overlay 還原自訂檔 → 重新註冊 → `--build` 部署 → 拉起 → nudge。免登出、免動系統設定。
 - `squirrel-data-overlay`：把 `Contents/SharedSupport/` 鏡像逐檔 cmp 後覆蓋進安裝中的 app 層（僅複製內容有異動者，`essay.txt` 除外），dev-install／cloud-install／`rime-user-deploy` 共用；改了 opencc 資料檔或 SharedSupport 層方案時單獨跑它即可，毋須重新建置。與 Windows 端 `weasel-data-overlay` 對應。
 - `squirrel-drift-check`：偵測 SharedSupport 中「內容既不同於建置產出、也不同於 overlay」的未納管現場修改，自動備份到帶時戳 drift 目錄並警告；dev-install 每次自動執行，也可單獨跑。上游資料檔改版可能誤報，人工判讀。
-- `squirrel-pack [目的資料夾]`：把建置產出打成 `Squirrel-<版號>.tar.gz`＋sha256 放上雲端（預設 `$CLOUD/Rime`）。必須走 tar：`.app` 裸奔上雲端同步會毀掉符號連結與執行權限。
+- `squirrel-pack [目的資料夾]`：把建置產出打成 `Squirrel-<版號>.tar.gz`＋sha256 放上雲端（預設 `$CLOUD/Rime` 與 `$DRIVE/Rime` 各一份，帶參數則只放指定目的資料夾）。必須走 tar：`.app` 裸奔上雲端同步會毀掉符號連結與執行權限。
 
 ### 安裝（無建置環境機）
 
@@ -169,11 +169,10 @@ Lua 模組與方案檔以 `~/Library/Rime` 為現場、`Rime-macOS/` 為鏡像�
 
 - 兩機（A2780／A3434）皆為編譯機：`squirrel-dev-install`；`squirrel-pack` 另將安裝包備份上雲端。
 - 無建置環境機（目前無）：等 iCloud 同步完成後 `squirrel-cloud-install`。
-- **下次進版（1.1.2-wujidadi.5）待辦**：librime 子模組指針自 `4817d294` 直接更新至 `c7d525ed`（librime fork 2026-08-25 合併上游後的端點），
-  **切勿停在 `3b3bb360`～`9b46caec` 區間**——該區間含上游 `de21e7d4` 的 dee 門檻回歸
-  （stabledb 即 custom_phrase.txt 的無權重詞條打包為 dee=0、tick=0，會被誤丟）而無 `8dc90354` 修正。
-  上游同波新增的 CandidatePreview API（`4cacd155`／`4901c8a4`）squirrel 前端未採用，不構成單獨進版理由；
-  現版 pin 無回歸，此進版不急迫，擇機辦理即可。
+- librime 子模組指針有更新時，`squirrel-dev-install` **不會**自動重編 librime——`make release` 見 `lib/librime.1.dylib` 已存在即跳過；
+  須先於 squirrel 倉庫重編 librime 再 dev-install，且不可直接跑 `make librime`（會觸發平行 configure 互踩，見疑難排解），
+  改為序列執行：`make -C librime release && make -C librime install && make copy-rime-binaries`。
+  重編後先在 `librime/build/test/` 跑 `rime_test` 全套測試再安裝。
 
 ### 新機佈建（2026-08-05 於 A3434 全程驗證）
 
@@ -202,6 +201,7 @@ Lua 模組與方案檔以 `~/Library/Rime` 為現場、`Rime-macOS/` 為鏡像�
 - **佈建後方案未生效（未重新編譯）**：把 mtime 較舊的檔案放進 `~/Library/Rime` 或 SharedSupport（如 `rsync -a`、`cp -p` 會保留來源 mtime），且該 mtime 早於 `build/` 的上次建置時間時，Rime 異動偵測會漏判、部署靜默跳過（日誌無 error，只是不編譯）。`rime-user-deploy` 已改為逐檔 cmp＋cp（落地即當下 mtime）避開此坑；手動搬檔遇到時 touch 檔案再重啟或 `--reload` 即可。`rime-deploy` 不受影響——其字典必經 dos2unix 整檔重寫，mtime 恆為當下。
 - **librime 全套測試**：必須在 `librime/build/test/` 目錄下執行 `rime_test`，否則字典類測試因測試資料路徑誤報失敗。
 - **搬移倉庫後建置失敗**（CMake 快取記舊路徑）：`rm -rf librime/build` 再重建。
+- **`make librime` 失敗，CMake 報 `configure_file` No such file or directory、configure 訊息成對出現**：librime 的 Makefile 自帶 `-j` 加進 MAKEFLAGS，令 `make -C librime release install` 的兩個目標平行執行，兩個 CMake configure 在同一 build 目錄互踩（2026-08-25 於 A2780 實際發生）。`rm -rf librime/build` 清掉半殘快取後，改為序列執行 `make -C librime release && make -C librime install && make copy-rime-binaries`。
 - **新 Xcode 首次建置 Sparkle 報 plug-in 錯誤**：跑 `xcodebuild -runFirstLaunch`。
 - **Google Drive 會給無副檔名的純文字檔補 `.txt`**：本地同步（macOS 與 Windows 客戶端皆然）會把 `$DRIVE/Rime/留言` 這類無副檔名文字檔自動改成 `留言.txt`，留言別名因此指空（兩平台都踩過，2026-08-09 於 i9-10900 再現）。發現留言指令讀不到檔案時，先檢查雲端是否又多了 `.txt`，改回無副檔名即可（改名會同步回雲端）。
 
