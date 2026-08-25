@@ -1,20 +1,26 @@
 # 自建小狼毫（Weasel）操作手冊 — i9-10900
 
-> [!DATE] 時間：2026-08-22T18:10:10+08:00
+> [!DATE] 時間：2026-08-25T09:58:07+08:00
 
 本手冊記錄 i9-10900（Windows 11 Pro）上自建版小狼毫的組成、建置與部署方式。
 macOS 端鼠鬚管的對應手冊見 `MANUAL-SQUIRREL.md`；兩者共用的慣例（fork 版號、FORK-CHANGELOG、上游 merge 規範）不重複詳述。
 
 ## 自建版組成
 
-| 元件    | 版本                   | 倉庫                                             |
-| ------- | ---------------------- | ------------------------------------------------ |
-| weasel  | 0.17.4-wujidadi.4      | `D:\Workspaces\IME\Rime\weasel`                  |
-| librime | 1.17.0-wujidadi        | `D:\Workspaces\IME\Rime\librime`                 |
-| 外掛    | lua、octagram、predict | 隨 librime 以 BUILD_MERGED_PLUGINS 併入 rime.dll |
-| Boost   | 1.84.0（兩倉共用）     | `weasel\deps\boost_1_84_0`（不入版控）           |
+| 元件    | 版本                        | 倉庫                                             |
+| ------- | --------------------------- | ------------------------------------------------ |
+| weasel  | 0.17.4-wujidadi.4           | `D:\Workspaces\IME\Rime\weasel`                  |
+| librime | 1.17.0-wujidadi（9b46caec） | `D:\Workspaces\IME\Rime\librime`                 |
+| 外掛    | lua、octagram、predict      | 隨 librime 以 BUILD_MERGED_PLUGINS 併入 rime.dll |
+| Boost   | 1.84.0（兩倉共用）          | `weasel\deps\boost_1_84_0`（不入版控）           |
 
 fork 相對上游的變動見各倉 `FORK-CHANGELOG.md`；開發規範見各倉 `FORK-POLICY.md`。
+librime 版本一律記到提交層級——`rime_version` 字串（`1.17.0-wujidadi`）不隨 fork 提交變動，無法據以追溯。
+
+**下次進版（0.17.4-wujidadi.5）待辦**：librime 自 `9b46caec` 更新至 `c7d525ed`（librime fork 2026-08-25 合併上游後的端點）重編 x64／Win32 並更新子模組 pin。
+現版 librime 含上游 `de21e7d4` 的 dee 門檻回歸——stabledb（custom_phrase.txt）無權重詞條打包為 dee=0、tick=0，會被誤丟——而無上游 `8dc90354` 修正；
+方案已掛載 custom_phrase 但 custom_phrase.txt 未建，回歸屬潛在而非現行，惟**開始使用 custom_phrase 前必須先完成此進版**。
+上游同波新增的 CandidatePreview API（`4cacd155`／`4901c8a4`）weasel 前端未採用，不構成單獨進版理由。
 
 ### 與官方版的行為差異
 

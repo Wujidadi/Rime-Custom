@@ -4,7 +4,7 @@ max-width: 900px
 
 # 自建鼠鬚管操作手冊
 
-> [!DATE] 時間：2026-08-12T12:20:18+08:00
+> [!DATE] 時間：2026-08-25T09:58:07+08:00
 
 本手冊記載自建版鼠鬚管（Squirrel）與個人配套環境的全部非官方操作，
 涵蓋自建版行為差異、dotfiles 指令組、同步工作流與疑難排解。
@@ -12,12 +12,12 @@ max-width: 900px
 
 ## 生態總覽
 
-| 倉庫              | 位置（A2780／A3434 相同）                | 角色                                                        |
-| ----------------- | ---------------------------------------- | ----------------------------------------------------------- |
-| Wujidadi/squirrel | ~/Documents/Workspaces/IME/rime/squirrel | 鼠鬚管 fork，master 為個人客製線                            |
-| Wujidadi/librime  | ~/Documents/Workspaces/IME/rime/librime  | librime fork，squirrel 子模組指向此                         |
-| Rime-Custom       | ~/Documents/Workspaces/Rime/Rime-Custom  | 自訂檔單一事實來源＋本手冊                                  |
-| dotfiles          | ~/dotfiles                               | 指令組（zshrc/A2780/zsh/rime.zsh，A3434 為 symlink）        |
+| 倉庫              | 位置（A2780／A3434 相同）                | 角色                                                 |
+| ----------------- | ---------------------------------------- | ---------------------------------------------------- |
+| Wujidadi/squirrel | ~/Documents/Workspaces/IME/rime/squirrel | 鼠鬚管 fork，master 為個人客製線                     |
+| Wujidadi/librime  | ~/Documents/Workspaces/IME/rime/librime  | librime fork，squirrel 子模組指向此                  |
+| Rime-Custom       | ~/Documents/Workspaces/Rime/Rime-Custom  | 自訂檔單一事實來源＋本手冊                           |
+| dotfiles          | ~/dotfiles                               | 指令組（zshrc/A2780/zsh/rime.zsh，A3434 為 symlink） |
 
 - 機器角色：A2780（M2）與 A3434（M5，2026-08-05 佈建）皆為編譯機，兩機倉庫路徑一致。
 - 分支與語言規範見 squirrel 倉庫的 `FORK-POLICY.md`；master 永不合回上游，貢獻一律從 `upstream/master` 開分支，2026-07-27 起 PR／Issue／commit message 得以繁體中文（台灣）撰寫（Rime 社群未強制英文）。
@@ -125,7 +125,7 @@ Lua 模組與方案檔以 `~/Library/Rime` 為現場、`Rime-macOS/` 為鏡像�
 
 - `squirrel-cloud-install [來源資料夾]`（現兩機皆為編譯機，保留供日後無建置環境機使用）：取最新雲端 tar 包 → sha256 校驗 → 解包 → 去除隔離屬性 → 就地 rsync → overlay 還原 → 部署拉起。
 - `squirrel-version`（兩機通用）：交叉驗證版本是否確實生效——比對 Info.plist 安裝版本、installation.yaml 部署記錄（含 librime 版本）、lsappinfo 執行中實例版本，並以行程啟動時間 vs 主程式 ctime（安裝落地時間）佐證執行中的不是舊 binary；任一訊號不一致即警告並以非零碼結束。
-- 首次安裝前置：`sudo chown -R $USER "/Library/Input Methods"`；首次取代官方版若選單失靈，見疑難排解。
+- 首次安裝前置：`sudo chown -R $USER "/Library/Input Methods"`——換機移轉或重灌後該目錄擁有者會回到 root:wheel，須重跑（2026-08-25 於 A3434 驗證）；首次取代官方版若選單失靈，見疑難排解。
 
 ### 同步與詞庫維護
 
@@ -169,6 +169,11 @@ Lua 模組與方案檔以 `~/Library/Rime` 為現場、`Rime-macOS/` 為鏡像�
 
 - 兩機（A2780／A3434）皆為編譯機：`squirrel-dev-install`；`squirrel-pack` 另將安裝包備份上雲端。
 - 無建置環境機（目前無）：等 iCloud 同步完成後 `squirrel-cloud-install`。
+- **下次進版（1.1.2-wujidadi.5）待辦**：librime 子模組指針自 `4817d294` 直接更新至 `c7d525ed`（librime fork 2026-08-25 合併上游後的端點），
+  **切勿停在 `3b3bb360`～`9b46caec` 區間**——該區間含上游 `de21e7d4` 的 dee 門檻回歸
+  （stabledb 即 custom_phrase.txt 的無權重詞條打包為 dee=0、tick=0，會被誤丟）而無 `8dc90354` 修正。
+  上游同波新增的 CandidatePreview API（`4cacd155`／`4901c8a4`）squirrel 前端未採用，不構成單獨進版理由；
+  現版 pin 無回歸，此進版不急迫，擇機辦理即可。
 
 ### 新機佈建（2026-08-05 於 A3434 全程驗證）
 
