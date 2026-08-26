@@ -94,7 +94,7 @@ librime 版本一律記到提交層級——`rime_version` 字串（`1.17.0-wuji
 新機無本機 userdb 時走 restore 路徑（同 A3434 經驗）：
 
 1. 退出 WeaselServer
-2. 於 `%APPDATA%\Rime` 執行 `rime_dict_manager.exe --restore <terra_pinyin.userdb.txt 快照路徑>`（工具在 librime `dist_x64\bin`，需將 `rime.dll` 放在 exe 旁）
+2. 於 `%APPDATA%\Rime` 執行 `rime_dict_manager.exe --restore <terra_pinyin.userdb.txt 快照路徑>`（工具在 librime `dist_x64\bin`，`rime.dll` 在 `dist_x64\lib`；dotfiles 的 rime-* 函式已自動前置 `PATH`，徒手執行時須自行將 `dist_x64\lib` 前置 `PATH` 或把 `rime.dll` 複製到 exe 旁）
 3. 快照來源：`G:\我的雲端硬碟\Rime\terra_pinyin.userdb.txt`
 4. 重啟 WeaselServer
 
