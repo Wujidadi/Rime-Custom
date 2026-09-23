@@ -4,7 +4,7 @@ max-width: 900px
 
 # 自建鼠鬚管操作手冊
 
-> [!DATE] 時間：2026-08-25T19:14:23+08:00
+> [!DATE] 時間：2026-09-23T14:48:11+08:00
 
 本手冊記載自建版鼠鬚管（Squirrel）與個人配套環境的全部非官方操作，
 涵蓋自建版行為差異、dotfiles 指令組、同步工作流與疑難排解。
@@ -35,6 +35,9 @@ max-width: 900px
   - 絕對值取兩者較大，保留使用量歷史供復活延續；
   - dee（d 值）記帳為資訊保持變換，詞頻排序與官方無異。
   - 官方語義為「絕對值大者勝、平手本地勝」，刪除永不跨裝置傳播；與官方版機器混用時自動退化為近似官方行為。
+- **userdb 詞條老化門檻改為設定項**（`1.17.0-wujidadi.1` 起）：上游 de21e7d4（PR #1205）在查詢時把 d 值依 `exp((t − 庫級 tick)/200)` 衰減，落後約 92103 個 tick 的詞條整條丟棄（常量 `1e-200`）；fork 改為方案設定鍵 `translator/user_dict_forget_threshold`（與 `enable_user_dict` 同層），預設 `0` 不遺忘，設 `1e-200` 即恢復上游行為、不必重編。
+  緣由：舊版合併語義曾把整批詞條的 t 蓋成同一值（現役 terra_pinyin userdb 有 85 萬條 t=1577323），庫級 tick 跨過門檻時會一次全部失效、候選退回字典表順序（2026-09-22 實機發生，839,655 條受影響）。
+- fork 版號隨行為變更調升（`rime_fork_version`），純建置變更（如 64894885 部署目標改 13.0）不調升；追溯精確狀態仍以提交雜湊為準。
 
 ### squirrel（Wujidadi/squirrel）
 
@@ -42,8 +45,8 @@ max-width: 900px
 - CLI 散布通知改為 `deliverImmediately` 強制投遞（1.1.2-wujidadi.2 起）：官方版的 `--reload`／`--sync`／`--ascii` 等指令因 AppKit 對背景 App 暫停通知投遞而靜默無效（選單同名功能不受影響），自建版已修正，`rime-sync`／`rime-deploy` 自此必然生效。
 - 修正 `SquirrelApp.appDir` 路徑誤植（官方自 Swift 移轉起壞掉，顯式註冊靜默失效）。
 - `package/add_data_files` 錨點模板修正並依副檔名分派檔案型別（官方版會靜默漏打包新資料檔）。
-- OpenCC 打包清單同步至新版 librime 的字典檔名。
-- librime 子模組指向自家 fork。
+- OpenCC 打包清單同步至新版 librime 的字典檔名（含 OpenCC 1.4.2 新增的 `HKPhrases.ocd2`／`HKPhrasesRev.ocd2`）。
+- librime 子模組指向自家 fork；`.gitmodules` 維持 HTTPS 供公開 clone，各編譯機的 `.git/config` 之 `submodule.librime.url` 與 librime clone 的 origin 改為 SSH 以便推送。
 
 ## 詞庫語義備忘
 
@@ -52,6 +55,7 @@ userdb 詞條形如 `a1 ba1 hai4 <TAB>阿巴亥<TAB>c=1 d=0.588605 t=1577323`：
 - `c`：選字次數；Shift+Backspace 軟刪除使其變負（-4）；再次選字復活並續增。
 - `d`：按 tick 衰減的近期使用權重，合併時取大——**想調小 d 只能改快照後重建**（purge 或 `-rm` 路徑），這是新語義刻意不動的範圍。
 - `t`：該 userdb 的交易流水號（非時間戳）；跨裝置經同步合流後可比，是刪詞傳播的排序依據。
+  自建版預設不因 t 落後而遺忘詞條（`user_dict_forget_threshold: 0`，見行為差異）；官方版落後庫級 tick 約 92103 即丟棄。
 
 刪詞生命週期：刪詞 → 墓碑在本機 → 同步 → 墓碑在兩機（詞在兩邊消失）→ 再選字即復活，或 purge 徹底移除。
 **墓碑常駐無害**（不影響候選與排序），purge 屬大掃除性質。
@@ -118,7 +122,7 @@ Lua 模組與方案檔以 `~/Library/Rime` 為現場、`Rime-macOS/` 為鏡像�
 
 - `squirrel-dev-install`：一鍵重編譯＋就地安裝——建置 → `--quit` → rsync 就地更新（保住 bundle inode）→ overlay 還原自訂檔 → 重新註冊 → `--build` 部署 → 拉起 → nudge。免登出、免動系統設定。
 - `squirrel-data-overlay`：把 `Contents/SharedSupport/` 鏡像逐檔 cmp 後覆蓋進安裝中的 app 層（僅複製內容有異動者，`essay.txt` 除外），dev-install／cloud-install／`rime-user-deploy` 共用；改了 opencc 資料檔或 SharedSupport 層方案時單獨跑它即可，毋須重新建置。與 Windows 端 `weasel-data-overlay` 對應。
-- `squirrel-drift-check`：偵測 SharedSupport 中「內容既不同於建置產出、也不同於 overlay」的未納管現場修改，自動備份到帶時戳 drift 目錄並警告；dev-install 每次自動執行，也可單獨跑。上游資料檔改版可能誤報，人工判讀。
+- `squirrel-drift-check`：偵測 SharedSupport 中「內容既不同於建置產出、也不同於 overlay」的未納管現場修改，自動備份到帶時戳 drift 目錄並警告；dev-install 每次自動執行，也可單獨跑。上游資料檔改版可能誤報（OpenCC 升版時整批 `.ocd2` 皆會報），人工判讀後備份目錄可直接刪。
 - `squirrel-pack [目的資料夾]`：把建置產出打成 `Squirrel-<版號>.tar.gz`＋sha256 放上雲端（預設 `$CLOUD/Rime` 與 `$DRIVE/Rime` 各一份，帶參數則只放指定目的資料夾）。必須走 tar：`.app` 裸奔上雲端同步會毀掉符號連結與執行權限。
 
 ### 安裝（無建置環境機）
@@ -173,6 +177,8 @@ Lua 模組與方案檔以 `~/Library/Rime` 為現場、`Rime-macOS/` 為鏡像�
   須先於 squirrel 倉庫重編 librime 再 dev-install，且不可直接跑 `make librime`（會觸發平行 configure 互踩，見疑難排解），
   改為序列執行：`make -C librime release && make -C librime install && make copy-rime-binaries`。
   重編後先在 `librime/build/test/` 跑 `rime_test` 全套測試再安裝。
+- librime 只動建置腳本或純建置預設（如部署目標）時，squirrel 只 bump 子模組 pin，不進版、不重建。
+- 跨倉依序推送（librime → squirrel）時每步各自檢查結束碼，`git push … | tail` 會吞掉失敗，推出去的子模組 pin 若指向遠端不存在的提交，他機 `submodule update` 會失敗。
 
 ### 新機佈建（2026-08-05 於 A3434 全程驗證）
 
@@ -196,6 +202,7 @@ Lua 模組與方案檔以 `~/Library/Rime` 為現場、`Rime-macOS/` 為鏡像�
 - **「中／Ａ」獨立狀態列圖標**點擊無反應屬正常：純顯示元件，無點擊動作。
 - **macOS 26 陷阱**：終端行程呼叫 `TISDisableInputSource` 回報成功但靜默失效（enable 有效、disable 無效）；`defaults read com.apple.HIToolbox AppleEnabledInputSources` 是過時鏡像，判斷輸入法即時狀態要用 TIS API。
 - **殘留的簡體模式（Squirrel.Hans）**：終端清不掉，要移除只能走系統設定 UI；不出現在狀態列選單、不可選，放著無實害。
+- **只有最近用過的少數詞條排前面，其餘常用字（如 ㄑㄧˉ 的「妻」「欺」）退回字典編碼序**：不是 userdb 空了，是官方 librime（或設了 `user_dict_forget_threshold: 1e-200` 的自建版）把 t 落後庫級 tick 約 92103 的詞條整條丟棄；快照中 c > 0 卻不見於候選即為此症。自建版 `1.17.0-wujidadi.1` 起預設不遺忘，升級後立即恢復，毋須動 userdb。驗證可用 `rime_api_console` 在 scratch 目錄載入 userdb 副本做 A/B：門檻 0 時 ㄑㄧˉ 為「七妻漆戚柒棲欺…」，1e-200 時「七」之後全是 𠀁 等碼位序罕見字。
 - **詞頻全歸零、候選呈字典編碼序（部首靠前的罕見字排最前）**：userdb 是空的——歷史成因是舊版 `rime-sync-rm` 在實例執行中刪 LevelDB（幽靈檔案），或重啟後空庫空窗，過去須再跑一次 `rime-sync` 救回。現版 `rime-sync-rm` 已改為離線重建、一次到位；若仍遇到，跑 `rime-sync` 即可恢復。
 - **`rime-sync-rm` 報「離線重建失敗」、隨後 `rime-sync` 報 LevelDB Corruption（`CURRENT points to a non-existent file`）**：`--quit` 後 Squirrel 仍是已啟用的輸入來源，TIS 即刻重啟實例、與 `rime_dict_manager` 競逐同一 LevelDB 所致（2026-08-08 於 A2780 實際發生）。librime 偵測到損壞會自動 RepairDB（`terra_pinyin.userdb/lost/` 是修復歸檔而非遺失資料，確認無誤可刪），再跑一次 `rime-sync` 即可收斂、快照修改不會遺失。現版 `rime-hold-quit` 以維護旗標從根本阻止重啟，自建版 1.1.2-wujidadi.3 起支援。
 - **佈建後方案未生效（未重新編譯）**：把 mtime 較舊的檔案放進 `~/Library/Rime` 或 SharedSupport（如 `rsync -a`、`cp -p` 會保留來源 mtime），且該 mtime 早於 `build/` 的上次建置時間時，Rime 異動偵測會漏判、部署靜默跳過（日誌無 error，只是不編譯）。`rime-user-deploy` 已改為逐檔 cmp＋cp（落地即當下 mtime）避開此坑；手動搬檔遇到時 touch 檔案再重啟或 `--reload` 即可。`rime-deploy` 不受影響——其字典必經 dos2unix 整檔重寫，mtime 恆為當下。
@@ -203,6 +210,7 @@ Lua 模組與方案檔以 `~/Library/Rime` 為現場、`Rime-macOS/` 為鏡像�
 - **搬移倉庫後建置失敗**（CMake 快取記舊路徑）：`rm -rf librime/build` 再重建。
 - **`make librime` 失敗，CMake 報 `configure_file` No such file or directory、configure 訊息成對出現**：librime 的 Makefile 自帶 `-j` 加進 MAKEFLAGS，令 `make -C librime release install` 的兩個目標平行執行，兩個 CMake configure 在同一 build 目錄互踩（2026-08-25 於 A2780 實際發生）。`rm -rf librime/build` 清掉半殘快取後，改為序列執行 `make -C librime release && make -C librime install && make copy-rime-binaries`。
 - **新 Xcode 首次建置 Sparkle 報 plug-in 錯誤**：跑 `xcodebuild -runFirstLaunch`。
+- **Xcode／CLT 27 起 libc++ 拒絕 macOS 11 以下部署目標**（2026-09-23 於 A3434 實測）：librime fork 的 Makefile 預設已改為 `MACOSX_DEPLOYMENT_TARGET ?= 13.0`（64894885，與 Squirrel 一致）；既有 CMake 快取（`librime/deps/*/build`、`librime/build`）仍記 10.15，撞上此錯誤時刪掉快取重編。
 - **Google Drive 會給無副檔名的純文字檔補 `.txt`**：本地同步（macOS 與 Windows 客戶端皆然）會把 `$DRIVE/Rime/留言` 這類無副檔名文字檔自動改成 `留言.txt`，留言別名因此指空（兩平台都踩過，2026-08-09 於 i9-10900 再現）。發現留言指令讀不到檔案時，先檢查雲端是否又多了 `.txt`，改回無副檔名即可（改名會同步回雲端）。
 
 ## 自訂檔案體系

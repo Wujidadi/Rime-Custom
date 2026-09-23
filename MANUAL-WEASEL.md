@@ -1,24 +1,28 @@
 # 自建小狼毫（Weasel）操作手冊 — i9-10900
 
-> [!DATE] 時間：2026-08-25T19:34:07+08:00
+> [!DATE] 時間：2026-09-23T14:48:11+08:00
 
 本手冊記錄 i9-10900（Windows 11 Pro）上自建版小狼毫的組成、建置與部署方式。
 macOS 端鼠鬚管的對應手冊見 `MANUAL-SQUIRREL.md`；兩者共用的慣例（fork 版號、FORK-CHANGELOG、上游 merge 規範）不重複詳述。
 
 ## 自建版組成
 
-| 元件    | 版本                        | 倉庫                                             |
-| ------- | --------------------------- | ------------------------------------------------ |
-| weasel  | 0.17.4-wujidadi.5           | `D:\Workspaces\IME\Rime\weasel`                  |
-| librime | 1.17.0-wujidadi（c7d525ed） | `D:\Workspaces\IME\Rime\librime`                 |
-| 外掛    | lua、octagram、predict      | 隨 librime 以 BUILD_MERGED_PLUGINS 併入 rime.dll |
-| Boost   | 1.84.0（兩倉共用）          | `weasel\deps\boost_1_84_0`（不入版控）           |
+| 元件    | 版本                          | 倉庫                                             |
+| ------- | ----------------------------- | ------------------------------------------------ |
+| weasel  | 0.17.4-wujidadi.6             | `D:\Workspaces\IME\Rime\weasel`                  |
+| librime | 1.17.0-wujidadi.1（37e47f86） | `D:\Workspaces\IME\Rime\librime`                 |
+| 外掛    | lua、octagram、predict        | 隨 librime 以 BUILD_MERGED_PLUGINS 併入 rime.dll |
+| Boost   | 1.84.0（兩倉共用）            | `weasel\deps\boost_1_84_0`（不入版控）           |
 
 fork 相對上游的變動見各倉 `FORK-CHANGELOG.md`；開發規範見各倉 `FORK-POLICY.md`。
-librime 版本一律記到提交層級——`rime_version` 字串（`1.17.0-wujidadi`）不隨 fork 提交變動，無法據以追溯。
+librime 版本一律記到提交層級——fork 版號只隨行為變更調升，純建置提交（如 macOS 專用的 `64894885`）不調升，`rime_version` 字串無法據以追溯。
 
-現版 librime 含上游 `8dc90354` 對 stabledb（custom_phrase.txt）無權重詞條被 dee 門檻誤丟的修正，custom_phrase 可安全啟用；
-上游同波新增的 CandidatePreview API（`4cacd155`／`4901c8a4`）weasel 前端未採用，僅隨庫帶入。
+現版 librime（`37e47f86`）：
+
+- userdb 詞條老化門檻改為設定項 `translator/user_dict_forget_threshold`，預設 `0` 不遺忘、設 `1e-200` 即恢復上游 `de21e7d4` 的行為（落後庫級 tick 約 92103 即丟棄）；緣由與症狀見 MANUAL-SQUIRREL.md 的行為差異與疑難排解。
+- 含上游 `8dc90354` 對 stabledb（custom_phrase.txt）無權重詞條被門檻誤丟的修正，custom_phrase 可安全啟用。
+- opencc 子模組升 `ver.1.4.2`，`output\data\opencc\` 隨之更新（38 檔）。
+- 上游的 CandidatePreview API、streaming_chord、calculus 等功能 weasel 前端未採用，僅隨庫帶入。
 
 ### 與官方版的行為差異
 
@@ -26,7 +30,7 @@ librime 版本一律記到提交層級——`rime_version` 字串（`1.17.0-wuji
 - 更新頻道指向 fork 自控的 `update/appcast.xml`（raw.githubusercontent.com），「檢查新版本」恆得「已是最新版本」；官方新版以 git 上游追蹤。
   fork 版**不對外發布、不建 GitHub Release**：appcast 的 enclosure URL 僅為佔位，散佈一律走 `weasel-pack` 上雲＋`weasel-cloud-install`；進版推送後無需再問是否建 Release。
   WinSparkle 對連字號版號的比較語義不可靠，故不沿用 macOS「靠 Sparkle 比較器截斷後綴」的做法。
-- `installation.yaml` 的 `distribution_version` 顯示 fork 版號（如 `0.17.4-wujidadi.5`）、`rime_version` 顯示 `1.17.0-wujidadi`，可直接分辨自建版。
+- `installation.yaml` 的 `distribution_version` 顯示 fork 版號（如 `0.17.4-wujidadi.6`）、`rime_version` 顯示 `1.17.0-wujidadi.1`，可直接分辨自建版。
 - WeaselIPC 客戶端 IPC 為 fail-fast 帶兩級逾時（組字／按鍵 500ms、焦點／通知 25ms），宿主程式 UI 執行緒不再無限等待 WeaselServer（rime/weasel#1909）。
   上游 #1912（已合入，`d73f629`）把托盤刷新移到伺服器訊息執行緒、斷開與 explorer 工作列執行緒的死結環，屬伺服器端根因修補；兩者互補，fork 兩邊都有。
   殘餘風險：`FocusIn` → `_UpdateUI()` 仍在管線工作執行緒上跨執行緒呼叫候選視窗的 `ShowWindow`／`SetWindowPos`，若恰逢訊息執行緒卡在 `Shell_NotifyIcon`（`SMTO_BLOCK`），環仍可能短暫成立，由客戶端逾時兜底。
@@ -65,12 +69,21 @@ librime 版本一律記到提交層級——`rime_version` 字串（`1.17.0-wuji
    - `dist_Win32\lib\rime.lib` → `lib\`；`rime.dll`／`rime.pdb` → `output\Win32\`
    - librime `share\opencc\*` → `output\data\opencc\`
 2. octagram 語言模型（方案目前註解未用，為與 macOS 對等而打包）：`plum_dir=plum rime_dir=output/data bash plum/rime-install lotem/rime-octagram-data lotem/rime-octagram-data@hant`
-3. `set RELEASE_BUILD=1` → `build.bat data weasel installer` → 產出 `output\archives\weasel-<PRODUCT_VERSION>-installer.exe`（如 `weasel-0.17.4-wujidadi.5-installer.exe`）
+3. `set RELEASE_BUILD=1` → `build.bat data weasel installer` → 產出 `output\archives\weasel-<PRODUCT_VERSION>-installer.exe`（如 `weasel-0.17.4-wujidadi.6-installer.exe`）
 4. **不要**走 `build.bat rime`（會 `rd /s /q` 清掉 librime 的建置快取）；**不要**用 `output\install.bat`（x64 機器上呼叫不存在的 `WeaselSetupx64.exe`、靜默失敗）
 
 ### 安裝
 
 `weasel-<PRODUCT_VERSION>-installer.exe /S /T`：靜默＋註冊中文（台灣）鍵盤配置＋自動關閉更新檢查（`HKCU\Software\Rime\Weasel\Updates\CheckForUpdates=0`）。
+
+### 自 macOS 經 ssh 遠端建置（i9-10900 無常駐 Claude Code session 時）
+
+- ssh 別名 `i9-10900`（Tailscale `100.69.1.125`，金鑰 `~/.ssh/i9-10900`）；sshd 不常駐，需先在 i9-10900 端手動啟動 OpenSSH Server。登入 shell 為 pwsh 7，dotfiles 的 `weasel-*`／`rime-*` 函式已載入，身分屬 Administrators、免 UAC。
+- 輸出為 CP950，pwsh 端先設 `[Console]::OutputEncoding=[Text.Encoding]::UTF8`。
+- 未推送的提交以 `git bundle` scp 過去，再 `git fetch <bundle> master` 加 `git merge --ff-only`；macOS 端開 sshd 亦可讓 i9-10900 直接 fetch。
+- 長時建置以 `Start-Process cmd -ArgumentList '/c','<bat> > log 2>&1' -WindowStyle Hidden` 脫離 ssh 執行，另以 ssh 輪詢日誌（單次工具呼叫上限 10 分鐘）。耗時參考：librime x64、Win32 各約 7 分鐘，weasel 全套約 3 分鐘。
+- **ssh 落在 session 0**：`WeaselServer /q` 看不到 session 1 的視窗，`weasel-dev-install` 的等待退出步驟會失敗。改為寫 `%APPDATA%\Rime\.maintenance-hold` 旗標加 `Stop-Process -Force`，安裝後刪旗標，最後以 `Register-ScheduledTask`（Principal `-UserId (WindowsIdentity::GetCurrent().Name)`、`-LogonType Interactive`）加 `Start-ScheduledTask` 在使用者桌面 session 1 重啟伺服器；`schtasks /TR` 含空白路徑的引號會被 pwsh 吃掉，勿用。`weasel-version` 若報「WeaselServer 未在執行」，同樣用排程工作啟動而非 `Start-Process`（會落在 session 0）。
+- opencc 升版後 `weasel-drift-check` 會把安裝中的舊 `.ocd2` 判為漂移，屬上游資料更新，備份目錄可直接刪。
 
 ## 日常指令（dotfiles 的 weasel 模組，pwsh 與 Git Bash 皆有）
 
@@ -94,7 +107,7 @@ librime 版本一律記到提交層級——`rime_version` 字串（`1.17.0-wuji
 新機無本機 userdb 時走 restore 路徑（同 A3434 經驗）：
 
 1. 退出 WeaselServer
-2. 於 `%APPDATA%\Rime` 執行 `rime_dict_manager.exe --restore <terra_pinyin.userdb.txt 快照路徑>`（工具在 librime `dist_x64\bin`，`rime.dll` 在 `dist_x64\lib`；dotfiles 的 rime-* 函式已自動前置 `PATH`，徒手執行時須自行將 `dist_x64\lib` 前置 `PATH` 或把 `rime.dll` 複製到 exe 旁）
+2. 於 `%APPDATA%\Rime` 執行 `rime_dict_manager.exe --restore <terra_pinyin.userdb.txt 快照路徑>`（工具在 librime `dist_x64\bin`，`rime.dll` 在 `dist_x64\lib`；dotfiles 的 `rime-*` 函式已自動前置 `PATH`，徒手執行時須自行將 `dist_x64\lib` 前置 `PATH` 或把 `rime.dll` 複製到 exe 旁）
 3. 快照來源：`G:\我的雲端硬碟\Rime\terra_pinyin.userdb.txt`
 4. 重啟 WeaselServer
 
