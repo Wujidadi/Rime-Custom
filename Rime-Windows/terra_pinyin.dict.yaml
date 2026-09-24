@@ -21,7 +21,7 @@
 name: terra_pinyin
 version: "2013.12.11"
 sort: by_weight
-use_preset_vocabulary: false
+use_preset_vocabulary: true
 max_phrase_length: 100
 min_phrase_weight: 100
 ...
@@ -160856,6 +160856,7 @@ min_phrase_weight: 100
 楇	huo4
 楇	kua3
 楈	xu1
+楈枒	xu1 ya2
 楉	ruo4
 楊	yang2
 楊一展	yang2 yi1 zhan3
@@ -230592,6 +230593,8 @@ min_phrase_weight: 100
 胥紕	xu1 pi2
 胥臣	xu1 chen2
 胥軒	xu1 xuan1
+胥邪	xu1 ya2
+胥邪	xu1 ye2
 胥靡	xu1 mi2
 胥餘	xu1 yu2
 胦	yang1
