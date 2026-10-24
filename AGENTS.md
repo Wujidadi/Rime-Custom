@@ -7,7 +7,8 @@
 - `Rime-macOS/`、`Rime-Windows/`：使用者層自訂檔（方案、詞典、symbols、Lua 模組），佈建至 `~/Library/Rime` 或 `%APPDATA%\Rime`。
 - `Contents/SharedSupport/`、`data/`：app 層 overlay，覆蓋進安裝中的 Squirrel.app 或 weasel 安裝目錄。
 - `MANUAL-SQUIRREL.md`、`MANUAL-WEASEL.md`：完整操作手冊，工作流、指令語義與疑難排解一律以手冊為準，不憑記憶。
-- 機群：macOS 編譯機 A2780、A3434；Windows 編譯機 i9-10900。
+- 機群：macOS 編譯機 A2780（`hostname` 為 `cck-m2-max.local`）、A3434（`Taras-M5-14.local`）；Windows 編譯機 i9-10900。
+- 動手前先跑 `hostname` 對照確認本機身分，完整對照表見 `~/dotfiles/docs/machines.md`。
 
 ## dotfiles 指令組
 
