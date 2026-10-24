@@ -1,6 +1,6 @@
 # 自建小狼毫（Weasel）操作手冊 — i9-10900
 
-> [!DATE] 時間：2026-09-23T14:48:11+08:00
+> [!DATE] 時間：2026-10-24T20:33:00+08:00
 
 本手冊記錄 i9-10900（Windows 11 Pro）上自建版小狼毫的組成、建置與部署方式。
 macOS 端鼠鬚管的對應手冊見 `MANUAL-SQUIRREL.md`；兩者共用的慣例（fork 版號、FORK-CHANGELOG、上游 merge 規範）不重複詳述。
@@ -9,20 +9,23 @@ macOS 端鼠鬚管的對應手冊見 `MANUAL-SQUIRREL.md`；兩者共用的慣�
 
 | 元件    | 版本                          | 倉庫                                             |
 | ------- | ----------------------------- | ------------------------------------------------ |
-| weasel  | 0.17.4-wujidadi.6             | `D:\Workspaces\IME\Rime\weasel`                  |
-| librime | 1.17.0-wujidadi.1（37e47f86） | `D:\Workspaces\IME\Rime\librime`                 |
+| weasel  | 0.17.4-wujidadi.7             | `D:\Workspaces\IME\Rime\weasel`                  |
+| librime | 1.17.0-wujidadi.2（fa2dadb6） | `D:\Workspaces\IME\Rime\librime`                 |
 | 外掛    | lua、octagram、predict        | 隨 librime 以 BUILD_MERGED_PLUGINS 併入 rime.dll |
 | Boost   | 1.84.0（兩倉共用）            | `weasel\deps\boost_1_84_0`（不入版控）           |
 
 fork 相對上游的變動見各倉 `FORK-CHANGELOG.md`；開發規範見各倉 `FORK-POLICY.md`。
 librime 版本一律記到提交層級——fork 版號只隨行為變更調升，純建置提交（如 macOS 專用的 `64894885`）不調升，`rime_version` 字串無法據以追溯。
 
-現版 librime（`37e47f86`）：
+現版 librime（`fa2dadb6`，基於上游 `1b3417d2`）：
 
 - userdb 詞條老化門檻改為設定項 `translator/user_dict_forget_threshold`，預設 `0` 不遺忘、設 `1e-200` 即恢復上游 `de21e7d4` 的行為（落後庫級 tick 約 92103 即丟棄）；緣由與症狀見 MANUAL-SQUIRREL.md 的行為差異與疑難排解。
 - 含上游 `8dc90354` 對 stabledb（custom_phrase.txt）無權重詞條被門檻誤丟的修正，custom_phrase 可安全啟用。
 - opencc 子模組升 `ver.1.4.2`，`output\data\opencc\` 隨之更新（38 檔）。
-- 上游的 CandidatePreview API、streaming_chord、calculus 等功能 weasel 前端未採用，僅隨庫帶入。
+- 上游的 CandidatePreview API、streaming_chord、calculus、依執行期條件啟用元件等功能 weasel 前端未採用，僅隨庫帶入。
+- `fa2dadb6` 修正上游合併後 `UserDbValue` 重複 `RIME_DLL` 標記造成的 MSVC C2487，屬純建置修正、不調升 fork 版號。
+
+現版 weasel 合入上游 `82b50c9`，候選視窗改以 DirectComposition 重寫，設定與部署對話框改為 DPI 感知；托盤刷新維持 fork 的專用執行緒機制，不採上游的 `SetTrayRefreshCallback`。
 
 ### 與官方版的行為差異
 
@@ -30,7 +33,7 @@ librime 版本一律記到提交層級——fork 版號只隨行為變更調升�
 - 更新頻道指向 fork 自控的 `update/appcast.xml`（raw.githubusercontent.com），「檢查新版本」恆得「已是最新版本」；官方新版以 git 上游追蹤。
   fork 版**不對外發布、不建 GitHub Release**：appcast 的 enclosure URL 僅為佔位，散佈一律走 `weasel-pack` 上雲＋`weasel-cloud-install`；進版推送後無需再問是否建 Release。
   WinSparkle 對連字號版號的比較語義不可靠，故不沿用 macOS「靠 Sparkle 比較器截斷後綴」的做法。
-- `installation.yaml` 的 `distribution_version` 顯示 fork 版號（如 `0.17.4-wujidadi.6`）、`rime_version` 顯示 `1.17.0-wujidadi.1`，可直接分辨自建版。
+- `installation.yaml` 的 `distribution_version` 顯示 fork 版號（如 `0.17.4-wujidadi.7`）、`rime_version` 顯示 `1.17.0-wujidadi.2`，可直接分辨自建版。
 - WeaselIPC 客戶端 IPC 為 fail-fast 帶兩級逾時（組字／按鍵 500ms、焦點／通知 25ms），宿主程式 UI 執行緒不再無限等待 WeaselServer（rime/weasel#1909）。
   上游 #1912（已合入，`d73f629`）把托盤刷新移到伺服器訊息執行緒、斷開與 explorer 工作列執行緒的死結環，屬伺服器端根因修補；兩者互補，fork 兩邊都有。
   殘餘風險：`FocusIn` → `_UpdateUI()` 仍在管線工作執行緒上跨執行緒呼叫候選視窗的 `ShowWindow`／`SetWindowPos`，若恰逢訊息執行緒卡在 `Shell_NotifyIcon`（`SMTO_BLOCK`），環仍可能短暫成立，由客戶端逾時兜底。
@@ -120,6 +123,7 @@ librime 版本一律記到提交層級——fork 版號只隨行為變更調升�
 - **勿從 `output\` 直接執行 `WeaselSetup.exe /t`**：它會把登錄 `HKLM\SOFTWARE\Rime\Weasel\WeaselRoot` 註冊為其所在目錄；之後執行 NSIS 安裝檔時，`install.nsi` 的舊版清除段會把 `WeaselRoot` 所指目錄的頂層檔案與 `data\` 全部刪除（不遞迴，`Win32\`、`archives\` 倖存），repo 的 `output\` 即被當舊安裝目錄清空。驗證修補一律改用安裝檔靜默安裝（`/S /T`）；若懷疑登錄已被污染，安裝前先確認 `WeaselRoot` 指向 `C:\Program Files\Rime\weasel-<版本>`。誤中後的復原：`git checkout -- output` 還原版控檔、以 7-Zip 自安裝檔解出 payload 補回 `data\` 等未版控內容（注意解壓會攤平 x64／Win32 同名檔，`rime.dll`、`WinSparkle.dll` 需按架構自 librime dist 與版控重新接入）、重跑 `weasel-build weasel` 補回 PDB。
 - **合併上游後 `weasel.props.template` 的版本巨集**：上游 `c681ea8` 已在 `ClCompile` 加入 `VERSION_*`／`PRODUCT_VERSION`／`FILE_VERSION` 定義（與 fork `9ddbb35` 的補丁等價），合併後保留上游那行即可；`ResourceCompile` 區塊的同名定義行必須留著，少了它 RC 會報 `RC2104: undefined keyword or key name: VERSION_MAJOR`。
 - **`weasel-drift-check` 對上游資料包變更誤報**：合併上游後若 `output\data\*.yaml` 有變（如 2026-08-22 合入的 `weasel.yaml` 升 `config_version 0.23`、移除 `firefox.exe: inline_preedit` 繞道），安裝前偵測會把現場的舊版當成未納管修改並備份到 `WeaselData-drift-<時間>`；與 `git log -- output/data` 比對確認是上游變更即可刪除備份。
+- **Claude Code 的 shell 快照缺底線開頭的輔助函式**：快照只帶入公開的 `weasel-*`／`rime-*` 函式，`_weasel_dir`、`_weasel_running` 等內部輔助函式不在其中，`weasel-dev-install` 會建置成功、安裝步驟卻全報「找不到小狼毫安裝目錄」；同一次指令內先 `source ~/.bashrc` 再呼叫即可。
 - **`missing input schema: quick5`**：plum preset 的共用 `default.yaml` 列了未打包的 quick5，屬上游資料包不一致，與自訂方案無關，無害。
 - **GUI 會改寫 custom 檔**：在小狼毫的「輸入法設定」／「界面風格」按確認後，`default.custom.yaml`／`weasel.custom.yaml` 會被以 `customization:` 區塊格式重寫；現場檔如此屬正常，鏡像維持乾淨版即可。
 - **rime_api_console 在無終端機環境掛住**：管線 stdin 的 EOF 送不到，會永久等待輸入；引擎驗證以 `build.bat test` 為準。
