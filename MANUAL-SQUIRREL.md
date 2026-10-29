@@ -37,6 +37,7 @@ max-width: 900px
   - 官方語義為「絕對值大者勝、平手本地勝」，刪除永不跨裝置傳播；與官方版機器混用時自動退化為近似官方行為。
 - **userdb 詞條老化門檻改為設定項**（`1.17.0-wujidadi.1` 起）：上游 de21e7d4（PR #1205）在查詢時把 d 值依 `exp((t − 庫級 tick)/200)` 衰減，落後約 92103 個 tick 的詞條整條丟棄（常量 `1e-200`）；fork 改為方案設定鍵 `translator/user_dict_forget_threshold`（與 `enable_user_dict` 同層），預設 `0` 不遺忘，設 `1e-200` 即恢復上游行為、不必重編。
   緣由：舊版合併語義曾把整批詞條的 t 蓋成同一值（現役 terra_pinyin userdb 有 85 萬條 t=1577323），庫級 tick 跨過門檻時會一次全部失效、候選退回字典表順序（2026-09-22 實機發生，839,655 條受影響）。
+- **Shift 切換臨時西文一律不上屏、數字鍵盤 Enter 比照 Return**（`1.17.0-wujidadi.3` 起，028dd582）：規格與驗證矩陣見「方案功能備忘」的「輸入中的 Shift 與 Enter」節，小狼毫共用同一份規格。
 - fork 版號隨行為變更調升（`rime_fork_version`），純建置變更（如 64894885 部署目標改 13.0）不調升；追溯精確狀態仍以提交雜湊為準。
 
 ### squirrel（Wujidadi/squirrel）
@@ -81,6 +82,42 @@ terra_pinyin 原缺此模式，致 `/` 觸發碼與 `/fh` 等符號選單均失�
 
 Lua 模組與方案檔以 `~/Library/Rime` 為現場、`Rime-macOS/` 為鏡像；
 修改後重啟 Squirrel（或部署）生效；跨機器佈建與回收用 `rime-user-deploy`／`rime-user-collect`。
+
+### 輸入中的 Shift 與 Enter（librime `1.17.0-wujidadi.3` 起）
+
+行為實作於 librime fork 的 `ascii_composer.cc` 與 `editor.cc`，鼠鬚管與小狼毫共用；前端只負責把數字鍵盤 Enter 送成 `KP_Enter`（鼠鬚管 `kVK_ANSI_KeypadEnter`、小狼毫延伸旗標的 `VK_RETURN`）。
+前提為三個方案的 `ascii_composer/switch_key` 皆是 `Shift_L: inline_ascii`、`Shift_R: commit_text`（注音寫在方案檔，地球拼音與倉頡沿用 `default.yaml`）。
+注音、地球拼音用 `fluency_editor`（選字只確認、Enter 才上屏），倉頡用 `express_editor`（選字即上屏、Return 上屏輸入碼）。
+
+設計原則：
+
+- 輸入中按左右 Shift 一律不上屏；唯一例外是倉頡的右 Shift，照 `express_editor` 慣例確認即上屏。
+- 右 Shift 確認的中文留在編輯區，之後按 Return／空白上屏的是組字結果，不退回輸入碼。
+- 左 Shift 進入臨時西文時，編輯區的未確認部分換成實體按鍵，已確認段保留；再按左 Shift 時，西文未修改就還原中文組字，已修改就把西文定為已確認段後切回中文。
+- 右 Shift 確認後按退格重開的中文段雖仍處於西文模式，仍視同中文輸入中：第一次按左 Shift 即換上實體按鍵進入臨時西文，第二次還原中文組字。
+- 數字鍵盤 Enter 在輸入中與主鍵盤 Return 完全相同，含 Shift、Control 組合；未輸入時兩者都直送應用程式。
+
+驗證矩陣以 `rime_api_console` 實測（2026-10-29，A2780），輸入碼注音 `su3`、地球拼音 `ni`、倉頡 `onf`，皆為「你」；
+表中 `L`、`R` 為按下並放開左、右 Shift，`碼` 代表該方案的輸入碼：
+
+| 按鍵序列            | 注音                         | 地球拼音                    | 倉頡                                        |
+| ------------------- | ---------------------------- | --------------------------- | ------------------------------------------- |
+| 碼 Return           | 上屏「你」                   | 上屏「你」                  | 上屏 `onf`                                  |
+| 碼 數字鍵盤Enter    | 同上一列                     | 同上一列                    | 同上一列                                    |
+| 碼 R                | 確認「你」、轉西文           | 確認「你」、轉西文          | 上屏「你」、轉西文                          |
+| 碼 R Return         | 上屏「你」                   | 上屏「你」                  | （R 時已上屏）                              |
+| 碼 R 空白           | 上屏「你 」                  | 上屏「你 」                 | （R 時已上屏）                              |
+| 碼 R L              | 回中文，「你」留編輯區       | 回中文，「你」留編輯區      | （R 時已上屏）                              |
+| 碼 R 退格 L         | 編輯區換成 `su3`、轉臨時西文 | 編輯區換成 `ni`、轉臨時西文 | （R 時已上屏）                              |
+| 碼 R 退格 L L       | 還原 ㄋㄧˇ 組字              | 還原 ni 組字                | （R 時已上屏）                              |
+| 碼 L L              | 還原 ㄋㄧˇ 組字              | 還原 ni 組字                | 還原 onf 組字                               |
+| 碼 L ab L           | 編輯區留 `su3ab`、回中文     | 編輯區留 `niab`、回中文     | 編輯區留 `onfab`、回中文                    |
+| 碼 L ab L 碼 Return | 上屏「su3ab你」              | 上屏「niab你」              | 上屏 `onfabonf`                             |
+| 碼 R ab L 碼 Return | 上屏「你ab你」               | 上屏「你ab你」              | 上屏「你」，`ab` 直送應用程式，再上屏 `onf` |
+
+`rime_api_console` 的按鍵語法：Shift 單擊寫 `{Shift_L}{Release+Shift_L}`，數字鍵盤 Enter 寫 `{KP_Enter}`；
+於 scratch 目錄放入 app 層 SharedSupport 與使用者層 yaml 的副本後，以 `printf 'select schema bopomofo\nset option !ascii_mode\nsu3{Shift_R}{Release+Shift_R}{Return}\n' | rime_api_console` 逐列比對 `commit:` 輸出。
+`rime_api_console` 單行按鍵序列有長度上限，超出時報 `unparalleled brace`；長序列須拆成多行輸入，同一 session 的狀態會延續。
 
 ### 注音簡拼擴充（2026-07-27 起）
 
@@ -177,6 +214,9 @@ Lua 模組與方案檔以 `~/Library/Rime` 為現場、`Rime-macOS/` 為鏡像�
   須先於 squirrel 倉庫重編 librime 再 dev-install，且不可直接跑 `make librime`（會觸發平行 configure 互踩，見疑難排解），
   改為序列執行：`make -C librime release && make -C librime install && make copy-rime-binaries`。
   重編後先在 `librime/build/test/` 跑 `rime_test` 全套測試再安裝。
+- librime 的相依套件子模組（`deps/leveldb`、`deps/yaml-cpp` 等）有更新時，`make release` 也不會重編相依套件，須先 `git -C librime submodule update --init deps/<名稱>`，再於 `librime/` 以 `make -f deps.mk <名稱>` 逐一重編後才重編 librime。
+  不可用 `make -C librime deps/<名稱>`：目標與同名目錄撞名，make 直接回報 up to date、什麼都不做。
+  相依套件的 CMake 快取若仍記 10.15 部署目標會報 libc++ 錯誤，先刪 `librime/deps/<名稱>/build` 並設 `MACOSX_DEPLOYMENT_TARGET=13.0` 再重編。
 - librime 只動建置腳本或純建置預設（如部署目標）時，squirrel 只 bump 子模組 pin，不進版、不重建。
 - 跨倉依序推送（librime → squirrel）時每步各自檢查結束碼，`git push … | tail` 會吞掉失敗，推出去的子模組 pin 若指向遠端不存在的提交，他機 `submodule update` 會失敗。
 

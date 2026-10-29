@@ -25,6 +25,14 @@ librime 版本一律記到提交層級——fork 版號只隨行為變更調升�
 - 上游的 CandidatePreview API、streaming_chord、calculus、依執行期條件啟用元件等功能 weasel 前端未採用，僅隨庫帶入。
 - `fa2dadb6` 修正上游合併後 `UserDbValue` 重複 `RIME_DLL` 標記造成的 MSVC C2487，屬純建置修正、不調升 fork 版號。
 
+librime fork 的 `028dd582`（`1.17.0-wujidadi.3`）改了輸入中的 Shift 與 Enter 行為，現版小狼毫的 librime（`fa2dadb6`）尚未包含：
+
+- 規格、前提設定與三方案驗證矩陣見 MANUAL-SQUIRREL.md 的「輸入中的 Shift 與 Enter」節，鼠鬚管與小狼毫共用同一份規格；librime 倉的 FORK-CHANGELOG 記有與上游行為的逐項對照。
+- 改動只在 librime（`ascii_composer.cc`、`editor.cc`），weasel 原始碼不需修改：`WeaselTSF/KeyEvent.cpp` 已把帶延伸旗標的 `VK_RETURN` 送成 `ibus::KP_Enter`，與鼠鬚管送出的 `XK_KP_Enter` 同值（`0xFF8D`）。
+- 前提設定與鼠鬚管相同：`Rime-Windows/bopomofo.schema.yaml` 寫明 `Shift_L: inline_ascii`、`Shift_R: commit_text`，地球拼音與倉頡沿用 rime-prelude 的 `default.yaml` 同名設定。
+- `028dd582` 同時合入上游 `56737cd2`，`deps/leveldb`（升至 `bb74ef73`）、`deps/yaml-cpp`（0.9.0）、`deps/googletest`（v1.18.0）子模組隨之更新，進版時 x64 與 Win32 兩輪都須重跑 deps；新版 leveldb 可直接沿用既有 userdb。
+- 進版後以 librime `dist_x64\bin` 的 `rime_api_console.exe` 依驗證矩陣逐列比對 `commit:` 輸出，再於實機按左右 Shift 與數字鍵盤 Enter 確認。
+
 現版 weasel 合入上游 `82b50c9`，候選視窗改以 DirectComposition 重寫，設定與部署對話框改為 DPI 感知；托盤刷新維持 fork 的專用執行緒機制，不採上游的 `SetTrayRefreshCallback`。
 
 ### 與官方版的行為差異
