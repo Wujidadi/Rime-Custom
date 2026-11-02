@@ -24,3 +24,4 @@
 - 部署與同步屬非同步動作，以 Rime 日誌驗證結果，不以猜測的等待時間空等。
 - Windows 端的 `.bat` 為 CRLF，編修用逐段取代的編輯工具，不用 `sed -i`。
 - 手冊只描述現況，不嵌入修訂歷史。
+- 方案檔的 `schema/version` 一律維持上游版號加 `1.0`；進版或 plum 更新帶來上游新版號時，同步調高 `Rime-Windows/`、`Rime-macOS/`、`data/`、`Contents/SharedSupport/` 的同名方案檔。
