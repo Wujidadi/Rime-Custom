@@ -1,6 +1,6 @@
 # 自建小狼毫（Weasel）操作手冊 — i9-10900
 
-> [!DATE] 時間：2026-10-24T20:33:00+08:00
+> [!DATE] 時間：2026-11-02T19:10:37+08:00
 
 本手冊記錄 i9-10900（Windows 11 Pro）上自建版小狼毫的組成、建置與部署方式。
 macOS 端鼠鬚管的對應手冊見 `MANUAL-SQUIRREL.md`；兩者共用的慣例（fork 版號、FORK-CHANGELOG、上游 merge 規範）不重複詳述。
@@ -9,15 +9,15 @@ macOS 端鼠鬚管的對應手冊見 `MANUAL-SQUIRREL.md`；兩者共用的慣�
 
 | 元件    | 版本                          | 倉庫                                             |
 | ------- | ----------------------------- | ------------------------------------------------ |
-| weasel  | 0.17.4-wujidadi.7             | `D:\Workspaces\IME\Rime\weasel`                  |
-| librime | 1.17.0-wujidadi.2（fa2dadb6） | `D:\Workspaces\IME\Rime\librime`                 |
+| weasel  | 0.17.4-wujidadi.8             | `D:\Workspaces\IME\Rime\weasel`                  |
+| librime | 1.17.0-wujidadi.3（028dd582） | `D:\Workspaces\IME\Rime\librime`                 |
 | 外掛    | lua、octagram、predict        | 隨 librime 以 BUILD_MERGED_PLUGINS 併入 rime.dll |
 | Boost   | 1.84.0（兩倉共用）            | `weasel\deps\boost_1_84_0`（不入版控）           |
 
 fork 相對上游的變動見各倉 `FORK-CHANGELOG.md`；開發規範見各倉 `FORK-POLICY.md`。
 librime 版本一律記到提交層級——fork 版號只隨行為變更調升，純建置提交（如 macOS 專用的 `64894885`）不調升，`rime_version` 字串無法據以追溯。
 
-現版 librime（`fa2dadb6`，基於上游 `1b3417d2`）：
+現版 librime（`028dd582`，基於上游 `56737cd2`）：
 
 - userdb 詞條老化門檻改為設定項 `translator/user_dict_forget_threshold`，預設 `0` 不遺忘、設 `1e-200` 即恢復上游 `de21e7d4` 的行為（落後庫級 tick 約 92103 即丟棄）；緣由與症狀見 MANUAL-SQUIRREL.md 的行為差異與疑難排解。
 - 含上游 `8dc90354` 對 stabledb（custom_phrase.txt）無權重詞條被門檻誤丟的修正，custom_phrase 可安全啟用。
@@ -25,15 +25,18 @@ librime 版本一律記到提交層級——fork 版號只隨行為變更調升�
 - 上游的 CandidatePreview API、streaming_chord、calculus、依執行期條件啟用元件等功能 weasel 前端未採用，僅隨庫帶入。
 - `fa2dadb6` 修正上游合併後 `UserDbValue` 重複 `RIME_DLL` 標記造成的 MSVC C2487，屬純建置修正、不調升 fork 版號。
 
-librime fork 的 `028dd582`（`1.17.0-wujidadi.3`）改了輸入中的 Shift 與 Enter 行為，現版小狼毫的 librime（`fa2dadb6`）尚未包含：
+輸入中的 Shift 與 Enter 行為隨 librime `1.17.0-wujidadi.3` 帶入：
 
 - 規格、前提設定與三方案驗證矩陣見 MANUAL-SQUIRREL.md 的「輸入中的 Shift 與 Enter」節，鼠鬚管與小狼毫共用同一份規格；librime 倉的 FORK-CHANGELOG 記有與上游行為的逐項對照。
 - 改動只在 librime（`ascii_composer.cc`、`editor.cc`），weasel 原始碼不需修改：`WeaselTSF/KeyEvent.cpp` 已把帶延伸旗標的 `VK_RETURN` 送成 `ibus::KP_Enter`，與鼠鬚管送出的 `XK_KP_Enter` 同值（`0xFF8D`）。
 - 前提設定與鼠鬚管相同：`Rime-Windows/bopomofo.schema.yaml` 寫明 `Shift_L: inline_ascii`、`Shift_R: commit_text`，地球拼音與倉頡沿用 rime-prelude 的 `default.yaml` 同名設定。
-- `028dd582` 同時合入上游 `56737cd2`，`deps/leveldb`（升至 `bb74ef73`）、`deps/yaml-cpp`（0.9.0）、`deps/googletest`（v1.18.0）子模組隨之更新，進版時 x64 與 Win32 兩輪都須重跑 deps；新版 leveldb 可直接沿用既有 userdb。
-- 進版後以 librime `dist_x64\bin` 的 `rime_api_console.exe` 依驗證矩陣逐列比對 `commit:` 輸出，再於實機按左右 Shift 與數字鍵盤 Enter 確認。
+- `deps/leveldb`（`bb74ef73`）、`deps/yaml-cpp`（0.9.0）、`deps/googletest`（v1.18.0）子模組隨 `028dd582` 更新，新版 leveldb 可直接沿用既有 userdb。
+- 矩陣全列於 2026-11-02 在 i9-10900 以 x64 `rime.dll` 實測，結果與 A2780 相同；`rime_api_console` 在 Windows 不讀管線，實測方式見疑難排解。
 
-現版 weasel 合入上游 `82b50c9`，候選視窗改以 DirectComposition 重寫，設定與部署對話框改為 DPI 感知；托盤刷新維持 fork 的專用執行緒機制，不採上游的 `SetTrayRefreshCallback`。
+現版 weasel 合入上游 `f96ed24`：
+
+- 候選視窗以 DirectComposition 繪製，設定與部署對話框為 DPI 感知；托盤刷新維持 fork 的專用執行緒機制，不採上游的 `SetTrayRefreshCallback`。
+- 升級安裝不再反註冊 TSF 設定檔，語言設定由安裝目錄的 `WeaselLanguageProfile.ps1` 保留與遷移。
 
 ### 與官方版的行為差異
 
@@ -41,7 +44,7 @@ librime fork 的 `028dd582`（`1.17.0-wujidadi.3`）改了輸入中的 Shift 與
 - 更新頻道指向 fork 自控的 `update/appcast.xml`（raw.githubusercontent.com），「檢查新版本」恆得「已是最新版本」；官方新版以 git 上游追蹤。
   fork 版**不對外發布、不建 GitHub Release**：appcast 的 enclosure URL 僅為佔位，散佈一律走 `weasel-pack` 上雲＋`weasel-cloud-install`；進版推送後無需再問是否建 Release。
   WinSparkle 對連字號版號的比較語義不可靠，故不沿用 macOS「靠 Sparkle 比較器截斷後綴」的做法。
-- `installation.yaml` 的 `distribution_version` 顯示 fork 版號（如 `0.17.4-wujidadi.7`）、`rime_version` 顯示 `1.17.0-wujidadi.2`，可直接分辨自建版。
+- `installation.yaml` 的 `distribution_version` 顯示 fork 版號（如 `0.17.4-wujidadi.8`）、`rime_version` 顯示 `1.17.0-wujidadi.3`，可直接分辨自建版。
 - WeaselIPC 客戶端 IPC 為 fail-fast 帶兩級逾時（組字／按鍵 500ms、焦點／通知 25ms），宿主程式 UI 執行緒不再無限等待 WeaselServer（rime/weasel#1909）。
   上游 #1912（已合入，`d73f629`）把托盤刷新移到伺服器訊息執行緒、斷開與 explorer 工作列執行緒的死結環，屬伺服器端根因修補；兩者互補，fork 兩邊都有。
   殘餘風險：`FocusIn` → `_UpdateUI()` 仍在管線工作執行緒上跨執行緒呼叫候選視窗的 `ShowWindow`／`SetWindowPos`，若恰逢訊息執行緒卡在 `Shell_NotifyIcon`（`SMTO_BLOCK`），環仍可能短暫成立，由客戶端逾時兜底。
@@ -54,7 +57,8 @@ librime fork 的 `028dd582`（`1.17.0-wujidadi.3`）改了輸入中的 Shift 與
 - 2026-08-09 起 `Rime-Windows/` 與 `data/` 一律 LF 入庫（`.gitattributes` 鎖定）；部署腳本化後不再需要 CRLF 手動搬運慣例
 - `installation.yaml`、`user.yaml` 為機器私有，不入鏡像；`installation_id` 統一為 `"rime-wujidadi"`
 - **自訂方案檔必須同時放應用程式層**（`data/`）：librime 的 SchemaUpdate 會把「版本號低於共用層」的使用者層方案副本移進 `%APPDATA%\Rime\trash\`（README 舊記載「terra_pinyin.schema.yaml 會被刪、原因未查明」的真正機制，適用所有與共用層同名的方案檔——bopomofo、cangjie5、terra_pinyin 皆然）。
-  自訂版覆蓋 app 層後兩層版本相等，使用者層副本即可存活，雙層架構與 macOS 的 SharedSupport overlay 對齊
+  自訂版覆蓋 app 層後兩層版本相等，使用者層副本即可存活，雙層架構與 macOS 的 SharedSupport overlay 對齊。
+  本倉方案的 `schema/version` 一律維持上游版號加 `1.0`（現為 bopomofo `4.1`、cangjie5 `2.0`、terra_pinyin `1.30`，對應上游 `3.1`、`1.0`、`0.30`），內容仍為自訂版；上游升版時同步調高四個目錄的版號，overlay 未生效時使用者層副本才不會被移入 trash
 
 ## 建置環境
 
@@ -134,5 +138,6 @@ librime fork 的 `028dd582`（`1.17.0-wujidadi.3`）改了輸入中的 Shift 與
 - **進版後切換小狼毫報 `boost::archive::archive_exception: input stream error`**：上游變更 `UIStyle` 等 IPC 資料結構的序列化欄位後，安裝前已開啟的程式仍載入舊版 TSF DLL（安裝程式把舊檔改名為 `System32\weasel.dll.old.0`、`SysWOW64\weasel.dll.old.0` 待重開機刪除），與新版 WeaselServer 的格式不合；新開的程式即正常，重開該程式或重開機即可。
 - **`missing input schema: quick5`**：plum preset 的共用 `default.yaml` 列了未打包的 quick5，屬上游資料包不一致，與自訂方案無關，無害。
 - **GUI 會改寫 custom 檔**：在小狼毫的「輸入法設定」／「界面風格」按確認後，`default.custom.yaml`／`weasel.custom.yaml` 會被以 `customization:` 區塊格式重寫；現場檔如此屬正常，鏡像維持乾淨版即可。
-- **rime_api_console 在無終端機環境掛住**：管線 stdin 的 EOF 送不到，會永久等待輸入；引擎驗證以 `build.bat test` 為準。
+- **rime_api_console 在無終端機環境掛住**：Windows 版以 `_getch` 直接讀主控台、不讀 stdin，管線輸入無效，會永久等待按鍵；該工具也不安裝到 `dist`，只在 `build\bin\Release`。
+  引擎通用驗證以 `build.bat test` 為準；按鍵矩陣另寫小型驅動程式連結 `dist_x64\lib\rime.lib`，以 `fgets` 讀序列，再呼叫 `simulate_key_sequence` 與 `get_commit` 比對，資料目錄用 scratch 內的 `output\data`＋本倉 `data\` 與 `Rime-Windows\` 副本。
 - **Google Drive 會給無副檔名的純文字檔補 `.txt`**：本地同步（macOS 與 Windows 客戶端皆然）會把 `留言` 這類無副檔名文字檔自動改成 `留言.txt`，兩平台的留言別名因此指空。發現留言指令讀不到檔案時，先檢查雲端是否又多了 `.txt`，改回無副檔名即可（改名會同步回雲端）。
