@@ -4,7 +4,7 @@ max-width: 900px
 
 # 自建鼠鬚管操作手冊
 
-> [!DATE] 時間：2026-11-03T19:02:04+08:00
+> [!DATE] 時間：2026-11-03T19:05:37+08:00
 
 本手冊記載自建版鼠鬚管（Squirrel）與個人配套環境的全部非官方操作，
 涵蓋自建版行為差異、dotfiles 指令組、同步工作流與疑難排解。
@@ -257,7 +257,9 @@ Lua 模組與方案檔以 `~/Library/Rime` 為現場、`Rime-macOS/` 為鏡像�
 
 - 單一事實來源：本倉庫 `Contents/SharedSupport/`（8 個 yaml＋opencc 自訂檔），dev-install／cloud-install 自動 overlay 進 app。
 - 方案的 `schema/version` 一律維持上游版號加 `1.0`（現為 bopomofo `4.1`、cangjie5 `2.0`、terra_pinyin `1.30`，對應上游 `3.1`、`1.0`、`0.30`），內容仍為自訂版：librime 會把版本低於 app 層的使用者層方案副本移入 `trash`，overlay 未生效時版號較高的使用者層副本才能存活；上游升版時同步調高四個目錄的版號。
-- 地球拼音字典的使用者層鏡像不變式：`Rime-macOS/terra_pinyin.dict.yaml` 與現役 `~/Library/Rime` 版、iCloud 同步版三者內容一致；`Rime-Windows/terra_pinyin.dict.yaml` 亦與前者完全一致，僅換行字元為 CRLF（第 28 行反引號自映射詞條中的 TAB 原樣保留）。
+- `rime-user-deploy` 會以 `Rime-macOS/` 覆蓋 `~/Library/Rime` 所有內容不同的檔案，含 `rime-deploy` 收進現場、尚未回寫倉庫的 `terra_pinyin.dict.yaml` 新詞；執行前先以 `diff` 確認現場字典是否已回寫。
+- 地球拼音字典的使用者層鏡像不變式：`Rime-macOS/terra_pinyin.dict.yaml` 與現役 `~/Library/Rime` 版、Google Drive 同步版三者內容一致；`Rime-Windows/terra_pinyin.dict.yaml` 亦與前者逐位元組相同，換行字元同為 LF（第 28 行反引號自映射詞條中的 TAB 原樣保留）。
+  iCloud 同步版（2026-10-19）不在不變式內：缺三十二相、華不注、華不注山，且把 `沌	dun4` 一行寫成含 `zhuan4` 讀音與 `沌口` 等詞的 7 行。
 - `zhuyin.yaml`（注音簡拼擴充，2026-07-27 起）屬使用者層而非 SharedSupport overlay：現場 `~/Library/Rime` ↔ 鏡像 `Rime-macOS/`。
 - `essay.txt` 僅留底參考，部署時排除、一律沿用官方版。
 - opencc 自訂 txt 只有 `JPVariants.txt` 有效（JPCharacters.txt／JPPhrases.txt 已於 2023-02-02 失效並移除）。
