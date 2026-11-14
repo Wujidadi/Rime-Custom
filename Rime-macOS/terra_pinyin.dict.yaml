@@ -53322,10 +53322,7 @@ min_phrase_weight: 100
 公仔麪	`
 公仔麵	gong1 zai3 mian4
 公仲	gong1 zhong4
-公仲奄父	gong1 zhong4 yan1 fu3
-公仲奄父	gong1 zhong4 yan1 fu4
 公仲奄父	gong1 zhong4 yan3 fu3
-公仲奄父	gong1 zhong4 yan3 fu4
 公仲緩	gong1 zhong4 huan3
 公伯	gong1 bo2
 公佈	gong1 bu4
@@ -79740,7 +79737,7 @@ min_phrase_weight: 100
 商太庚	shang1 tai4 geng1
 商太戊	shang1 tai4 wu4
 商太甲	shang1 tai4 jia3
-商奄	shang1 yan1
+商奄	shang1 yan3
 商契	shang1 xie4
 商姓	shang1 xing4
 商學	shang1 xue2
@@ -98658,14 +98655,11 @@ min_phrase_weight: 100
 奄有四方	yan3 you3 si4 fang1
 奄欻	yan3 hu1
 奄然而逝	yan3 ran2 er2 shi4
-奄父	yan1 fu3
-奄父	yan1 fu4
 奄父	yan3 fu3
-奄父	yan3 fu4
 奄留	yan1 liu2
 奄老	yan1 lao3
-奄蔡	yan1 cai4
-奄蔡人	yan1 cai4 ren2
+奄蔡	yan3 cai4
+奄蔡人	yan3 cai4 ren2
 奅	pao4
 奆	juan3
 奆	juan4
@@ -102918,8 +102912,8 @@ min_phrase_weight: 100
 子貢	zi3 gong4
 子路	zi3 lu4
 子路結纓	zi3 lu4 jie2 ying1
-子車	zi3 che1
-子車氏	zi3 che1 shi4
+子車	zi3 ju1
+子車氏	zi3 ju1 shi4
 子輿	zi3 yu2
 子通	zi3 tong1
 子都	zi3 du1
@@ -245992,7 +245986,10 @@ min_phrase_weight: 100
 虲	xia1
 𧈟	ni4
 𧈠	zao3
-𧈡	jiao4
+𧈡	jiao4	0%
+𧈡	you2	95%
+𧈡	zao3	4%
+𧈡	zhao3	1%
 𧈢	ba4	50%
 𧈢	ma4	50%
 𧈢𧏡	ba4 xia4
