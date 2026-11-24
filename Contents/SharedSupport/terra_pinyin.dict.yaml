@@ -15483,6 +15483,7 @@ min_phrase_weight: 100
 三十二	san1 shi2 er4
 三十二份	san1 shi2 er4 fen4
 三十二年	san1 shi2 er4 nian2
+三十二相	san1 shi2 er4 xiang4
 三十二萬	san1 shi2 er4 wan4
 三十五	san1 shi2 wu3
 三十億	san1 shi2 yi4
@@ -43602,19 +43603,17 @@ min_phrase_weight: 100
 俼	zhu3
 俼	zhu4
 俽	xin1
-俾	bei1	2%
-俾	bi3	0%
-俾	bi4	98%
+俾	bei1	1%
+俾	bi3	4%
+俾	bi4	95%
 俾乂	bi4 yi4
 俾倪	bi4 ni4
 俾夜作晝	bi4 ye4 zuo4 zhou4
-俾斯麥	bei1 si1 mai4
 俾斯麥	bi4 si1 mai4
-俾斯麥體系	bei1 si1 mai4 ti3 xi4
-俾晝作夜	bi3 zhou4 zuo4 ye4
+俾斯麥體系	bi4 si1 mai4 ti3 xi4
 俾晝作夜	bi4 zhou4 zuo4 ye4
-俾格米	bei1 ge2 mi3
-俾格米人	bei1 ge2 mi3 ren2
+俾格米	bi4 ge2 mi3
+俾格米人	bi4 ge2 mi3 ren2
 俾爾遐福	bi4 er3 xia2 fu2
 俿	chi2
 俿	hu3
@@ -53321,10 +53320,7 @@ min_phrase_weight: 100
 公仔麪	`
 公仔麵	gong1 zai3 mian4
 公仲	gong1 zhong4
-公仲奄父	gong1 zhong4 yan1 fu3
-公仲奄父	gong1 zhong4 yan1 fu4
 公仲奄父	gong1 zhong4 yan3 fu3
-公仲奄父	gong1 zhong4 yan3 fu4
 公仲緩	gong1 zhong4 huan3
 公伯	gong1 bo2
 公佈	gong1 bu4
@@ -62437,6 +62433,7 @@ min_phrase_weight: 100
 劍走偏鋒	jian4 zou3 pian1 feng1
 劍走蜻蛉	jian4 zou3 qing1 ling2
 劍走輕靈	jian4 zou3 qing1 ling2
+劍鉈	jian4 she2
 劍鋒	jian4 feng1
 劍門	jian4 men2
 劍門坑	jian4 men2 keng1
@@ -76915,7 +76912,6 @@ min_phrase_weight: 100
 呱呱落地	wa1 wa1 luo4 di4
 呱嗪	pai4 qin2
 呱噪	gua1 zao4
-呱替啶	pai4 ti4 ding4
 味	mei4	0%
 味	wei4	100%
 味丹	wei4 dan1
@@ -79739,7 +79735,7 @@ min_phrase_weight: 100
 商太庚	shang1 tai4 geng1
 商太戊	shang1 tai4 wu4
 商太甲	shang1 tai4 jia3
-商奄	shang1 yan1
+商奄	shang1 yan3
 商契	shang1 xie4
 商姓	shang1 xing4
 商學	shang1 xue2
@@ -98657,14 +98653,11 @@ min_phrase_weight: 100
 奄有四方	yan3 you3 si4 fang1
 奄欻	yan3 hu1
 奄然而逝	yan3 ran2 er2 shi4
-奄父	yan1 fu3
-奄父	yan1 fu4
 奄父	yan3 fu3
-奄父	yan3 fu4
 奄留	yan1 liu2
 奄老	yan1 lao3
-奄蔡	yan1 cai4
-奄蔡人	yan1 cai4 ren2
+奄蔡	yan3 cai4
+奄蔡人	yan3 cai4 ren2
 奅	pao4
 奆	juan3
 奆	juan4
@@ -102917,8 +102910,8 @@ min_phrase_weight: 100
 子貢	zi3 gong4
 子路	zi3 lu4
 子路結纓	zi3 lu4 jie2 ying1
-子車	zi3 che1
-子車氏	zi3 che1 shi4
+子車	zi3 ju1
+子車氏	zi3 ju1 shi4
 子輿	zi3 yu2
 子通	zi3 tong1
 子都	zi3 du1
@@ -105431,6 +105424,7 @@ min_phrase_weight: 100
 宗師	zong1 shi1
 宗廟	zong1 miao4
 宗愛	zong1 ai4
+宗敎	`
 宗教	zong1 jiao4
 宗教信仰	zong1 jiao4 xin4 yang3
 宗教傳說	zong1 jiao4 chuan2 shuo1
@@ -111488,7 +111482,7 @@ min_phrase_weight: 100
 屯蹶否塞	zhun1 jue2 pi3 se4
 屯邅	zhun1 zhan1
 屯門	tun2 men2
-屯難	zhun1 nan4
+屯難	zhun1 nan2
 屯鹿	tun2 lu4
 𡳿	zhi1
 𡴀	feng1
@@ -122407,7 +122401,8 @@ min_phrase_weight: 100
 𢑽	nei4
 𢑽	nuo2
 𢑾	bo2
-彠	huo4
+彠	huo4	99%
+彠	yue1	1%
 𢑿	nang2
 彡	shan1	100%
 彡	xian1	0%
@@ -127533,10 +127528,13 @@ min_phrase_weight: 100
 悠然	you1 ran2
 悠然自得	you1 ran2 zi4 de2
 悠着	`
+悠着點	`
 悠著	you1 zhe5
+悠著點	you1 zhe5 dian3
 悠遊	you1 you2
 悠遊卡	you1 you2 ka3
 悠長	you1 chang2
+悠閒	you1 xian2
 悡	li2
 悢	lang3
 悢	liang4
@@ -150958,10 +150956,11 @@ min_phrase_weight: 100
 暄和	xuan1 he2
 暄騰	xuan1 teng2
 暄騰	xuan1 teng5
-暅	geng4
-暅	xuan1
-暅	xuan3
-暅	yuan2
+暅	geng3	0%
+暅	geng4	94%
+暅	xuan1	3%
+暅	xuan3	1%
+暅	yuan2	2%
 暆	yi2
 暇	xia2	100%
 暇	xia4	0%
@@ -154659,7 +154658,7 @@ min_phrase_weight: 100
 朱祁鎮	zhu1 qi2 zhen4
 朱祐杬	zhu1 you4 yuan2
 朱祐楑	zhu1 you4 kui2
-朱祐樘	zhu1 you4 tang2
+朱祐樘	zhu1 you4 cheng1
 朱立倫	zhu1 li4 lun2
 朱粲	zhu1 can4
 朱紫難別	zhu1 zi3 nan2 bie2
@@ -160850,6 +160849,7 @@ min_phrase_weight: 100
 楇	huo4
 楇	kua3
 楈	xu1
+楈枒	xu1 ya2
 楉	ruo4
 楊	yang2
 楊一展	yang2 yi1 zhan3
@@ -162741,8 +162741,8 @@ min_phrase_weight: 100
 樗櫟	shu1 li4
 樗櫟庸材	shu1 li4 yong1 cai2
 樗蒲	shu1 pu2
-樘	cheng1	0%
-樘	cheng3	50%
+樘	cheng1	50%
+樘	cheng3	0%
 樘	tang2	50%
 標	biao1	100%
 標	piao3	0%
@@ -166944,7 +166944,7 @@ min_phrase_weight: 100
 武器裝備	wu3 qi4 zhuang1 bei4
 武場	wu3 chang3
 武士	wu3 shi4
-武士彠	wu3 shi4 huo4
+武士彠	wu3 shi4 yue1
 武士街	wu3 shi4 jie1
 武士道	wu3 shi4 dao4
 武大郎	wu3 da5 lang2
@@ -187759,7 +187759,7 @@ min_phrase_weight: 100
 𤑑	chan2
 𤑰	nian2
 𦦨	zhu1
-㸆	kao3
+㸆	kao4
 㸇	zuan3
 㸉	xie1
 㸉	xie4
@@ -208626,6 +208626,9 @@ min_phrase_weight: 100
 祖庭	zu3 ting2
 祖廟	zu3 miao4
 祖德	zu3 de2
+祖暅	zu3 xuan1
+祖暅之	zu3 xuan1 zhi1
+祖暅原理	zu3 xuan1 yuan2 li3
 祖父	zu3 fu4
 祖甲	zu3 jia3
 祖甲載	zu3 jia3 zai4
@@ -230298,6 +230301,9 @@ min_phrase_weight: 100
 背鍋	bei1 guo1
 背陰	bei4 yin1
 背離	bei4 li2
+背靠	bei4 kao4
+背靠着	`
+背靠著	bei4 kao4 zhe5
 背面	bei4 mian4
 背風坡	bei4 feng1 po1
 背風面	bei4 feng1 mian4
@@ -230580,6 +230586,8 @@ min_phrase_weight: 100
 胥紕	xu1 pi2
 胥臣	xu1 chen2
 胥軒	xu1 xuan1
+胥邪	xu1 ya2
+胥邪	xu1 ye2
 胥靡	xu1 mi2
 胥餘	xu1 yu2
 胦	yang1
@@ -239290,6 +239298,8 @@ min_phrase_weight: 100
 華一街	hua2 yi4 jie1
 華七街	hua2 qi1 jie1
 華三街	hua2 san1 jie1
+華不注	hua1 fu1 zhu4
+華不注山	hua1 fu1 zhu4 shan1
 華中	hua2 zhong1
 華中一街	hua2 zhong1 yi1 jie1
 華中一街	hua2 zhong1 yi4 jie1
@@ -245974,7 +245984,10 @@ min_phrase_weight: 100
 虲	xia1
 𧈟	ni4
 𧈠	zao3
-𧈡	jiao4
+𧈡	jiao4	0%
+𧈡	you2	95%
+𧈡	zao3	4%
+𧈡	zhao3	1%
 𧈢	ba4	50%
 𧈢	ma4	50%
 𧈢𧏡	ba4 xia4
@@ -270080,7 +270093,7 @@ min_phrase_weight: 100
 逢甲大學	feng2 jia3 da4 xue2
 逢甲巷	feng2 jia3 xiang4
 逢甲路	feng2 jia3 lu4
-逢蒙	feng2 meng2
+逢蒙	peng2 meng2
 逢處	feng2 chu4
 逢逢	peng2 peng2
 連	lian2
@@ -277301,8 +277314,9 @@ min_phrase_weight: 100
 鉇	ta1
 鉇	tuo2
 鉇	yi2
-鉈	she2
-鉈	ta1
+鉈	she2	1%
+鉈	ta1	98%
+鉈	tuo2	1%
 鉉	xuan4
 鉊	zhao1
 鉋	bao4	99%
@@ -301511,6 +301525,7 @@ min_phrase_weight: 100
 魚丸	yu2 wan2
 魚丸粗麪	`
 魚丸粗麵	yu2 wan2 cu1 mian4
+魚乾	yu2 gan1
 魚刺	yu2 ci4
 魚卵	yu2 luan3
 魚叉	yu2 cha1
