@@ -1,6 +1,6 @@
 # 自建小狼毫（Weasel）操作手冊 — i9-10900
 
-> [!DATE] 時間：2026-11-02T19:10:37+08:00
+> [!DATE] 時間：2026-11-24T14:01:57+08:00
 
 本手冊記錄 i9-10900（Windows 11 Pro）上自建版小狼毫的組成、建置與部署方式。
 macOS 端鼠鬚管的對應手冊見 `MANUAL-SQUIRREL.md`；兩者共用的慣例（fork 版號、FORK-CHANGELOG、上游 merge 規範）不重複詳述。
@@ -9,7 +9,7 @@ macOS 端鼠鬚管的對應手冊見 `MANUAL-SQUIRREL.md`；兩者共用的慣�
 
 | 元件    | 版本                          | 倉庫                                             |
 | ------- | ----------------------------- | ------------------------------------------------ |
-| weasel  | 0.17.4-wujidadi.8             | `D:\Workspaces\IME\Rime\weasel`                  |
+| weasel  | 0.17.4-wujidadi.9             | `D:\Workspaces\IME\Rime\weasel`                  |
 | librime | 1.17.0-wujidadi.3（028dd582） | `D:\Workspaces\IME\Rime\librime`                 |
 | 外掛    | lua、octagram、predict        | 隨 librime 以 BUILD_MERGED_PLUGINS 併入 rime.dll |
 | Boost   | 1.84.0（兩倉共用）            | `weasel\deps\boost_1_84_0`（不入版控）           |
@@ -44,10 +44,11 @@ librime 版本一律記到提交層級——fork 版號只隨行為變更調升�
 - 更新頻道指向 fork 自控的 `update/appcast.xml`（raw.githubusercontent.com），「檢查新版本」恆得「已是最新版本」；官方新版以 git 上游追蹤。
   fork 版**不對外發布、不建 GitHub Release**：appcast 的 enclosure URL 僅為佔位，散佈一律走 `weasel-pack` 上雲＋`weasel-cloud-install`；進版推送後無需再問是否建 Release。
   WinSparkle 對連字號版號的比較語義不可靠，故不沿用 macOS「靠 Sparkle 比較器截斷後綴」的做法。
-- `installation.yaml` 的 `distribution_version` 顯示 fork 版號（如 `0.17.4-wujidadi.8`）、`rime_version` 顯示 `1.17.0-wujidadi.3`，可直接分辨自建版。
+- `installation.yaml` 的 `distribution_version` 顯示 fork 版號（如 `0.17.4-wujidadi.9`）、`rime_version` 顯示 `1.17.0-wujidadi.3`，可直接分辨自建版。
 - WeaselIPC 客戶端 IPC 為 fail-fast 帶兩級逾時（組字／按鍵 500ms、焦點／通知 25ms），宿主程式 UI 執行緒不再無限等待 WeaselServer（rime/weasel#1909）。
   上游 #1912（已合入，`d73f629`）把托盤刷新移到伺服器訊息執行緒、斷開與 explorer 工作列執行緒的死結環，屬伺服器端根因修補；兩者互補，fork 兩邊都有。
-  殘餘風險：`FocusIn` → `_UpdateUI()` 仍在管線工作執行緒上跨執行緒呼叫候選視窗的 `ShowWindow`／`SetWindowPos`，若恰逢訊息執行緒卡在 `Shell_NotifyIcon`（`SMTO_BLOCK`），環仍可能短暫成立，由客戶端逾時兜底。
+  托盤由 fork 的專用托盤執行緒擁有（隱藏視窗、訊息迴圈與右鍵選單皆在該執行緒，`0.17.4-wujidadi.9` 起）：`Shell_NotifyIcon` 只在托盤執行緒呼叫，其他執行緒以 `PostMessage` 送出刷新請求、選單結果以 `WM_COMMAND` 投遞回伺服器主視窗，伺服器訊息執行緒不與托盤執行緒共用鎖，也就不會因工作列阻塞而等待。
+  因此 `FocusIn` → `_UpdateUI()` 在管線工作執行緒上跨執行緒呼叫候選視窗的 `ShowWindow`／`SetWindowPos` 時，訊息執行緒不會卡在 Shell 等待，環不再經由托盤閉合；客戶端逾時仍保留作為兜底。
 
 ## 安裝位置與檔案對應
 
