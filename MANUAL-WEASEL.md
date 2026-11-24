@@ -1,6 +1,6 @@
 # 自建小狼毫（Weasel）操作手冊 — i9-10900
 
-> [!DATE] 時間：2026-11-24T14:01:57+08:00
+> [!DATE] 時間：2026-11-24T14:20:25+08:00
 
 本手冊記錄 i9-10900（Windows 11 Pro）上自建版小狼毫的組成、建置與部署方式。
 macOS 端鼠鬚管的對應手冊見 `MANUAL-SQUIRREL.md`；兩者共用的慣例（fork 版號、FORK-CHANGELOG、上游 merge 規範）不重複詳述。
@@ -136,6 +136,7 @@ librime 版本一律記到提交層級——fork 版號只隨行為變更調升�
 - **勿從 `output\` 直接執行 `WeaselSetup.exe /t`**：它會把登錄 `HKLM\SOFTWARE\Rime\Weasel\WeaselRoot` 註冊為其所在目錄；之後執行 NSIS 安裝檔時，`install.nsi` 的舊版清除段會把 `WeaselRoot` 所指目錄的頂層檔案與 `data\` 全部刪除（不遞迴，`Win32\`、`archives\` 倖存），repo 的 `output\` 即被當舊安裝目錄清空。驗證修補一律改用安裝檔靜默安裝（`/S /T`）；若懷疑登錄已被污染，安裝前先確認 `WeaselRoot` 指向 `C:\Program Files\Rime\weasel-<版本>`。誤中後的復原：`git checkout -- output` 還原版控檔、以 7-Zip 自安裝檔解出 payload 補回 `data\` 等未版控內容（注意解壓會攤平 x64／Win32 同名檔，`rime.dll`、`WinSparkle.dll` 需按架構自 librime dist 與版控重新接入）、重跑 `weasel-build weasel` 補回 PDB。
 - **合併上游後 `weasel.props.template` 的版本巨集**：上游 `c681ea8` 已在 `ClCompile` 加入 `VERSION_*`／`PRODUCT_VERSION`／`FILE_VERSION` 定義（與 fork `9ddbb35` 的補丁等價），合併後保留上游那行即可；`ResourceCompile` 區塊的同名定義行必須留著，少了它 RC 會報 `RC2104: undefined keyword or key name: VERSION_MAJOR`。
 - **`weasel-drift-check` 對上游資料包變更誤報**：合併上游後若 `output\data\*.yaml` 有變（如 2026-08-22 合入的 `weasel.yaml` 升 `config_version 0.23`、移除 `firefox.exe: inline_preedit` 繞道），安裝前偵測會把現場的舊版當成未納管修改並備份到 `WeaselData-drift-<時間>`；與 `git log -- output/data` 比對確認是上游變更即可刪除備份。
+  建置產出與 overlay 皆無的檔案不列入偵測：安裝程式升級時整包備份並還原 `data\`，上游已移除的檔案（如 `preview\` 配色預覽圖）會殘留在安裝目錄，與漂移無關。
 - **進版後切換小狼毫報 `boost::archive::archive_exception: input stream error`**：上游變更 `UIStyle` 等 IPC 資料結構的序列化欄位後，安裝前已開啟的程式仍載入舊版 TSF DLL（安裝程式把舊檔改名為 `System32\weasel.dll.old.0`、`SysWOW64\weasel.dll.old.0` 待重開機刪除），與新版 WeaselServer 的格式不合；新開的程式即正常，重開該程式或重開機即可。
 - **`missing input schema: quick5`**：plum preset 的共用 `default.yaml` 列了未打包的 quick5，屬上游資料包不一致，與自訂方案無關，無害。
 - **GUI 會改寫 custom 檔**：在小狼毫的「輸入法設定」／「界面風格」按確認後，`default.custom.yaml`／`weasel.custom.yaml` 會被以 `customization:` 區塊格式重寫；現場檔如此屬正常，鏡像維持乾淨版即可。
